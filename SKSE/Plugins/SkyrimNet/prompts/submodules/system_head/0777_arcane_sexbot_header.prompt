@@ -1,0 +1,16 @@
+{% set arousal_text = arcs_get_arousal(npc.UUID) %}
+{% if arousal_text == "actor_mildly_aroused" %}
+You are turned on and are likely to make flirty comments when in conversation.
+{% endif %}
+{% if arousal_text == "actor_very_aroused" %}
+You are aroused and are likely to make sexually suggestive comments when in conversation.
+{% endif %}
+{% if responseTarget %}
+    {% set actor_nudity = arcs_get_nudity(responseTarget.UUID) %}
+    {% if actor_nudity == "actor_dressed_skimpy" %}
+        {{ decnpc(responseTarget.UUID).name }} is wearning almost no clothing.
+    {% endif %}
+    {% if actor_nudity == "actor_nude" %}
+        {{ decnpc(responseTarget.UUID).name }} is nude and their body is revealed to you.
+    {% endif %}
+{% endif %}
