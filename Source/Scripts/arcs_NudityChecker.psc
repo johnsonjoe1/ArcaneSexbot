@@ -37,6 +37,7 @@ endfunction
 
 function LoadKeywords()
 
+    ;TODO - only reload if empty if game loads - for mod list changes
     slaArmorPrettyKeyword = Keyword.GetKeyword("sla_armorpretty")
     eroticArmorKeyword = Keyword.GetKeyword("Eroticarmor")
     slaAmorSpendexKeyword = Keyword.GetKeyword("sla_armorspendex")
@@ -81,6 +82,18 @@ bool function BakaChecks(Actor a)
 
     return found
 
+endfunction
+
+int function NUDITYCHECK_ACTOR_NUDE()
+    return 0
+endfunction
+
+int function NUDITYCHECK_ACTOR_DRESSED_SKIMPY()
+    return 1
+endfunction
+
+int function NUDITYCHECK_ACTOR_DRESSED()
+    return 2
 endfunction
 
 int function NudityCheck(Actor a)

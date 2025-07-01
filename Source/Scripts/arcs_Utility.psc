@@ -5,3 +5,7 @@ function WriteInfo(string msg) global
     MiscUtil.PrintConsole("[Arcane Sexbot]: " + msg)
     Debug.Trace("[Arcane Sexbot]: " + msg)
 endfunction
+
+function DoSleep(float f = 0.5) global
+    Utility.Wait(f)
+endfunction
