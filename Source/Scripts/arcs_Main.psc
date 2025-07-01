@@ -87,7 +87,7 @@ function RegisterDecorators()
     SkyrimNetApi.RegisterDecorator("arcs_get_sex_preference", "arcs_Decorators", "GetActorSexualPreference")
     SkyrimNetApi.RegisterDecorator("arcs_get_nudity", "arcs_Decorators", "GetActorNudity")
     SkyrimNetApi.RegisterDecorator("arcs_get_arousal", "arcs_Decorators", "GetArousalLevel")
-
+    SkyrimNetApi.RegisterDecorator("arcs_get_attraction_to_player", "arcs_Decorators", "GetAttractionToPlayer")
 
 endfunction
 
@@ -145,10 +145,7 @@ function RegisterActions()
     ;stop sex
     ;speed up sex
     ;masturbate
-    ;strip target
-    ;undress
-    ;dress
-    ;multi-party sex?
+     ;multi-party sex?
     
     ;dd items
 

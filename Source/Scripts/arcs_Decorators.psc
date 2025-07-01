@@ -49,3 +49,52 @@ string function GetArousalLevel(Actor akActor) global
     arcs_Utility.WriteInfo("GetArousalLevel decorator - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " output: " + outputString)
     return outputString
 endfunction
+
+string function GetAttractionToPlayer(Actor akActor) global
+
+    string outputString = "actor_not_attracted"
+
+    slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+    sslActorStats slStat = Quest.GetQuest("SexLabQuestFramework") as sslActorStats
+    
+    int arousal = slau.GetActorArousal(akActor)
+    ;bool exbitionist = slau.IsActorExhibitionist(akActor)
+    int purity = slStat.GetPurityLevel(akActor)
+    int sexuality = slStat.GetSexuality(akActor)
+    int gender = akActor.GetLeveledActorBase().GetSex()
+
+    Actor thePlayer = Game.GetPlayer()
+    int playerPurity = slStat.GetPurityLevel(thePlayer)
+    int playerGender = thePlayer.GetLeveledActorBase().GetSex()
+
+    bool sexCompatible = false
+    if sexuality <= 35
+        ;gay
+        if gender == playerGender
+            sexCompatible = true
+        endif
+    elseif sexuality > 35 && sexuality < 65
+        ;bi
+        sexCompatible = true
+    elseif sexuality >= 65
+        ;straight
+        if gender != playerGender
+            sexCompatible = true
+        endif
+    endif
+
+    if sexCompatible
+        if arousal <= 30
+            outputString = "actor_attracted_not_aroused"  
+        elseif arousal > 30 && arousal < 70
+            outputString = "actor_attracted_slightly_aroused"
+        elseif  arousal >= 70
+            outputString = "actor_attracted_aroused"
+        endif
+    endif
+
+    arcs_Utility.WriteInfo("GetAttractionToPlayer decorator - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " sexCompatible: " + sexCompatible + " output: " + outputString)
+
+    return outputString
+
+endfunction
