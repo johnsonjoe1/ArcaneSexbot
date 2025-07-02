@@ -94,18 +94,18 @@ endfunction
 
 function RegisterActions()
 
-    SkyrimNetApi.RegisterAction("ExtCmdUpdateSexualPreferences", "Use this to remember that {target} likes {sex_type} as a sexual preference.", \
+    SkyrimNetApi.RegisterAction("ExtCmdUpdateSexualPreferences", "Use this to remember that {target} likes {type} as a sexual preference.", \
                                     "arcs_Eligibility", "ExtCmdUpdateSexualPreferences_IsEligible", \
                                     "arcs_Execution", "ExtCmdUpdateSexualPreferences_Execute", \
                                     "", "PAPYRUS", \
-                                    1, "{\"target\":\"Actor\",\"sex_type\":\"gentle|rough|oral|anal|vaginal\"}", \
+                                    1, "{\"target\":\"Actor\",\"type\":\"oral|anal|vaginal|hands\"}", \
                                     "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdStartSex", "Have {sex_type} sex with {target}.", \
+    SkyrimNetApi.RegisterAction("ExtCmdStartSex", "Have {type} sex with {target}.", \
                                     "arcs_Eligibility", "ExtCmdStartSex_IsEligible", \
                                     "arcs_Execution", "ExtCmdStartSex_Execute", \
                                     "", "PAPYRUS", \
-                                    1, "{\"target\":\"Actor\",\"sex_type\":\"gentle|rough\"}", \
+                                    1, "{\"target\":\"Actor\",\"type\":\"oral|anal|vaginal|hands\",\"intensity\":\"loving|aggressive\"}", \
                                     "", "")
 
     SkyrimNetApi.RegisterAction("ExtCmdStripTarget", "Remove {target}'s clothing'.", \
@@ -153,6 +153,8 @@ function RegisterActions()
 endfunction
 
 event OnSexEndEvent(string eventName, string argString, float argNum, form sender)
+
+    ;TODO - write an event after sex?
 
 endevent
 

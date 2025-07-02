@@ -8,10 +8,11 @@ int sliderVeryAroused
 
 event OnConfigOpen()
     
-    Pages = new string[2]
+    Pages = new string[3]
 
     Pages[0] = "Settings"
     Pages[1] = "Arousal Settings"
+    Pages[2] = "SexLab Tags"
 
 endevent
 
@@ -26,6 +27,8 @@ event OnPageReset(string page)
         DisplaySettings()
     elseif page == "Arousal Settings"
         DisplayArousal()
+    elseif page == "SexLab Tags"
+        DisplaySexLabTags()
     endif
 
     if Game.IsPluginInstalled("SkyrimNet.esp")
@@ -54,6 +57,15 @@ function DisplayArousal()
     sliderArousalForSex = AddSliderOption("Arousal Needed For Sex", arcs_GlobalArousalForSex.GetValue() as int, "{0}")
     sliderSlightlyAroused = AddSliderOption("Slightly Aroused Conversation", arcs_GlobalSlightlyAroused.GetValue() as int, "{0}")
     sliderVeryAroused = AddSliderOption("Very Aroused Conversation", arcs_GlobalVeryAroused.GetValue() as int, "{0}")
+
+endfunction
+
+function DisplaySexLabTags()
+
+    AddHeaderOption("SexLab Tags")
+    AddHeaderOption("")
+
+    
 
 endfunction
 

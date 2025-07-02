@@ -18,6 +18,9 @@ function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string p
     arcs_Utility.WriteInfo("contextJson: " + contextJson)
     arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
 
+    string type = SkyrimNetApi.GetJsonString(paramsJson, "type", "") 
+    string intensity = SkyrimNetApi.GetJsonString(paramsJson, "intensity", "") 
+
     SexLabFramework sfx = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
 
     Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
@@ -28,7 +31,7 @@ function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string p
 
     bool result
 
-    string useTags = ""
+    string useTags = type + "," + intensity
 
     if useTags == ""
         if akOriginator.GetActorBase().GetSex() == 1
@@ -57,7 +60,7 @@ function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string p
 	; 	sanims = sfx.PickAnimationsByActors(sceneActors)
 	; EndIf
 	;sanims = sfx.PickAnimationsByActors(Positions = sceneActors, Limit = 64, Aggressive = true)
-	sanims = sfx.GetAnimationsByTags(ActorCount = 2, Tags = useTags, TagSuppress = "", RequireAll = false)
+	sanims = sfx.GetAnimationsByTags(ActorCount = 2, Tags = useTags, TagSuppress = "", RequireAll = true)
 	If sanims.Length > 0		
 		if sfx.StartSex(Positions = sceneActors, anims = sanims, allowbed = true) == -1
 			result = false
