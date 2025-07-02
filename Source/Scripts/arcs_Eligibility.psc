@@ -2,7 +2,17 @@ Scriptname arcs_Eligibility extends Quest
 
 bool function ActorIsEligible(Actor akActor) global
     ;TODO - add other global checks here
-    return !akActor.IsChild() ;adults only
+    bool valid = true
+
+    if akActor == Game.GetPlayer()
+        valid = false ;the player should never be the source of these
+    endif
+
+    if akActor.IsChild()
+        valid = false ;adults onlly
+    endif
+
+    return valid
 endfunction
 
 ;TODO - move eligibility checks to their own script
@@ -25,11 +35,22 @@ bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, 
         if akTarget.IsChild()
             result = false
         endif
-
-
     endif
 
-    arcs_Utility.WriteInfo("ExtCmdStartSex_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + " akTarget: " + targetName + " result: " + result)
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+    int arousal = slau.GetActorArousal(akOriginator)
+    int arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
+    if arousal < arousalNeeded
+        result = false
+    endif
+
+    ;TODO - target arousal check
+    ;TODO - if NC sex, target arousal is not needed
+
+
+    arcs_Utility.WriteInfo("ExtCmdStartSex_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + \
+        " arousal: " + arousal + " needed: " + arousalNeeded + " akTarget: " + targetName + " result: " + result)
 
     return result
 

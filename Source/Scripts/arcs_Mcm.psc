@@ -2,12 +2,16 @@ Scriptname arcs_Mcm extends SKI_ConfigBase
 
 bool skyrimNetFound
 
+int sliderArousalForSex
+int sliderSlightlyAroused
+int sliderVeryAroused
+
 event OnConfigOpen()
     
-    Pages = new string[1]
+    Pages = new string[2]
 
     Pages[0] = "Settings"
-
+    Pages[1] = "Arousal Settings"
 
 endevent
 
@@ -20,6 +24,8 @@ event OnPageReset(string page)
         DisplayWelcome()
     elseif page == "Settings"
         DisplaySettings()
+    elseif page == "Arousal Settings"
+        DisplayArousal()
     endif
 
     if Game.IsPluginInstalled("SkyrimNet.esp")
@@ -39,3 +45,56 @@ endfunction
 function DisplaySettings()
 
 endfunction
+
+function DisplayArousal()
+
+    AddHeaderOption("Arousal Settings")
+    AddHeaderOption("")
+
+    sliderArousalForSex = AddSliderOption("Arousal Needed For Sex", arcs_GlobalArousalForSex.GetValue() as int, "{0}")
+    sliderSlightlyAroused = AddSliderOption("Slightly Aroused Conversation", arcs_GlobalSlightlyAroused.GetValue() as int, "{0}")
+    sliderVeryAroused = AddSliderOption("Very Aroused Conversation", arcs_GlobalVeryAroused.GetValue() as int, "{0}")
+
+endfunction
+
+event OnOptionSliderOpen(Int option)
+
+    if option == sliderArousalForSex
+        SetSlider(arcs_GlobalArousalForSex.GetValue(), 50, 1, 100, 1)
+
+    elseif option == sliderSlightlyAroused
+        SetSlider(arcs_GlobalSlightlyAroused.GetValue(), 30, 1, 100, 1)
+
+    elseif option == sliderVeryAroused
+        SetSlider(arcs_GlobalVeryAroused.GetValue(), 70, 1, 100, 1)
+
+    endif
+
+endevent
+
+function SetSlider(float start, int default, int min, int max, int interval)
+    SetSliderDialogStartValue(start)
+    SetSliderDialogDefaultValue(default)
+    SetSliderDialogRange(min, max)
+    SetSliderDialogInterval(interval)
+endfunction
+
+event OnOptionSliderAccept(Int option, Float value)
+
+    if option == sliderArousalForSex
+        arcs_GlobalArousalForSex.SetValue(value as int)
+    elseif option == sliderSlightlyAroused
+        arcs_GlobalSlightlyAroused.SetValue(value as int)
+    elseif option == sliderVeryAroused
+        arcs_GlobalVeryAroused.SetValue(value as int)
+
+
+    endif
+
+    SetSliderOptionValue(option, value, "{0}")  
+
+endevent
+
+GlobalVariable property arcs_GlobalArousalForSex auto
+GlobalVariable property arcs_GlobalSlightlyAroused auto
+GlobalVariable property arcs_GlobalVeryAroused auto

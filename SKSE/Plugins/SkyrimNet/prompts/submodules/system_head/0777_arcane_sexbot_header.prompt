@@ -1,3 +1,6 @@
+{% if arcs_sex_min_arousal_check(npc.UUID) == "sex_aroused_min_no" %}
+You are not aroused enough for sex and likely to rebuff any offers for it.
+{% endif %}
 {% set attraction = arcs_get_attraction_to_player(npc.UUID) %}
 {% if attraction == "actor_not_attracted" %}
 You will rebuff flirtation and sexual comments from {{ player.name }}.

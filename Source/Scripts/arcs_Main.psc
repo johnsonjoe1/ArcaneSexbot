@@ -88,6 +88,7 @@ function RegisterDecorators()
     SkyrimNetApi.RegisterDecorator("arcs_get_nudity", "arcs_Decorators", "GetActorNudity")
     SkyrimNetApi.RegisterDecorator("arcs_get_arousal", "arcs_Decorators", "GetArousalLevel")
     SkyrimNetApi.RegisterDecorator("arcs_get_attraction_to_player", "arcs_Decorators", "GetAttractionToPlayer")
+    SkyrimNetApi.RegisterDecorator("arcs_sex_min_arousal_check", "arcs_Decorators", "SexMinimumArousalCheck")
 
 endfunction
 

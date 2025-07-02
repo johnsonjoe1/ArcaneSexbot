@@ -26,11 +26,11 @@ string function GetActorNudity(Actor akActor) global
     arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
     int nudity = ncheck.NudityCheck(akActor)
     string nudityString = ""
-    if nudity == 0
+    if nudity == ncheck.NUDITYCHECK_ACTOR_NUDE()
         nudityString = "actor_nude"
-    elseif nudity == 1
+    elseif nudity == ncheck.NUDITYCHECK_ACTOR_DRESSED_SKIMPY()
         nudityString = "actor_dressed_skimpy"
-    elseif nudity == 2
+    elseif nudity == ncheck.NUDITYCHECK_ACTOR_DRESSED()
         nudityString = "actor_dressed"
     endif
     arcs_Utility.WriteInfo("GetActorNudity decorator - actor: " + akActor.GetDisplayName() + " nudity: " + nudity + " output: " + nudityString)
@@ -38,12 +38,13 @@ string function GetActorNudity(Actor akActor) global
 endfunction
 
 string function GetArousalLevel(Actor akActor) global
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
     int arousal = slau.GetActorArousal(akActor)
     string outputString = "actor_not_aroused"
-    if arousal > 30 && arousal < 70
-        outputString = "actor_mildly_aroused"
-    elseif arousal > 70
+    if arousal > config.arcs_GlobalSlightlyAroused.GetValue() && arousal < config.arcs_GlobalVeryAroused.GetValue()
+        outputString = "actor_slightly_aroused"
+    elseif arousal > config.arcs_GlobalVeryAroused.GetValue()
         outputString = "actor_very_aroused"
     endif
     arcs_Utility.WriteInfo("GetArousalLevel decorator - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " output: " + outputString)
@@ -54,6 +55,7 @@ string function GetAttractionToPlayer(Actor akActor) global
 
     string outputString = "actor_not_attracted"
 
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
     sslActorStats slStat = Quest.GetQuest("SexLabQuestFramework") as sslActorStats
     
@@ -84,16 +86,35 @@ string function GetAttractionToPlayer(Actor akActor) global
     endif
 
     if sexCompatible
-        if arousal <= 30
+        if arousal <= config.arcs_GlobalSlightlyAroused.GetValue()
             outputString = "actor_attracted_not_aroused"  
-        elseif arousal > 30 && arousal < 70
+        elseif arousal > config.arcs_GlobalSlightlyAroused.GetValue()  && arousal < config.arcs_GlobalVeryAroused.GetValue()
             outputString = "actor_attracted_slightly_aroused"
-        elseif  arousal >= 70
+        elseif  arousal >= config.arcs_GlobalVeryAroused.GetValue()
             outputString = "actor_attracted_aroused"
         endif
     endif
 
     arcs_Utility.WriteInfo("GetAttractionToPlayer decorator - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " sexCompatible: " + sexCompatible + " output: " + outputString)
+
+    return outputString
+
+endfunction
+
+string function SexMinimumArousalCheck(Actor akActor) global
+
+    string outputString = "sex_aroused_min_yes"
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+
+    int arousal = slau.GetActorArousal(akActor)
+    int arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
+    if arousal < arousalNeeded
+        outputString = "sex_aroused_min_no"
+    endif
+
+    arcs_Utility.WriteInfo("SexMinimumArousalCheck decorator - actor: " + akActor.GetDisplayName() + " output: " + outputString)
 
     return outputString
 
