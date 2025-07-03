@@ -1,5 +1,7 @@
 Scriptname arcs_Main extends Quest  
 
+Actor thePlayer
+
 float entryDelay = 5.0
 float processDelay = 2.0
 
@@ -15,9 +17,14 @@ endevent
 
 function GameLoaded()
 
+    thePlayer = Game.GetPlayer()
+
     registrationsCompleted = false ;todo - remove this
 
     if !registrationsCompleted
+
+        arcs_Utility.WriteInfo("registering key: " + config.arcs_GlobalHotkey.GetValue())
+        RegisterForKey(config.arcs_GlobalHotkey.GetValue() as int)
 
         RegisterDecorators()
         RegisterActions()
@@ -29,6 +36,8 @@ function GameLoaded()
         registrationsCompleted = true
 
     endif
+
+    slab.GameLoaded()
 
 endfunction
 
@@ -89,6 +98,14 @@ function RegisterDecorators()
     SkyrimNetApi.RegisterDecorator("arcs_get_arousal", "arcs_Decorators", "GetArousalLevel")
     SkyrimNetApi.RegisterDecorator("arcs_get_attraction_to_player", "arcs_Decorators", "GetAttractionToPlayer")
     SkyrimNetApi.RegisterDecorator("arcs_sex_min_arousal_check", "arcs_Decorators", "SexMinimumArousalCheck")
+    SkyrimNetApi.RegisterDecorator("arcs_get_sex_thread_id", "arcs_Decorators", "GetSexThreadId")
+    SkyrimNetApi.RegisterDecorator("arcs_in_sex_scene", "arcs_Decorators", "InSexScene")
+
+    ;other
+    ;sex thread ID decorator - pull the sl thread id stored on actor
+    ;check sex enjoyment
+    ;is victim 
+    ;is agressor 
 
 endfunction
 
@@ -146,7 +163,7 @@ function RegisterActions()
     ;stop sex
     ;speed up sex
     ;masturbate
-     ;multi-party sex?
+    ;multi-party sex?
     
     ;dd items
 
@@ -155,6 +172,8 @@ endfunction
 event OnSexEndEvent(string eventName, string argString, float argNum, form sender)
 
     ;TODO - write an event after sex?
+    arcs_Utility.WriteInfo("OnSexEndEvent - eventName: " + eventName + " argString: " + argString + " argNum " + argNum + \
+        " sender: " + sender.GetName() + " id: " + sender.GetFormID())
 
 endevent
 
@@ -170,4 +189,71 @@ event OnDhlpResume(string eventName, string strArg, float numArg, Form sender)
 
 endevent
 
+bool processingKey
+
+int keyCodeLeftControl = 29
+int keyCodeRightControl = 157
+int keyCodeLeftAlt = 56
+int keyCodeRightAlt = 184
+int keyCodeLeftShift = 42
+int keyCodeRightShift = 54
+
+event OnKeyDown(int KeyCode)
+    ProcessKey(KeyCode, 0.0)
+endevent
+
+function ProcessKey(int keyCode, float holdTime)
+
+    arcs_Utility.WriteInfo("keyCode: " + keyCode)
+
+    if keyCode == config.arcs_GlobalHotkey.GetValue() as int
+        if !processingKey                
+            processingKey = true
+
+            bool bLeftControPressed = Input.IsKeyPressed(keyCodeLeftControl)
+            bool bRightControlPressed = Input.IsKeyPressed(keyCodeRightControl)
+            bool bLeftAltPressed = Input.IsKeyPressed(keyCodeLeftAlt)
+            bool bRightAltPressed = Input.IsKeyPressed(keyCodeRightAlt)
+            bool bLeftShiftPressed = Input.IsKeyPressed(keyCodeLeftShift)
+            bool bRightShiftPressed = Input.IsKeyPressed(keyCodeRightShift)
+            bool modifiersPressed = (bLeftControPressed || bRightControlPressed || bLeftAltPressed || bRightAltPressed || bLeftShiftPressed || bRightShiftPressed)
+
+            arcs_Utility.WriteInfo("hotkey press time: " + holdTime)
+
+            if (config.arcs_GlobalModifierKey.GetValue() == 0 && !modifiersPressed) || (Input.IsKeyPressed(config.arcs_GlobalModifierKey.GetValue() as int))
+
+                if thePlayer.IsWeaponDrawn()
+
+                    arcs_Utility.WriteInfo("hotkey disabled when combat ready")
+
+                else
+
+                    if holdTime <= 0.5
+                        ShowHotkeyMenu()
+                    else
+                    endif
+
+                endif
+
+            endif
+
+            processingKey = false
+        endif
+    endif
+        
+
+endfunction
+
+function ShowHotkeyMenu()
+
+    UIListMenu listMenu = UIExtensions.GetMenu("UIListMenu") as UIListMenu
+    listMenu.AddEntryItem("Start Sex with ...")
+    listMenu.OpenMenu()
+    int listReturn = listMenu.GetResultInt()
+
+endfunction
+
 Quest property arcs_NudityDetectionQuest auto
+
+arcs_SexLab property slab auto
+arcs_ConfigSettings property config auto

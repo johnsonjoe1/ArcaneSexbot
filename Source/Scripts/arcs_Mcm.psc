@@ -2,6 +2,8 @@ Scriptname arcs_Mcm extends SKI_ConfigBase
 
 bool skyrimNetFound
 
+int toggleShowSexConfirm
+
 int sliderArousalForSex
 int sliderSlightlyAroused
 int sliderVeryAroused
@@ -47,6 +49,11 @@ endfunction
 
 function DisplaySettings()
 
+    AddHeaderOption("Interface Settings")
+    AddHeaderOption("")
+
+    toggleShowSexConfirm = AddToggleOption("Show Confirm Before Sex", arcs_GlobalShowSexConfirm.GetValue() as int)
+
 endfunction
 
 function DisplayArousal()
@@ -65,8 +72,26 @@ function DisplaySexLabTags()
     AddHeaderOption("SexLab Tags")
     AddHeaderOption("")
 
-    
 
+
+endfunction
+
+event OnOptionSelect(int option)
+
+    if option == toggleShowSexConfirm
+        toggleGlobalOnOff(arcs_GlobalShowSexConfirm)
+        SetToggleOptionValue(option, arcs_GlobalShowSexConfirm.GetValue())
+
+    endif
+
+endevent
+
+function toggleGlobalOnOff(GlobalVariable g)
+    if g.GetValue() == 1
+        g.SetValue(0)
+    else
+        g.SetValue(1)
+    endif
 endfunction
 
 event OnOptionSliderOpen(Int option)
@@ -110,3 +135,7 @@ endevent
 GlobalVariable property arcs_GlobalArousalForSex auto
 GlobalVariable property arcs_GlobalSlightlyAroused auto
 GlobalVariable property arcs_GlobalVeryAroused auto
+GlobalVariable property arcs_GlobalShowSexConfirm auto
+
+GlobalVariable property arcs_GlobalHotkey auto
+GlobalVariable property arcs_GlobalModifierKey auto

@@ -25,6 +25,10 @@ bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, 
         result = false
     endif
 
+    if arcs_SexLab.ActorInSexScene(akOriginator)
+        result = false ;in a sex scene already
+    endif
+
     Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
 
     string targetName = ""
@@ -129,6 +133,10 @@ bool function ExtCmdUndress_IsEligible(Actor akOriginator, string contextJson, s
     if !arcs_Eligibility.ActorIsEligible(akOriginator) 
         result = false
     endif
+
+    if arcs_SexLab.ActorInSexScene(akOriginator)
+        result = false ;in a sex scene
+    endif
     
     arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
     if ncheck.NudityCheck(akOriginator) == ncheck.NUDITYCHECK_ACTOR_NUDE()
@@ -147,6 +155,10 @@ bool function ExtCmdDress_IsEligible(Actor akOriginator, string contextJson, str
 
     if !arcs_Eligibility.ActorIsEligible(akOriginator) 
         result = false
+    endif
+
+    if arcs_SexLab.ActorInSexScene(akOriginator)
+        result = false ;in a sex scene
     endif
     
     arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker

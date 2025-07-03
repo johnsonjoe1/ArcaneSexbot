@@ -3,14 +3,12 @@ Scriptname arcs_Execution extends Quest
 ;TODO - move sexlab functions to their own script
 function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 
-    ;TODO - confirm message box?
-    UIListMenu listMenu = UIExtensions.GetMenu("UIListMenu") as UIListMenu
-    listMenu.AddEntryItem("Have sex with " + akOriginator.GetDisplayName() + "?")
-    listMenu.AddEntryItem("Skip the sex scene ")
-    listMenu.OpenMenu()
-    int listReturn = listMenu.GetResultInt()
-    if listReturn == 1
-        return
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+
+    if config.arcs_GlobalShowSexConfirm.GetValue() == 1
+        if !arcs_Utility.ConfirmBox("Have sex with " + akOriginator.GetDisplayName() + "?", "Continue the sex scene", "Skip the sex scene")
+            return
+        endif
     endif
 
     arcs_Utility.WriteInfo("ExtCmdStartSex_Execute")
@@ -21,56 +19,17 @@ function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string p
     string type = SkyrimNetApi.GetJsonString(paramsJson, "type", "") 
     string intensity = SkyrimNetApi.GetJsonString(paramsJson, "intensity", "") 
 
-    SexLabFramework sfx = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
-
     Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
 
-    if !akTarget
-        return ;need a message
+	Actor[] actors = new Actor[2]
+	actors[0] = akOriginator
+	actors[1] = akTarget
+
+    arcs_SexLab slab = Quest.GetQuest("arcs_MainQuest") as arcs_SexLab
+    if slab.StartSex(actors, type, intensity)
+    else 
+        arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
     endif
-
-    bool result
-
-    string useTags = type + "," + intensity
-
-    if useTags == ""
-        if akOriginator.GetActorBase().GetSex() == 1
-            useTags += "F"
-        else
-            useTags += "M"
-        endif
-        if akTarget
-            if akTarget.GetActorBase().GetSex() == 1
-                useTags += "F"
-            else
-                useTags += "M"
-            endif
-        endif
-        if useTags == "MF"
-            useTags = "FM" ;NOTE - might work the other way, but sex lab tags list did not have this version
-        endif
-    endif
-
-	Actor[] sceneActors = new Actor[2]
-	sceneActors[0] = akOriginator
-	sceneActors[1] = akTarget
-	sslBaseAnimation[] sanims
-	; sanims = sfx.GetAnimationsByTags(ActorCount = 2, Tags = "Aggressive", TagSuppress = "", RequireAll = true)
-	; If sanism.Length == 0
-	; 	sanims = sfx.PickAnimationsByActors(sceneActors)
-	; EndIf
-	;sanims = sfx.PickAnimationsByActors(Positions = sceneActors, Limit = 64, Aggressive = true)
-	sanims = sfx.GetAnimationsByTags(ActorCount = 2, Tags = useTags, TagSuppress = "", RequireAll = true)
-	If sanims.Length > 0		
-		if sfx.StartSex(Positions = sceneActors, anims = sanims, allowbed = true) == -1
-			result = false
-		endif
-	Else
-		Debug.MessageBox("No sexlab animations could be found")
-		result = false
-    EndIf
-
-    ;been using quick start in binding. need to get SL thread here.
 
 endfunction
 

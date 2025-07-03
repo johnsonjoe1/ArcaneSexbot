@@ -119,3 +119,19 @@ string function SexMinimumArousalCheck(Actor akActor) global
     return outputString
 
 endfunction
+
+string function GetSexThreadId(Actor akActor) global
+    int threadId = arcs_SexLab.GetActorThreadId(akActor)
+    arcs_Utility.WriteInfo("GetSexThreadId decorator - actor: " + akActor.GetDisplayName() + " threadId: " + threadId)
+    return "" + threadId
+endfunction
+
+string function InSexScene(Actor akActor) global
+    bool inScene = arcs_SexLab.ActorInSexScene(akActor)
+    string outputString = "actor_not_having_sex"
+    if inScene
+        outputString = "actor_having_sex"
+    endif
+    arcs_Utility.WriteInfo("GetSexThreadId decorator - actor: " + akActor.GetDisplayName() + " outputString: " + outputString)
+    return outputString
+endfunction
