@@ -12,6 +12,37 @@ bool function CreateShortLivedEvent(string eventId, string eventType, string des
     ;eventId - freeform but the recommended syntax is event_type_{actor uuid} - the same event Id can be used to overwrite events
     ;eventType - freeform
     
-    return (result == 1)
+    return (result == 0)
+
+endfunction
+
+bool function CreateLongLivedEvent(string eventType, string content, Actor sourceActor, Actor targetActor) global
+
+    ;int function RegisterEvent(String eventType, String content, Actor originatorActor, Actor targetActor) Global Native
+
+    int result = SkyrimNetApi.RegisterEvent(eventType, content, sourceActor, targetActor)
+
+    return (result == 0)
+
+endfunction
+
+bool function CreateDirectNarration(string content, Actor sourceActor = none, Actor targetActor = none) global
+
+    ;int function DirectNarration(String content, Actor originatorActor = None, Actor targetActor = None) Global Native
+
+    int result = SkyrimNetApi.DirectNarration(content, sourceActor, targetActor)
+
+    return (result == 0)
+
+endfunction
+
+bool function CreateRegisterDialogue(string dialogue, Actor sourceActor, Actor targetActor = none) global
+
+    ;int function RegisterDialogue(Actor speaker, String dialogue) Global Native
+    ;int function RegisterDialogueToListener(Actor speaker, Actor listener, String dialogue) Global Native
+
+    int result = SkyrimNetApi.RegisterDialogue(sourceActor, dialogue)
+
+    return (result == 0)
 
 endfunction

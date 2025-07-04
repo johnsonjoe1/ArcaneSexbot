@@ -6,6 +6,13 @@ function GameLoaded()
 
     activeThreads = 0
 
+    UnregisterForModEvent("HookStageStart")
+    UnregisterForModEvent("HookOrgasmStart")
+    UnregisterForModEvent("HookAnimationEnd")
+    UnregisterForModEvent("HookAnimationStart")
+    UnregisterForModEvent("SexLabOrgasmSeparate")
+    UnregisterForModEvent("HavingSexFactionHook_Orgasm")
+
     RegisterForModEvent("HookStageStart", "OnStageStart")
     RegisterForModEvent("HookOrgasmStart", "OnOrgasmStart")
     RegisterForModEvent("HookAnimationEnd", "OnAnimationEnd")
@@ -62,6 +69,8 @@ endfunction
 
 bool function StartSex(Actor[] actors, string type, string intensity)
 
+    ;TODO - test this with 3p and starting orgies
+
     bool result = false
 
     string useTags = type
@@ -76,10 +85,13 @@ bool function StartSex(Actor[] actors, string type, string intensity)
     endif
 
     string blockTags = ""
-    if intensity == "aggressive"
-        useTags += ",aggressive"
-    else
-        blockTags += "aggressive"
+    if actors.Length > 1
+        ;this is not needed for masturbation
+        if intensity == "aggressive"
+            useTags += ",aggressive"
+        else
+            blockTags += "aggressive"
+        endif
     endif
 
     arcs_Utility.WriteInfo("arcs_SexLab - useTags : " + useTags + " blockTags: " + blockTags)
@@ -134,11 +146,21 @@ function RemoveActorsFromFaction(Actor[] actors)
 endfunction
 
 event OnHavingSexFactionHookOrgasm(Form FormRef, int tid)
+
     Actor akActor = FormRef as Actor
     arcs_Utility.WriteInfo(akActor.GetDisplayName() + " just had an orgasm")
-    if akActor != Game.GetPlayer()
 
-    endif
+    bool result = arcs_SkyrimNet.CreateDirectNarration("I am having an orgasm...", akActor)
+    arcs_Utility.WriteInfo("OnHavingSexFactionHookOrgasm - registered dialogue: " + result + " actor: " + akActor.GetDisplayName())
+
+    ; if akActor != Game.GetPlayer()
+    ; endif
+    string desc = "Had orgasm"
+    string data = akActor.GetDisplayName() + " had an orgasm."
+    
+    result = arcs_SkyrimNet.CreateShortLivedEvent("sex_event_" + tid + "_" + akActor.GetDisplayName(), "sex_event_orgasm", desc, data, akActor, akActor)
+    arcs_Utility.WriteInfo("OnHavingSexFactionHookOrgasm - created short term event: " + result + " actor: " + akActor.GetDisplayName())
+
 endevent
 
 event OnStageStart(int tid, bool HasPlayer) ;OnStageStart in minai
@@ -156,7 +178,23 @@ event OnAnimationEnd(int tid, bool HasPlayer) ;EndSexScene in minai
     Actor[] actors = sfx.HookActors(tid)
     RemoveActorsFromFaction(actors)
 
+    string content = ""
+    if actors.length == 1
+        content = GetSourceActor(actors).GetDisplayName() + " masturbated."
+    else
+        content = MakeActorsString(actors) + " had sex."
+    endif
+
+    bool result = arcs_SkyrimNet.CreateLongLivedEvent("sex_event", content, GetSourceActor(actors), GetTargetActor(actors))
+    arcs_Utility.WriteInfo("OnAnimationStart - created long term event: " + result)
+
     arcs_Utility.WriteInfo("OnAnimationEnd fired - sex completed")
+
+    if actors.length == 1
+        result = arcs_SkyrimNet.CreateDirectNarration(GetSourceActor(actors).GetDisplayName() + " finished masturbating.")
+    else
+        result = arcs_SkyrimNet.CreateDirectNarration(MakeActorsString(actors) + " finished having sex.") 
+    endif
 
 endevent
 
@@ -164,27 +202,19 @@ event OnAnimationStart(int tid, bool HasPlayer) ;OnAnimationStart in minai
 
     Actor[] actors = sfx.HookActors(tid)
 
-    Actor source
-    Actor target
-    if actors.Length == 1
-        source = actors[0]
-        target = actors[0]
-    else
-        source = actors[0]
-        target = actors[1]
-    endif
-
     string desc = "Sex started"
     string data = ""
 
     if actors.length == 1
-        data = source.GetDisplayName() + " started to masturbate."
+        data = GetSourceActor(actors).GetDisplayName() + " started to masturbate."
     else
         data = MakeActorsString(actors) + " started to have sex."
     endif
 
-    bool result = arcs_SkyrimNet.CreateShortLivedEvent("Sex_Event_" + tid, "Sex_Event", desc, data, source, target)
+    bool result = arcs_SkyrimNet.CreateShortLivedEvent("sex_event_" + tid, "sex_event", desc, data, GetSourceActor(actors), GetTargetActor(actors))
     arcs_Utility.WriteInfo("OnAnimationStart - created short term event: " + result)
+    
+    result = arcs_SkyrimNet.CreateDirectNarration(data) 
 
 endevent
 
@@ -197,12 +227,30 @@ string function MakeActorsString(Actor[] actorsList)
     int i = 0
     while i < actorsList.length
         if result != ""
-            result + " and "
+            if i == actorsList.length - 1
+                result += " and "
+            else
+                result += ", "
+            endif
         endif
         result += actorsList[i].GetDisplayName()
         i += 1
     endwhile
     return result
+endfunction
+
+Actor function GetSourceActor(Actor[] actorsList) 
+    return actorsList[0]
+endfunction
+
+Actor function GetTargetActor(Actor[] actorsList) 
+    if actorsList.Length == 1
+        return none ;if only 1 actor return no value
+    else
+        return actorsList[1] 
+        ;for 2 or more actors, grab the 2nd in the list as the target
+        ;TODO - confirm this is OK based on the source/target limitation or if items like events need more entires with different actors?
+    endif
 endfunction
 
 SexLabFramework property sfx auto

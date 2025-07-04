@@ -23,6 +23,8 @@ function GameLoaded()
 
     if !registrationsCompleted
 
+        RegisterForCrosshairRef()
+
         arcs_Utility.WriteInfo("registering key: " + config.arcs_GlobalHotkey.GetValue())
         RegisterForKey(config.arcs_GlobalHotkey.GetValue() as int)
 
@@ -111,12 +113,12 @@ endfunction
 
 function RegisterActions()
 
-    SkyrimNetApi.RegisterAction("ExtCmdUpdateSexualPreferences", "Use this to remember that {target} likes {type} as a sexual preference.", \
-                                    "arcs_Eligibility", "ExtCmdUpdateSexualPreferences_IsEligible", \
-                                    "arcs_Execution", "ExtCmdUpdateSexualPreferences_Execute", \
-                                    "", "PAPYRUS", \
-                                    1, "{\"target\":\"Actor\",\"type\":\"oral|anal|vaginal|hands\"}", \
-                                    "", "")
+    ; SkyrimNetApi.RegisterAction("ExtCmdUpdateSexualPreferences", "Use this to remember that {target} likes {type} as a sexual preference.", \
+    ;                                 "arcs_Eligibility", "ExtCmdUpdateSexualPreferences_IsEligible", \
+    ;                                 "arcs_Execution", "ExtCmdUpdateSexualPreferences_Execute", \
+    ;                                 "", "PAPYRUS", \
+    ;                                 1, "{\"target\":\"Actor\",\"type\":\"oral|anal|vaginal|hands\"}", \
+    ;                                 "", "")
 
     SkyrimNetApi.RegisterAction("ExtCmdStartSex", "Have {type} sex with {target}.", \
                                     "arcs_Eligibility", "ExtCmdStartSex_IsEligible", \
@@ -246,14 +248,73 @@ endfunction
 
 function ShowHotkeyMenu()
 
+    ;TODO - hotkey sex stuff needs a reaction from the NPC when you start sex with them
+    ;should do a arousal / attraction check and tell the player to piss off if not wanting 
+    ;not sure how to handle NC from the players side, should you really need to be able to overpower a target?
+
+    ;sex faction check on actor to block starting more sex
+    if thePlayer.IsInFaction(arcs_HavingSexFaction)
+        return ;TODO - this should only impact parts of this menu if other settings are available here
+    endif
+
     UIListMenu listMenu = UIExtensions.GetMenu("UIListMenu") as UIListMenu
-    listMenu.AddEntryItem("Start Sex with ...")
+    
+    if inCrosshairs
+        listMenu.AddEntryItem("Start sex with " + inCrosshairs.GetDisplayName())
+    else
+        listMenu.AddEntryItem("No actor targeted for sex")
+    endif
+
+    listMenu.AddEntryItem("Masturbate")
+
     listMenu.OpenMenu()
     int listReturn = listMenu.GetResultInt()
 
+    if listReturn == 0 && inCrosshairs
+        Actor[] actors = new Actor[2]
+        actors[0] = thePlayer
+        actors[1] = inCrosshairs
+        if slab.StartSex(actors, "vaginal", "aggressive")
+        else 
+            arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+        endif
+
+    elseif listReturn == 1
+        Actor[] actors = new Actor[1]
+        actors[0] = thePlayer
+        if slab.StartSex(actors, "", "")
+        else 
+            arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+        endif
+
+    endif
+
 endfunction
+
+function ChangeHotkey(int newKeycode)
+    if config.arcs_GlobalHotkey.GetValue() > 0
+        UnregisterForKey(config.arcs_GlobalHotkey.GetValue() as int)
+    endif
+    config.arcs_GlobalHotkey.SetValue(newKeycode) 
+    RegisterForKey(newKeycode)
+endfunction
+
+Actor inCrosshairs
+
+Event OnCrosshairRefChange(ObjectReference ref)
+	inCrosshairs = none
+	if ref != none
+        if ref as Actor
+            inCrosshairs = ref as Actor
+            arcs_Utility.WriteInfo("OnCrosshairRefChange actor: " + inCrosshairs.GetDisplayName())
+        endif
+	endIf
+EndEvent
+
 
 Quest property arcs_NudityDetectionQuest auto
 
 arcs_SexLab property slab auto
 arcs_ConfigSettings property config auto
+
+Faction property arcs_HavingSexFaction auto

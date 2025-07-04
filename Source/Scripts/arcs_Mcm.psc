@@ -8,6 +8,16 @@ int sliderArousalForSex
 int sliderSlightlyAroused
 int sliderVeryAroused
 
+int keyCodeLeftControl = 29
+int keyCodeRightControl = 157
+int keyCodeLeftAlt = 56
+int keyCodeRightAlt = 184
+int keyCodeLeftShift = 42
+int keyCodeRightShift = 54
+
+int hotkeyKeymapOption
+int hotkeyModifierOption
+
 event OnConfigOpen()
     
     Pages = new string[3]
@@ -53,6 +63,17 @@ function DisplaySettings()
     AddHeaderOption("")
 
     toggleShowSexConfirm = AddToggleOption("Show Confirm Before Sex", arcs_GlobalShowSexConfirm.GetValue() as int)
+    AddTextOption("", "")
+
+    AddHeaderOption("Key Settings")
+    AddHeaderOption("")
+
+    int mHotkey = arcs_GlobalHotkey.GetValue() as int
+    if mHotkey == 0
+        mHotkey = -1
+    endif
+    hotkeyKeymapOption = AddKeyMapOption("Set hotkey menu hotkey", mHotkey)
+    hotkeyModifierOption = AddTextOption("Set hotkey menu modifier", GetModifierString(arcs_GlobalModifierKey.GetValue() as int))
 
 endfunction
 
@@ -81,6 +102,14 @@ event OnOptionSelect(int option)
     if option == toggleShowSexConfirm
         toggleGlobalOnOff(arcs_GlobalShowSexConfirm)
         SetToggleOptionValue(option, arcs_GlobalShowSexConfirm.GetValue())
+
+    endif
+
+    if option == hotkeyModifierOption
+        int currentModifier = arcs_GlobalModifierKey.GetValue() as int
+        int newModifier = AdvanceModifierValue(currentModifier)
+        arcs_GlobalModifierKey.SetValue(newModifier)
+        SetTextOptionValue(option, GetModifierString(newModifier))
 
     endif
 
@@ -132,6 +161,68 @@ event OnOptionSliderAccept(Int option, Float value)
 
 endevent
 
+event OnOptionKeyMapChange(int option, int keyCode, string conflictControl, string conflictName)
+
+	bool continue = true
+	if (conflictControl != "" && keyCode != 1)
+		string msg
+		if (conflictControl != "")
+			msg = "This key is mapped to:\n'" + conflictControl + "'\n(" + conflictName + ")\n\nDo you want to continue?"
+		else
+			msg = "This key is mapped to:\n'" + conflictControl + "'\n\nDo you want to continue?"
+		endIf
+		continue = ShowMessage(msg, true, "$Yes", "$No")
+	endIf
+
+	; clear if escape key
+	if (keyCode == 1)
+		keyCode = -1
+	endIf
+
+	if (continue)
+        if option == hotkeyKeymapOption
+            main.ChangeHotkey(keyCode)
+            RegisterForKey(keyCode)
+            SetKeyMapOptionValue(hotkeyKeymapOption, keyCode)
+        endif
+    endif
+
+endevent
+
+string function GetModifierString(int modifierValue)
+    string modifierStr = "None"
+    if modifierValue == keyCodeLeftAlt
+        modifierStr = "Left Alt"
+    elseif modifierValue == keyCodeRightAlt
+        modifierStr = "Right Alt"
+    elseif modifierValue == keyCodeLeftShift
+        modifierStr = "Left Shift"
+    elseif modifierValue == keyCodeRightShift
+        modifierStr = "Right Shift"
+    elseif modifierValue == keyCodeRightControl
+        modifierStr = "Right Control"
+    endif
+    return modifierStr
+endfunction
+
+int function AdvanceModifierValue(int currentModifier)
+    int newModifier = 0
+    if currentModifier == 0
+        newModifier = keyCodeLeftAlt
+    elseif currentModifier == keyCodeLeftAlt
+        newModifier = keyCodeRightAlt
+    elseif currentModifier == keyCodeRightAlt
+        newModifier = keyCodeLeftShift
+    elseif currentModifier == keyCodeLeftShift
+        newModifier = keyCodeRightShift
+    elseif currentModifier == keyCodeRightShift
+        newModifier = keyCodeRightControl
+    elseif currentModifier == keyCodeRightControl
+        newModifier = 0
+    endif
+    return newModifier
+endfunction
+
 GlobalVariable property arcs_GlobalArousalForSex auto
 GlobalVariable property arcs_GlobalSlightlyAroused auto
 GlobalVariable property arcs_GlobalVeryAroused auto
@@ -139,3 +230,5 @@ GlobalVariable property arcs_GlobalShowSexConfirm auto
 
 GlobalVariable property arcs_GlobalHotkey auto
 GlobalVariable property arcs_GlobalModifierKey auto
+
+arcs_Main property main auto
