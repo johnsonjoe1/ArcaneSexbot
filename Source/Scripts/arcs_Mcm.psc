@@ -2,6 +2,14 @@ Scriptname arcs_Mcm extends SKI_ConfigBase
 
 bool skyrimNetFound
 
+int toggleActionStartSex
+int toggleActionStripTarget
+int toggleActionDressTarget
+int toggleActionUndress
+int toggleActionDress
+int toggleActionDecreaseArousal
+int toggleActionIncreaseArousal
+
 int toggleShowSexConfirm
 
 int sliderArousalForSex
@@ -20,11 +28,12 @@ int hotkeyModifierOption
 
 event OnConfigOpen()
     
-    Pages = new string[3]
+    Pages = new string[4]
 
     Pages[0] = "Settings"
     Pages[1] = "Arousal Settings"
     Pages[2] = "SexLab Tags"
+    Pages[3] = "Manage Actions"
 
 endevent
 
@@ -41,6 +50,8 @@ event OnPageReset(string page)
         DisplayArousal()
     elseif page == "SexLab Tags"
         DisplaySexLabTags()
+    elseif page == "Manage Actions"
+        DisplayActions()
     endif
 
     if Game.IsPluginInstalled("SkyrimNet.esp")
@@ -72,8 +83,8 @@ function DisplaySettings()
     if mHotkey == 0
         mHotkey = -1
     endif
-    hotkeyKeymapOption = AddKeyMapOption("Set hotkey menu hotkey", mHotkey)
-    hotkeyModifierOption = AddTextOption("Set hotkey menu modifier", GetModifierString(arcs_GlobalModifierKey.GetValue() as int))
+    hotkeyKeymapOption = AddKeyMapOption("Set Hotkey Menu Key", mHotkey)
+    hotkeyModifierOption = AddTextOption("Set Hotkey Menu Modifier", GetModifierString(arcs_GlobalModifierKey.GetValue() as int))
 
 endfunction
 
@@ -97,11 +108,47 @@ function DisplaySexLabTags()
 
 endfunction
 
+function DisplayActions()
+
+    AddHeaderOption("Manage Actions")
+    AddHeaderOption("")
+
+    toggleActionStartSex = AddToggleOption("Action - Start Sex", config.arcs_GlobalActionStartSex.GetValue() as int)
+    AddTextOption("Used Times", "")
+    toggleActionStripTarget = AddToggleOption("Action - Strip Target", config.arcs_GlobalActionStripTarget.GetValue() as int)
+    AddTextOption("Used Times", "")
+    toggleActionDressTarget = AddToggleOption("Action - Dress Target", config.arcs_GlobalActionDressTarget.GetValue() as int)
+    AddTextOption("Used Times", "")
+    toggleActionUndress = AddToggleOption("Action - Undress", config.arcs_GlobalActionUndress.GetValue() as int)
+    AddTextOption("Used Times", "")
+    toggleActionDress = AddToggleOption("Action - Dress", config.arcs_GlobalActionDress.GetValue() as int)
+    AddTextOption("Used Times", "")
+    toggleActionDecreaseArousal = AddToggleOption("Action - Decrease Arousal", config.arcs_GlobalActionDecreaseArousal.GetValue() as int)
+    AddTextOption("Used Times", "")
+    toggleActionIncreaseArousal = AddToggleOption("Action - Increase Arousal", config.arcs_GlobalActionIncreaseArousal.GetValue() as int)
+    AddTextOption("Used Times", "")
+
+endfunction
+
 event OnOptionSelect(int option)
 
+    ;globals
     if option == toggleShowSexConfirm
-        toggleGlobalOnOff(arcs_GlobalShowSexConfirm)
-        SetToggleOptionValue(option, arcs_GlobalShowSexConfirm.GetValue())
+        SetToggleOptionValue(option, toggleGlobalOnOff(arcs_GlobalShowSexConfirm))
+    elseif option == toggleActionStartSex
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionStartSex))
+    elseif option == toggleActionStripTarget
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionStripTarget))
+    elseif option == toggleActionDressTarget
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionDressTarget))
+    elseif option == toggleActionUndress
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionUndress))
+    elseif option == toggleActionDress
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionDress))
+    elseif option == toggleActionDecreaseArousal
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionDecreaseArousal))
+    elseif option == toggleActionIncreaseArousal
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionIncreaseArousal))
 
     endif
 
@@ -115,12 +162,16 @@ event OnOptionSelect(int option)
 
 endevent
 
-function toggleGlobalOnOff(GlobalVariable g)
+int function toggleGlobalOnOff(GlobalVariable g)
+    int newValue
     if g.GetValue() == 1
         g.SetValue(0)
+        newValue = 0
     else
         g.SetValue(1)
+        newValue = 1
     endif
+    return newValue
 endfunction
 
 event OnOptionSliderOpen(Int option)
@@ -232,3 +283,4 @@ GlobalVariable property arcs_GlobalHotkey auto
 GlobalVariable property arcs_GlobalModifierKey auto
 
 arcs_Main property main auto
+arcs_ConfigSettings property config auto

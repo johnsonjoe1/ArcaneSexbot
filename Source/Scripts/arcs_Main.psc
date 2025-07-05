@@ -127,30 +127,46 @@ function RegisterActions()
                                     1, "{\"target\":\"Actor\",\"type\":\"oral|anal|vaginal|hands\",\"intensity\":\"loving|aggressive\"}", \
                                     "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdStripTarget", "Remove {target}'s clothing'.", \
+    SkyrimNetApi.RegisterAction("ExtCmdStripTarget", "Remove {target}'s clothing.", \
                                     "arcs_Eligibility", "ExtCmdStripTarget_IsEligible", \
                                     "arcs_Execution", "ExtCmdStripTarget_Execute", \
                                     "", "PAPYRUS", \
                                     1, "{\"target\":\"Actor\"}", \
                                     "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdDressTarget", "Dress {target} back into their clothing'.", \
+    SkyrimNetApi.RegisterAction("ExtCmdDressTarget", "Dress {target} back into their clothing.", \
                                     "arcs_Eligibility", "ExtCmdDressTarget_IsEligible", \
                                     "arcs_Execution", "ExtCmdDressTarget_Execute", \
                                     "", "PAPYRUS", \
                                     1, "{\"target\":\"Actor\"}", \
                                     "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdUndress", "Undress and remove your clothing.'.", \
+    SkyrimNetApi.RegisterAction("ExtCmdUndress", "Undress and remove your clothing.", \
                                     "arcs_Eligibility", "ExtCmdUndress_IsEligible", \
                                     "arcs_Execution", "ExtCmdUndress_Execute", \
                                     "", "PAPYRUS", \
                                     1, "", \
                                     "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdDress", "Dress back into your clothing.'.", \
+    SkyrimNetApi.RegisterAction("ExtCmdDress", "Dress back into your clothing.", \
                                     "arcs_Eligibility", "ExtCmdDress_IsEligible", \
                                     "arcs_Execution", "ExtCmdDress_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "", \
+                                    "", "")
+
+    ;The current serious coversation, lack of sexual stimulus, or combat is making you less horny
+    SkyrimNetApi.RegisterAction("ExtCmdDecreaseArousal", "Use this to indicate you are getting less aroused.", \
+                                    "arcs_Eligibility", "ExtCmdDecreaseArousal_IsEligible", \
+                                    "arcs_Execution", "ExtCmdDecreaseArousal_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "", \
+                                    "", "")
+
+    ;The current sexy coversation or sexual events around you are making you horny
+    SkyrimNetApi.RegisterAction("ExtCmdIncreaseArousal", "Use this to indicate that you are getting more aroused.", \
+                                    "arcs_Eligibility", "ExtCmdIncreaseArousal_IsEligible", \
+                                    "arcs_Execution", "ExtCmdIncreaseArousal_Execute", \
                                     "", "PAPYRUS", \
                                     1, "", \
                                     "", "")
@@ -271,12 +287,18 @@ function ShowHotkeyMenu()
     int listReturn = listMenu.GetResultInt()
 
     if listReturn == 0 && inCrosshairs
-        Actor[] actors = new Actor[2]
-        actors[0] = thePlayer
-        actors[1] = inCrosshairs
-        if slab.StartSex(actors, "vaginal", "aggressive")
+        bool result = arcs_SkyrimNet.CreateDirectNarration("{{ player.name }} pulls you close and starts unbuttoning your robe for sex.", inCrosshairs)
+        if arcs_Arousal.GetActorArousal(inCrosshairs) > 0
+            Utility.Wait(5.0)
+            Actor[] actors = new Actor[2]
+            actors[0] = thePlayer
+            actors[1] = inCrosshairs
+            if slab.StartSex(actors, "vaginal", "aggressive")
+            else 
+                arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+            endif
         else 
-            arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+            
         endif
 
     elseif listReturn == 1

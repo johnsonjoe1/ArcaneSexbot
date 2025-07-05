@@ -12,6 +12,8 @@ bool function ActorIsEligible(Actor akActor) global
         valid = false ;adults onlly
     endif
 
+    ;TODO - add DHLP check
+
     return valid
 endfunction
 
@@ -20,6 +22,12 @@ endfunction
 bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
 
     bool result = true 
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if config.arcs_GlobalActionStartSex.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdStartSex_IsEligible - disabled action")
+        return false
+    endif
     
     if !arcs_Eligibility.ActorIsEligible(akOriginator) 
         result = false
@@ -41,7 +49,6 @@ bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, 
         endif
     endif
 
-    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
     int arousal = slau.GetActorArousal(akOriginator)
     int arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
@@ -67,6 +74,12 @@ endfunction
 bool function ExtCmdStripTarget_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
 
     bool result = true
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if config.arcs_GlobalActionStripTarget.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdStripTarget_IsEligible - disabled action")
+        return false
+    endif
 
     if !arcs_Eligibility.ActorIsEligible(akOriginator) 
         result = false
@@ -99,6 +112,12 @@ bool function ExtCmdDressTarget_IsEligible(Actor akOriginator, string contextJso
 
     bool result = true
 
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if config.arcs_GlobalActionDressTarget.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdDressTarget_IsEligible - disabled action")
+        return false
+    endif
+
     if !arcs_Eligibility.ActorIsEligible(akOriginator) 
         result = false
     endif
@@ -130,6 +149,12 @@ bool function ExtCmdUndress_IsEligible(Actor akOriginator, string contextJson, s
 
     bool result = true
 
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if config.arcs_GlobalActionUndress.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdUndress_IsEligible - disabled action")
+        return false
+    endif
+
     if !arcs_Eligibility.ActorIsEligible(akOriginator) 
         result = false
     endif
@@ -153,6 +178,12 @@ bool function ExtCmdDress_IsEligible(Actor akOriginator, string contextJson, str
 
     bool result = true
 
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if config.arcs_GlobalActionDress.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdDress_IsEligible - disabled action")
+        return false
+    endif
+
     if !arcs_Eligibility.ActorIsEligible(akOriginator) 
         result = false
     endif
@@ -167,6 +198,42 @@ bool function ExtCmdDress_IsEligible(Actor akOriginator, string contextJson, str
     endif
 
     arcs_Utility.WriteInfo("ExtCmdDress_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + " result: " + result)
+
+    return result
+
+endfunction
+
+bool function ExtCmdDecreaseArousal_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+
+    bool result = true
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if config.arcs_GlobalActionDecreaseArousal.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdDecreaseArousal_IsEligible - disabled action")
+        return false
+    endif
+
+    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+        result = false
+    endif
+
+    return result
+
+endfunction
+
+bool function ExtCmdIncreaseArousal_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+
+    bool result = true
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if config.arcs_GlobalActionIncreaseArousal.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdIncreaseArousal_IsEligible - disabled action")
+        return false
+    endif
+
+    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+        result = false
+    endif
 
     return result
 

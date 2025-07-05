@@ -38,6 +38,8 @@ endfunction
 
 bool function CreateRegisterDialogue(string dialogue, Actor sourceActor, Actor targetActor = none) global
 
+    ;NOTE - this writes a text entry in the log without spoken text
+
     ;int function RegisterDialogue(Actor speaker, String dialogue) Global Native
     ;int function RegisterDialogueToListener(Actor speaker, Actor listener, String dialogue) Global Native
 

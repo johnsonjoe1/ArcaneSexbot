@@ -60,7 +60,7 @@ function ExtCmdStripTarget_Execute(Actor akOriginator, string contextJson, strin
 
     Form[] strippedItems = sfx.StripActor(akTarget, akTarget, false, false)
     
-    arcs_Execution.StoreStrippedItems(akTarget, strippedItems)
+    arcs_Utility.StoreStrippedItems(akTarget, strippedItems)
 
 endfunction
 
@@ -77,7 +77,7 @@ function ExtCmdDressTarget_Execute(Actor akOriginator, string contextJson, strin
     arcs_Movement.FaceTarget(akOriginator, akTarget)
     arcs_Movement.PlayDoWork(akOriginator)
 
-    Form[] strippedItems = arcs_Execution.GetStrippedItems(akTarget)
+    Form[] strippedItems = arcs_Utility.GetStrippedItems(akTarget)
     if strippedItems
         sfx.UnstripActor(akTarget, strippedItems, false)
     endif
@@ -94,7 +94,7 @@ function ExtCmdUndress_Execute(Actor akOriginator, string contextJson, string pa
 
     Form[] strippedItems = sfx.StripActor(akOriginator, none, true, false)
     
-    arcs_Execution.StoreStrippedItems(akOriginator, strippedItems)
+    arcs_Utility.StoreStrippedItems(akOriginator, strippedItems)
 
 endfunction
 
@@ -106,7 +106,7 @@ function ExtCmdDress_Execute(Actor akOriginator, string contextJson, string para
 
     SexLabFramework sfx = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
 
-    Form[] strippedItems = arcs_Execution.GetStrippedItems(akOriginator)
+    Form[] strippedItems = arcs_Utility.GetStrippedItems(akOriginator)
     if strippedItems
         arcs_Movement.PlayDressUndress(akOriginator)
         sfx.UnstripActor(akOriginator, strippedItems, false)
@@ -114,17 +114,26 @@ function ExtCmdDress_Execute(Actor akOriginator, string contextJson, string para
 
 endfunction
 
-Form[] function GetStrippedItems(Actor akActor) global 
-    string storageKey = "arcs_stripped_items"
-    return StorageUtil.FormListToArray(akActor, storageKey)
+function ExtCmdDecreaseArousal_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    arcs_Utility.WriteInfo("ExtCmdDecreaseArousal_Execute")
+    ;slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+    ;Faction slaArousalFaction = slau.slaArousal
+
+    arcs_Arousal.ChangeActorExposure(akOriginator, -1)
+
+    ;debug.MessageBox(akOriginator.GetFactionRank(slaArousalFaction))
+
 endfunction
 
-function StoreStrippedItems(Actor akActor, Form[] items) global
-    string storageKey = "arcs_stripped_items"
-    StorageUtil.FormListClear(akActor, storageKey)
-    int i = 0
-    while i < items.Length
-        StorageUtil.FormListAdd(akActor, storageKey, items[i], true) ;needs to allow duplicates - dual swords / daggers /etc.
-        i += 1
-    endwhile
+function ExtCmdIncreaseArousal_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    arcs_Utility.WriteInfo("ExtCmdIncreaseArousal_Execute")
+    ;slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+    ;Faction slaArousalFaction = slau.slaArousal
+
+    arcs_Arousal.ChangeActorExposure(akOriginator, 1)
+
+    ;debug.MessageBox(akOriginator.GetFactionRank(slaArousalFaction))
+
 endfunction

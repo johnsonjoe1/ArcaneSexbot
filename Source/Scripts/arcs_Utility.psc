@@ -45,3 +45,18 @@ bool function ConfirmBox(string msg, string yesText = "", string noText = "") gl
     endif
 
 endfunction
+
+Form[] function GetStrippedItems(Actor akActor) global 
+    string storageKey = "arcs_stripped_items"
+    return StorageUtil.FormListToArray(akActor, storageKey)
+endfunction
+
+function StoreStrippedItems(Actor akActor, Form[] items) global
+    string storageKey = "arcs_stripped_items"
+    StorageUtil.FormListClear(akActor, storageKey)
+    int i = 0
+    while i < items.Length
+        StorageUtil.FormListAdd(akActor, storageKey, items[i], true) ;needs to allow duplicates - dual swords / daggers /etc.
+        i += 1
+    endwhile
+endfunction

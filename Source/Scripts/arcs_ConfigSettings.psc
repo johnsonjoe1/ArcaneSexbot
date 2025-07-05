@@ -7,3 +7,11 @@ GlobalVariable property arcs_GlobalShowSexConfirm auto
 
 GlobalVariable property arcs_GlobalHotkey auto
 GlobalVariable property arcs_GlobalModifierKey auto
+
+GlobalVariable property arcs_GlobalActionStartSex auto
+GlobalVariable property arcs_GlobalActionStripTarget auto
+GlobalVariable property arcs_GlobalActionDressTarget auto
+GlobalVariable property arcs_GlobalActionUndress auto
+GlobalVariable property arcs_GlobalActionDress auto
+GlobalVariable property arcs_GlobalActionDecreaseArousal auto
+GlobalVariable property arcs_GlobalActionIncreaseArousal auto
