@@ -27,7 +27,7 @@ function TestPlayer()
     if nudity == 0
         int result = SkyrimNetApi.DirectNarration(playerName + " is walking around nude.")
     elseif nudity == 1
-        int result = SkyrimNetApi.DirectNarration(playerName + " is wearning skimpy clothing that reveals their body.")
+        int result = SkyrimNetApi.DirectNarration(playerName + " is wearing skimpy clothing that reveals their body.")
     endif
 
 endfunction
