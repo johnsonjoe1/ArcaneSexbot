@@ -3,6 +3,9 @@ Scriptname arcs_Execution extends Quest
 ;TODO - move sexlab functions to their own script
 function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdStartSex", thePlayer)
+
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
 
     if config.arcs_GlobalShowSexConfirm.GetValue() == 1
@@ -19,7 +22,7 @@ function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string p
     string type = SkyrimNetApi.GetJsonString(paramsJson, "type", "") 
     string intensity = SkyrimNetApi.GetJsonString(paramsJson, "intensity", "") 
 
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
 
 	Actor[] actors = new Actor[2]
 	actors[0] = akOriginator
@@ -35,17 +38,23 @@ endfunction
 
 function ExtCmdUpdateSexualPreferences_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdUpdateSexualPreferences", thePlayer)
+
     arcs_Utility.WriteInfo("ExtCmdUpdateSexualPreferences_Execute")
     arcs_Utility.WriteInfo("contextJson: " + contextJson)
     arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
 
     SexLabFramework sfx = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
 
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
 
 endfunction
 
 function ExtCmdStripTarget_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdStripTarget", thePlayer)
 
     arcs_Utility.WriteInfo("ExtCmdStripTarget_Execute")
     arcs_Utility.WriteInfo("contextJson: " + contextJson)
@@ -53,7 +62,7 @@ function ExtCmdStripTarget_Execute(Actor akOriginator, string contextJson, strin
 
     SexLabFramework sfx = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
 
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
 
     arcs_Movement.FaceTarget(akOriginator, akTarget)
     arcs_Movement.PlayDoWork(akOriginator)
@@ -66,13 +75,16 @@ endfunction
 
 function ExtCmdDressTarget_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 
-    arcs_Utility.WriteInfo("ExtCmdDressTarget_Execute")
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdDressTarget", thePlayer)
+
+    arcs_Utility.WriteInfo("ExtCmdDressTarget")
     arcs_Utility.WriteInfo("contextJson: " + contextJson)
     arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
 
     SexLabFramework sfx = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
 
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
 
     arcs_Movement.FaceTarget(akOriginator, akTarget)
     arcs_Movement.PlayDoWork(akOriginator)
@@ -86,7 +98,10 @@ endfunction
 
 function ExtCmdUndress_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 
-    arcs_Utility.WriteInfo("ExtCmdUndress_Execute")
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdUndress", thePlayer)
+
+    arcs_Utility.WriteInfo("ExtCmdUndress")
     arcs_Utility.WriteInfo("contextJson: " + contextJson)
     arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
 
@@ -99,6 +114,9 @@ function ExtCmdUndress_Execute(Actor akOriginator, string contextJson, string pa
 endfunction
 
 function ExtCmdDress_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdDress", thePlayer)
 
     arcs_Utility.WriteInfo("ExtCmdDress_Execute")
     arcs_Utility.WriteInfo("contextJson: " + contextJson)
@@ -116,6 +134,9 @@ endfunction
 
 function ExtCmdDecreaseArousal_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdDecreaseArousal", thePlayer)
+
     arcs_Utility.WriteInfo("ExtCmdDecreaseArousal_Execute")
     ;slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
     ;Faction slaArousalFaction = slau.slaArousal
@@ -127,6 +148,9 @@ function ExtCmdDecreaseArousal_Execute(Actor akOriginator, string contextJson, s
 endfunction
 
 function ExtCmdIncreaseArousal_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdIncreaseArousal", thePlayer)
 
     arcs_Utility.WriteInfo("ExtCmdIncreaseArousal_Execute")
     ;slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr

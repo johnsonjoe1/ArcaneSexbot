@@ -17,9 +17,28 @@ bool function ActorIsEligible(Actor akActor) global
     return valid
 endfunction
 
+bool function TargetIsElibible(Actor akActor) global
+
+    ;TODO - add other global checks here
+    bool valid = true
+
+    if akActor.IsChild()
+        valid = false ;adults onlly
+    endif
+
+    ;TODO - add DHLP check
+
+    return valid
+
+    return false
+
+endfunction
+
 ;TODO - move eligibility checks to their own script
 ;TODO - create function to add to IsEligible calls to run high level checks like DHLP so not duplicated or missed
 bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+
+    
 
     bool result = true 
 
@@ -91,7 +110,7 @@ bool function ExtCmdStripTarget_IsEligible(Actor akOriginator, string contextJso
         result = false
     Else
         targetName = akTarget.GetDisplayName()
-        if !arcs_Eligibility.ActorIsEligible(akTarget) 
+        if !arcs_Eligibility.TargetIsElibible(akTarget) 
             result = false
         endif
 
@@ -112,6 +131,8 @@ bool function ExtCmdDressTarget_IsEligible(Actor akOriginator, string contextJso
 
     bool result = true
 
+    ;return true ;debug test
+
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     if config.arcs_GlobalActionDressTarget.GetValue() == 0
         arcs_Utility.WriteInfo("ExtCmdDressTarget_IsEligible - disabled action")
@@ -128,12 +149,13 @@ bool function ExtCmdDressTarget_IsEligible(Actor akOriginator, string contextJso
         result = false
     Else
         targetName = akTarget.GetDisplayName()
-        if !arcs_Eligibility.ActorIsEligible(akTarget) 
+        if !arcs_Eligibility.TargetIsElibible(akTarget) 
             result = false
         endif
 
         arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
         if ncheck.NudityCheck(akTarget) != ncheck.NUDITYCHECK_ACTOR_NUDE()
+            arcs_Utility.WriteInfo("ExtCmdDressTarget_IsEligible - nudity check: " + ncheck.NudityCheck(akTarget))
             result = false ;already dressed
         endif
 

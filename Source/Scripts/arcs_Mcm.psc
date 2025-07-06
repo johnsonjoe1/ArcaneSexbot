@@ -10,6 +10,9 @@ int toggleActionDress
 int toggleActionDecreaseArousal
 int toggleActionIncreaseArousal
 
+int toggleActionAllDevious
+
+
 int toggleShowSexConfirm
 
 int sliderArousalForSex
@@ -26,7 +29,11 @@ int keyCodeRightShift = 54
 int hotkeyKeymapOption
 int hotkeyModifierOption
 
+Actor thePlayer
+
 event OnConfigOpen()
+
+    thePlayer = Game.GetPlayer()
     
     Pages = new string[5]
 
@@ -136,19 +143,28 @@ function DisplayActions()
     AddHeaderOption("")
 
     toggleActionStartSex = AddToggleOption("Action - Start Sex", config.arcs_GlobalActionStartSex.GetValue() as int)
-    AddTextOption("Used Times", "")
+    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdStartSex", thePlayer))
     toggleActionStripTarget = AddToggleOption("Action - Strip Target", config.arcs_GlobalActionStripTarget.GetValue() as int)
-    AddTextOption("Used Times", "")
+    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdStripTarget", thePlayer))
     toggleActionDressTarget = AddToggleOption("Action - Dress Target", config.arcs_GlobalActionDressTarget.GetValue() as int)
-    AddTextOption("Used Times", "")
+    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdDressTarget", thePlayer))
     toggleActionUndress = AddToggleOption("Action - Undress", config.arcs_GlobalActionUndress.GetValue() as int)
-    AddTextOption("Used Times", "")
+    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdUndress", thePlayer))
     toggleActionDress = AddToggleOption("Action - Dress", config.arcs_GlobalActionDress.GetValue() as int)
-    AddTextOption("Used Times", "")
+    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdDress", thePlayer))
     toggleActionDecreaseArousal = AddToggleOption("Action - Decrease Arousal", config.arcs_GlobalActionDecreaseArousal.GetValue() as int)
-    AddTextOption("Used Times", "")
+    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdDecreaseArousal", thePlayer))
     toggleActionIncreaseArousal = AddToggleOption("Action - Increase Arousal", config.arcs_GlobalActionIncreaseArousal.GetValue() as int)
-    AddTextOption("Used Times", "")
+    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdIncreaseArousal", thePlayer))
+
+    if config.arcs_GlobalHasDeviousDevices.GetValue() == 1
+
+    AddHeaderOption("Devious Device Actions")
+    AddHeaderOption("")
+
+    toggleActionAllDevious = AddToggleOption("Action - All Devious Device", config.arcs_GlobalActionAllDevious.GetValue() as int)
+
+    endif
 
 endfunction
 
@@ -171,6 +187,9 @@ event OnOptionSelect(int option)
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionDecreaseArousal))
     elseif option == toggleActionIncreaseArousal
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionIncreaseArousal))
+    elseif option == toggleActionAllDevious
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionAllDevious))
+
 
     endif
 

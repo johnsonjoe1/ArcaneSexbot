@@ -67,18 +67,54 @@ function ExtCmdRemoveBdsmDevice_Execute(Actor akOriginator, string contextJson, 
 
     Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
 
-    arcs_Movement.FaceTarget(akOriginator, akTarget)
-    arcs_Movement.PlayDoWork(akOriginator)
-
     string type = SkyrimNetApi.GetJsonString(paramsJson, "type", "") 
 
     zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
     Form dev = StorageUtil.GetFormValue(akTarget, "arcs_worn_item_" + type, none)
     if dev
+
+        arcs_Movement.FaceTarget(akOriginator, akTarget)
+        arcs_Movement.PlayDoWork(akOriginator)
+
         bool result = zlib.UnlockDevice(akTarget, dev as Armor, none, none, true)
+        
         arcs_Utility.WriteInfo("Removeing DD: " + dev.GetName())
+
     else 
         arcs_Utility.WriteInfo("No stored DD found")
     endif
+
+endfunction
+
+function RemoveAllBdsmRestraints_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    arcs_Utility.WriteInfo("ExtCmdRemoveBdsmDevice_Execute")
+    arcs_Utility.WriteInfo("contextJson: " + contextJson)
+    arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
+
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+
+    string type = SkyrimNetApi.GetJsonString(paramsJson, "type", "") 
+
+    arcs_Movement.FaceTarget(akOriginator, akTarget)
+    arcs_Movement.PlayDoWork(akOriginator)
+
+    zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
+	Form[] inventory = akTarget.GetContainerForms()
+	int i = 0
+ 	while i < inventory.Length
+        Form dev = inventory[i]
+        if dev.HasKeyWord(zlib.zad_inventoryDevice)
+            arcs_Utility.WriteInfo("found zad_inventoryDevice: " + dev)
+            if dev.HasKeyWord(zlib.zad_QuestItem) || dev.HasKeyWord(zlib.zad_BlockGeneric)
+                arcs_Utility.WriteInfo("quest or blocking device")
+            else
+                if zlib.UnlockDevice(akTarget, dev as Armor, none, none, true)
+                    arcs_Utility.WriteInfo("removed device")
+                endif
+            endif
+        endif
+        i += 1
+    endwhile
 
 endfunction

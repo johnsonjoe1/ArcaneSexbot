@@ -76,3 +76,13 @@ string function AppendStringToStringList(string list, string item, string sepera
     endif
     return list
 endfunction
+
+function StoreTimesUsed(string actionName, Actor akActor) global
+    actionName = "arcs_times_used_" + actionName
+    StorageUtil.SetIntValue(akActor, actionName, StorageUtil.GetIntValue(akActor, actionName, 0) + 1)
+endfunction
+
+int function GetTimesUsed(string actionName, Actor akActor) global
+    actionName = "arcs_times_used_" + actionName
+    return StorageUtil.GetIntValue(akActor, actionName, 0)
+endfunction

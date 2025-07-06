@@ -17,3 +17,4 @@ GlobalVariable property arcs_GlobalActionDecreaseArousal auto
 GlobalVariable property arcs_GlobalActionIncreaseArousal auto
 
 GlobalVariable property arcs_GlobalHasDeviousDevices auto
+GlobalVariable property arcs_GlobalActionAllDevious auto

@@ -31,20 +31,26 @@ endfunction
 
 function RegisterActions()
 
-    SkyrimNetApi.RegisterAction("ExtCmdAddBdsmRestraint", "Equip {type} on {target}.", \
+    SkyrimNetApi.RegisterAction("AddBdsmRestraint", "Use this to equip {type} on {target}.", \
                                     "arcs_DeviousEligibility", "ExtCmdAddBdsmDevice_IsEligible", \
                                     "arcs_DeviousExecution", "ExtCmdAddBdsmDevice_Execute", \
                                     "", "PAPYRUS", \
                                     1, "{\"target\":\"Actor\",\"type\":\"" + arcs_Devious.DeviousRestraintsList() + "\"}", \
                                     "", "")  
 
-    SkyrimNetApi.RegisterAction("ExtCmdRemoveBdsmRestraint", "Remove {type} from {target}.", \
+    SkyrimNetApi.RegisterAction("RemoveBdsmRestraint", "Use this to remove a single {type} from {target}.", \
                                     "arcs_DeviousEligibility", "ExtCmdRemoveBdsmDevice_IsEligible", \
                                     "arcs_DeviousExecution", "ExtCmdRemoveBdsmDevice_Execute", \
                                     "", "PAPYRUS", \
                                     1, "{\"target\":\"Actor\",\"type\":\"" + arcs_Devious.DeviousRestraintsList() + "\"}", \
                                     "", "")  
 
+    SkyrimNetApi.RegisterAction("RemoveAllBdsmRestraints", "Use this to remove ALL restraints from {target}", \                              
+                                    "arcs_DeviousEligibility", "RemoveAllBdsmRestraints_IsEligible", \
+                                    "arcs_DeviousExecution", "RemoveAllBdsmRestraints_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\"}", \
+                                    "", "") 
     ;todo:
     ;add/remove chastity
     ;add/remove plugs
