@@ -28,9 +28,6 @@ function GameLoaded()
         arcs_Utility.WriteInfo("registering key: " + config.arcs_GlobalHotkey.GetValue())
         RegisterForKey(config.arcs_GlobalHotkey.GetValue() as int)
 
-        RegisterDecorators()
-        RegisterActions()
-
         RegisterForModEvent("AnimationEnd", "OnSexEndEvent")
         RegisterForModEvent("dhlp-Suspend", "OnDhlpSuspend")
         RegisterForModEvent("dhlp-Resume", "OnDhlpResume") 
@@ -38,6 +35,12 @@ function GameLoaded()
         registrationsCompleted = true
 
     endif
+
+    RegisterDecorators()
+    RegisterActions()
+
+    GoToState("RunSoftChecksState")
+    RegisterForSingleUpdate(5.0)
 
     slab.GameLoaded()
 
@@ -55,6 +58,19 @@ endfunction
 
 event OnUpdate()
 endevent
+
+state RunSoftChecksState
+
+    event OnUpdate()
+        RunSoftChecks()
+        GoToState("")
+    endevent
+
+    function ChangedLocation(Location akOldLoc, Location akNewLoc)
+        ;don't run this on soft check startup
+    endfunction
+
+endstate
 
 state StartDetectionState
 
@@ -333,10 +349,21 @@ Event OnCrosshairRefChange(ObjectReference ref)
 	endIf
 EndEvent
 
+function RunSoftChecks()
+
+    if Game.IsPluginInstalled("Devious Devices - Assets.esm")
+        config.arcs_GlobalHasDeviousDevices.SetValue(1)
+        devious.GameLoaded()
+    Else
+        config.arcs_GlobalHasDeviousDevices.SetValue(2)
+    endif
+
+endfunction
 
 Quest property arcs_NudityDetectionQuest auto
 
 arcs_SexLab property slab auto
 arcs_ConfigSettings property config auto
+arcs_Devious property devious auto
 
 Faction property arcs_HavingSexFaction auto

@@ -21,13 +21,4 @@
     {% if attraction == "actor_attracted_aroused" %}
     - You are very receptive to flirtation and sexual comments from {{ player.name }} and likely to act on them.
     {% endif %}
-    {% if responseTarget %}
-    {% set actor_nudity = arcs_get_nudity(responseTarget.UUID) %}
-    {% if actor_nudity == "actor_dressed_skimpy" %}
-    - {{ decnpc(responseTarget.UUID).name }} is wearning almost no clothing.
-    {% endif %}
-    {% if actor_nudity == "actor_nude" %}
-    - {{ decnpc(responseTarget.UUID).name }} is nude and their body is revealed to you.
-    {% endif %}
-    {% endif %}
 {% endif %}

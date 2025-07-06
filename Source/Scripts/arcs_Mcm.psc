@@ -28,12 +28,13 @@ int hotkeyModifierOption
 
 event OnConfigOpen()
     
-    Pages = new string[4]
+    Pages = new string[5]
 
     Pages[0] = "Settings"
     Pages[1] = "Arousal Settings"
     Pages[2] = "SexLab Tags"
     Pages[3] = "Manage Actions"
+    Pages[4] = "Diagnostics"
 
 endevent
 
@@ -52,6 +53,9 @@ event OnPageReset(string page)
         DisplaySexLabTags()
     elseif page == "Manage Actions"
         DisplayActions()
+    elseif page == "Diagnostics"
+        DisplayDiagnostics()
+
     endif
 
     if Game.IsPluginInstalled("SkyrimNet.esp")
@@ -64,7 +68,25 @@ endevent
 
 function DisplayWelcome()
 
-    AddTextOption("SkyrimNet Found", skyrimNetFound)
+endfunction
+
+function DisplayDiagnostics()
+
+    AddHeaderOption("Requied Mods")
+    AddHeaderOption("")
+
+    string found = "No"
+    if skyrimNetFound
+        found = "Yes"
+    endif
+
+    AddTextOption("SkyrimNet", found)
+    AddTextOption("", "")
+
+    AddHeaderOption("Optional Mods")
+    AddHeaderOption("")
+
+    AddTextOption("Devious Devices", GlobalDetectionString(config.arcs_GlobalHasDeviousDevices))
 
 endfunction
 
@@ -172,6 +194,26 @@ int function toggleGlobalOnOff(GlobalVariable g)
         newValue = 1
     endif
     return newValue
+endfunction
+
+string function GlobalOnOffToString(GlobalVariable g)
+    string result = "N/A"
+    if g.GetValue() == 0
+        result = "No"
+    elseif g.GetValue() == 1
+        result = "Yes"
+    endif
+    return result
+endfunction
+
+string function GlobalDetectionString(GlobalVariable g)
+    string result = "Detecting..."
+    if g.GetValue() == 2
+        result = "No"
+    elseif g.GetValue() == 1
+        result = "Yes"
+    endif
+    return result
 endfunction
 
 event OnOptionSliderOpen(Int option)

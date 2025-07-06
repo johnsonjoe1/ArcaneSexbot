@@ -15,3 +15,5 @@ GlobalVariable property arcs_GlobalActionUndress auto
 GlobalVariable property arcs_GlobalActionDress auto
 GlobalVariable property arcs_GlobalActionDecreaseArousal auto
 GlobalVariable property arcs_GlobalActionIncreaseArousal auto
+
+GlobalVariable property arcs_GlobalHasDeviousDevices auto

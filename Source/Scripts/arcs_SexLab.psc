@@ -28,6 +28,16 @@ function GameLoaded()
 
 endfunction
 
+function RegisterActions()
+
+    ;TODO - migrate these from the arcs_Main script
+
+endfunction
+
+function RegisterDecorators()
+
+endfunction
+
 function CreateDefaultTagsList()
     ;TODO - not sure the plan for this yet
 endfunction

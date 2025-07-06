@@ -1,0 +1,172 @@
+{# Unified Equipment Context Template #}
+{% set actor_name = decnpc(actorUUID).name %}
+{% set show_everything = (render_mode == "full" or render_mode == "thought" or render_mode == "book") %}
+{% set can_vibrate = (worn_has_keyword(actorUUID, "zad_DeviousPlugVaginal") or worn_has_keyword(actorUUID, "zad_DeviousPlugAnal") or worn_has_keyword(actorUUID, "zad_DeviousPiercingsNipple") or worn_has_keyword(actorUUID, "zad_DeviousPiercingsVaginal")) %}
+
+{# Check for nudity using the proper system #}
+{% set actor_nudity = arcs_get_nudity(actorUUID) %}
+{% if actor_nudity == "actor_dressed_skimpy" %}
+{{ "## Physical State" }}
+- {{ actor_name }} is wearing almost no clothing.
+{% endif %}
+{% if actor_nudity == "actor_nude" %}
+{{ "## Physical State" }}
+- {{ actor_name }} is nude and their body is revealed to you.
+{% endif %}
+
+{# Restraint Equipment - Most are visually obvious #}
+{% if worn_has_keyword(actorUUID, "zad_Lockable") %}
+{{ "## Bondage Equipment" }}
+
+{# Yokes - most restrictive and very visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousYoke") %}
+- {{ actor_name }} is locked helplessly in a yoke, completely restraining their arms and hands
+{% endif %}
+
+{# Armbinders - very visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousArmbinder") %}
+- {{ actor_name }}'s arms are locked behind their back in an armbinder
+{% endif %}
+
+{# Collars - always visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousCollar") %}
+- {{ actor_name }} wears a locked collar around their neck
+{% endif %}
+
+{# Gags - always visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousGag") %}
+- {{ actor_name }}'s mouth is sealed with a gag, preventing speech
+{% endif %}
+
+{# Blindfolds - always visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousBlindfold") %}
+- {{ actor_name }}'s vision is blocked by a blindfold
+{% endif %}
+
+{# Hoods - always visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousHood") %}
+- {{ actor_name }}'s head is enclosed in a restrictive hood
+{% endif %}
+
+{# Harnesses - usually visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousHarness") %}
+- {{ actor_name }} is bound in a body harness
+{% endif %}
+
+{# Cuffs - visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousCuffs") %}
+- {{ actor_name }} wears restraining cuffs
+{% endif %}
+
+{# Gloves - visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousGloves") %}
+- {{ actor_name }}'s hands are encased in bondage gloves
+{% endif %}
+
+{# Boots - visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousBoots") %}
+- {{ actor_name }} wears restrictive bondage boots
+{% endif %}
+
+{# Corsets - usually visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousCorset") %}
+- {{ actor_name }}'s torso is tightly bound in a corset
+{% endif %}
+
+{# Suits/Catsuits - very visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousSuit") %}
+- {{ actor_name }} is encased in a full-body bondage suit
+{% endif %}
+
+{# Heavy Bondage - very visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousHeavyBondage") %}
+- {{ actor_name }} is severely restrained in heavy bondage equipment
+{% endif %}
+
+{% endif %}
+
+{# Chastity Equipment - Visible when not covered by clothing #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousBelt") or worn_has_keyword(actorUUID, "zad_DeviousBra") %}
+{% if show_everything or actor_nudity == "actor_nude" or actor_nudity == "actor_dressed_skimpy" %}
+{{ "## Chastity Equipment" }}
+
+{% if worn_has_keyword(actorUUID, "zad_DeviousBelt") %}
+- {{ actor_name }} is locked in a chastity belt, denying access to their intimate areas
+{% endif %}
+
+{% if worn_has_keyword(actorUUID, "zad_DeviousBra") %}
+- {{ actor_name }}'s breasts are locked away in a chastity bra
+{% endif %}
+
+{% endif %}
+{% endif %}
+
+{# Piercings - Visible when exposed #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousPiercingsNipple") or worn_has_keyword(actorUUID, "zad_DeviousPiercingsVaginal") %}
+{% if show_everything or actor_nudity == "actor_nude" or actor_nudity == "actor_dressed_skimpy" %}
+{{ "## Body Modifications" }}
+
+{% if worn_has_keyword(actorUUID, "zad_DeviousPiercingsNipple") %}
+- {{ actor_name }}'s nipples are adorned with piercings
+{% if worn_has_keyword(actorUUID, "zad_DeviousBra") %}
+  (currently inaccessible behind the chastity bra)
+{% else %}
+  (fully accessible)
+{% endif %}
+{% endif %}
+
+{% if worn_has_keyword(actorUUID, "zad_DeviousPiercingsVaginal") %}
+- {{ actor_name }} has intimate genital piercings
+{% if worn_has_keyword(actorUUID, "zad_DeviousBelt") %}
+  (currently inaccessible behind the chastity belt)
+{% else %}
+  (fully accessible)
+{% endif %}
+{% endif %}
+
+{% endif %}
+{% endif %}
+
+{# Plugs and Devices - Only show in full context or if explicitly visible #}
+{% if worn_has_keyword(actorUUID, "zad_DeviousPlugVaginal") or worn_has_keyword(actorUUID, "zad_DeviousPlugAnal") %}
+{% if show_everything %}
+{{ "## Inserted Devices" }}
+
+{% if worn_has_keyword(actorUUID, "zad_DeviousPlugVaginal") %}
+- {{ actor_name }} has a vaginal plug inserted
+{% if worn_has_keyword(actorUUID, "zad_DeviousBelt") %}
+  (secured and inaccessible behind the chastity belt)
+{% else %}
+  (accessible for removal)
+{% endif %}
+{% endif %}
+
+{% if worn_has_keyword(actorUUID, "zad_DeviousPlugAnal") %}
+- {{ actor_name }} has an anal plug inserted
+{% if worn_has_keyword(actorUUID, "zad_DeviousBelt") %}
+  (partially secured behind the chastity belt)
+{% else %}
+  (accessible for removal)
+{% endif %}
+{% endif %}
+
+{% endif %}
+{% endif %}
+
+
+{# Helplessness Assessment #}
+{% if worn_has_keyword(actorUUID, "zad_Lockable") %}
+{{ "## Restraint Status" }}
+{% set restraint_count = 0 %}
+{% if worn_has_keyword(actorUUID, "zad_DeviousYoke") %}{% set restraint_count = restraint_count + 1 %}{% endif %}
+{% if worn_has_keyword(actorUUID, "zad_DeviousArmbinder") %}{% set restraint_count = restraint_count + 1 %}{% endif %}
+{% if worn_has_keyword(actorUUID, "zad_DeviousGag") %}{% set restraint_count = restraint_count + 1 %}{% endif %}
+{% if worn_has_keyword(actorUUID, "zad_DeviousBlindfold") %}{% set restraint_count = restraint_count + 1 %}{% endif %}
+{% if worn_has_keyword(actorUUID, "zad_DeviousCollar") %}{% set restraint_count = restraint_count + 1 %}{% endif %}
+
+{% if restraint_count > 2 %}
+- {{ actor_name }} is thoroughly restrained and helpless
+{% else if restraint_count > 0 %}
+- {{ actor_name }} is partially restrained
+{% endif %}
+{% endif %}

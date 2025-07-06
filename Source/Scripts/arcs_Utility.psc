@@ -60,3 +60,19 @@ function StoreStrippedItems(Actor akActor, Form[] items) global
         i += 1
     endwhile
 endfunction
+
+string function AppendStringToStringList(string list, string item, string seperator, bool spaceAfterSeperator = false) global
+    if item == ""
+        return list
+    endif
+    if list == ""
+        list = item
+    else
+        list += seperator
+        if spaceAfterSeperator
+            list += " "
+        endif
+        list += item
+    endif
+    return list
+endfunction
