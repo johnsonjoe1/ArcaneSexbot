@@ -46,6 +46,18 @@ function ExtCmdAddBdsmDevice_Execute(Actor akOriginator, string contextJson, str
         itemsList = zDevicesList.zad_dev_corsets
     elseif type == "suit/catsuit"
         itemsList = zDevicesList.zad_dev_suits
+    elseif type == "bra"
+        itemsList = zDevicesList.zad_dev_chastitybras
+    elseif type == "belt"
+        itemsList = zDevicesList.zad_dev_chastitybelts
+    elseif type == "nipple"
+        itemsList = zDevicesList.zad_dev_piercings_nipple
+    elseif type == "clitoris"
+        itemsList = zDevicesList.zad_dev_piercings_vaginal
+    elseif type == "anal"
+        itemsList = zDevicesList.zad_dev_plugs_anal
+    elseif type == "vaginal"
+        itemsList = zDevicesList.zad_dev_plugs_vaginal
     endif
 
     Armor dev = zDevicesList.GetRandomDevice(itemsList)

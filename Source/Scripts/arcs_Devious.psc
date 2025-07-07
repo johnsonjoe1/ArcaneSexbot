@@ -51,6 +51,50 @@ function RegisterActions()
                                     "", "PAPYRUS", \
                                     1, "{\"target\":\"Actor\"}", \
                                     "", "") 
+
+    SkyrimNetApi.RegisterAction("AddBdsmChastity", "Use this to equip a chastity {type} on {target}.", \
+                                    "arcs_DeviousEligibility", "ExtCmdAddBdsmDevice_IsEligible", \
+                                    "arcs_DeviousExecution", "ExtCmdAddBdsmDevice_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\",\"type\":\"belt|bra\"}", \
+                                    "", "")  
+
+    SkyrimNetApi.RegisterAction("RemoveBdsmChastity", "Use this to remove a chastity {type} from {target}.", \
+                                    "arcs_DeviousEligibility", "ExtCmdRemoveBdsmDevice_IsEligible", \
+                                    "arcs_DeviousExecution", "ExtCmdRemoveBdsmDevice_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\",\"type\":\"belt|bra\"}", \
+                                    "", "")  
+
+    SkyrimNetApi.RegisterAction("AddBdsmPiercing", "Use this to add a {type} piercing to {target}.", \
+                                    "arcs_DeviousEligibility", "ExtCmdAddBdsmDevice_IsEligible", \
+                                    "arcs_DeviousExecution", "ExtCmdAddBdsmDevice_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\",\"type\":\"nipple|clitoris\"}", \
+                                    "", "")  
+
+    SkyrimNetApi.RegisterAction("RemoveBdsmPeircing", "Use this to remove a {type} piercing from {target}.", \
+                                    "arcs_DeviousEligibility", "ExtCmdRemoveBdsmDevice_IsEligible", \
+                                    "arcs_DeviousExecution", "ExtCmdRemoveBdsmDevice_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\",\"type\":\"nipple|clitoris\"}", \
+                                    "", "")  
+
+    SkyrimNetApi.RegisterAction("AddBdsmPlug", "Use this to shove a {type} plug into {target}'.", \
+                                    "arcs_DeviousEligibility", "ExtCmdAddBdsmDevice_IsEligible", \
+                                    "arcs_DeviousExecution", "ExtCmdAddBdsmDevice_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\",\"type\":\"anal|vaginal\"}", \
+                                    "", "") 
+
+    SkyrimNetApi.RegisterAction("RemoveBdsmPlug", "Use this to remove a {type} plug from {target}.", \
+                                    "arcs_DeviousEligibility", "ExtCmdRemoveBdsmDevice_IsEligible", \
+                                    "arcs_DeviousExecution", "ExtCmdRemoveBdsmDevice_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\",\"type\":\"anal|vaginal\"}", \
+                                    "", "")  
+
+
     ;todo:
     ;add/remove chastity
     ;add/remove plugs
