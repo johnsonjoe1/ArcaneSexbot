@@ -86,3 +86,7 @@ int function GetTimesUsed(string actionName, Actor akActor) global
     actionName = "arcs_times_used_" + actionName
     return StorageUtil.GetIntValue(akActor, actionName, 0)
 endfunction
+
+string function JsonIntValueReturn(string name, int value) global
+    return "{\"" + name + "\":\"" + value + "\"}"    
+endfunction

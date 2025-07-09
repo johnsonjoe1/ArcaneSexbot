@@ -5,10 +5,11 @@ function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string p
 
     Actor thePlayer = Game.GetPlayer()
     arcs_Utility.StoreTimesUsed("ExtCmdStartSex", thePlayer)
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
 
-    if config.arcs_GlobalShowSexConfirm.GetValue() == 1
+    if config.arcs_GlobalShowSexConfirm.GetValue() == 1 && akTarget == thePlayer
         if !arcs_Utility.ConfirmBox("Have sex with " + akOriginator.GetDisplayName() + "?", "Continue the sex scene", "Skip the sex scene")
             return
         endif
@@ -21,8 +22,6 @@ function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string p
 
     string type = SkyrimNetApi.GetJsonString(paramsJson, "type", "") 
     string intensity = SkyrimNetApi.GetJsonString(paramsJson, "intensity", "") 
-
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
 
 	Actor[] actors = new Actor[2]
 	actors[0] = akOriginator
@@ -159,5 +158,52 @@ function ExtCmdIncreaseArousal_Execute(Actor akOriginator, string contextJson, s
     arcs_Arousal.ChangeActorExposure(akOriginator, 1)
 
     ;debug.MessageBox(akOriginator.GetFactionRank(slaArousalFaction))
+
+endfunction
+
+
+function ExtCmdDecreaseAttraction_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdDecreaseAttraction", thePlayer)
+
+    arcs_Utility.WriteInfo("ExtCmdDecreaseAttraction_Execute")
+
+    string changeAmount = SkyrimNetApi.GetJsonString(paramsJson, "change_amount", "") 
+    int change = 0
+    if changeAmount == "somewhat less"
+        change = -1
+    elseif changeAmount == "less"
+        change = -3
+    elseif changeAmount == "much less"
+        change = -5
+    endif
+
+    if change != 0
+        arcs_Attraction.ChangeAttractionToPlayer(akOriginator, change)
+    endif
+
+endfunction
+
+function ExtCmdIncreaseAttraction_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdIncreaseAttraction", thePlayer)
+
+    arcs_Utility.WriteInfo("ExtCmdIncreaseAttraction_Execute")
+
+    string changeAmount = SkyrimNetApi.GetJsonString(paramsJson, "change_amount", "") 
+    int change = 0
+    if changeAmount == "somewhat more"
+        change = 1
+    elseif changeAmount == "more"
+        change = 3
+    elseif changeAmount == "much more"
+        change = 5
+    endif
+
+    if change != 0
+        arcs_Attraction.ChangeAttractionToPlayer(akOriginator, change)
+    endif
 
 endfunction

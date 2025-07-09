@@ -23,7 +23,7 @@ string function GetArousalText(int arousalLevel) global
     return outputString
 endfunction
 
-int function GetActorArousal(Actor akActor) global
+int function GetActorArousalValue(Actor akActor) global
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
     int arousal = slau.GetActorArousal(akActor)
@@ -33,7 +33,8 @@ int function GetActorArousal(Actor akActor) global
     elseif arousal > config.arcs_GlobalVeryAroused.GetValue()
         result = arcs_Arousal.ACTOR_VERY_AROUSED()
     endif
-    arcs_Utility.WriteInfo("GetActorArousal check - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " result: " + result)
+    arcs_Utility.WriteInfo("arcs_Arousal - GetActorArousalValue check - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " result: " + result)
+    return result
 endfunction
 
 function ChangeActorExposure(Actor akActor, int changeAmount) global
@@ -49,5 +50,5 @@ function ChangeActorExposure(Actor akActor, int changeAmount) global
     ; endif
     int newExposure = slaf.UpdateActorExposure(akActor, changeAmount, "Arcane Sexbot updated exposure change: " + changeAmount)
     ;int newExposure = slaf.GetActorExposure(akActor)
-    arcs_Utility.WriteInfo("ChangeActorExposure - actor: " + akActor.GetDisplayName() + " old: " + exposure + " new: " + newExposure)
+    arcs_Utility.WriteInfo("arcs_Arousal - ChangeActorExposure - actor: " + akActor.GetDisplayName() + " old: " + exposure + " new: " + newExposure)
 endfunction

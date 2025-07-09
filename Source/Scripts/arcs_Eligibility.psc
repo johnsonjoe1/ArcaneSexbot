@@ -260,3 +260,51 @@ bool function ExtCmdIncreaseArousal_IsEligible(Actor akOriginator, string contex
     return result
 
 endfunction
+
+bool function ExtCmdDecreaseAttraction_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+
+    ;NOTE - player only target action - maybe use json for all actors?
+
+    bool result = true
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+
+    ;TODO - check for disabled actions
+
+    Actor thePlayer = Game.GetPlayer()
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
+    if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akTarget == thePlayer
+        return true
+    endif
+
+    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+        result = false
+    endif
+
+    return result
+
+endfunction
+
+bool function ExtCmdIncreaseAttraction_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+
+    ;NOTE - player only target action - maybe use json for all actors?
+
+    bool result = true
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+
+    ;TODO - check for disabled actions
+
+    Actor thePlayer = Game.GetPlayer()
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
+    if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akTarget == thePlayer
+        return true
+    endif
+
+    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+        result = false
+    endif
+
+    return result
+
+endfunction

@@ -1,24 +1,49 @@
-{% set in_sex_result = arcs_in_sex_scene(npc.UUID) %}
-{% if in_sex_result == "actor_having_sex" %}
+{% set sex_info = arcs_get_sex_info(npc.UUID) %}
+
+{% if sex_info.having_sex == 1 %}
 - You are currently having sex. ONLY answer like you are in the middle of intercourse and it is hard to focus on anything else. Broken sentences are good.
 {% endif %}
-{% if in_sex_result == "actor_not_having_sex" %}
+{% if sex_info.having_sex == 0 %}
+    
     - When adventuring or dealing with serious issues AVOID starting sexy talk yourself. Non sexual conversation will make you less aroused.
-    {% if arcs_sex_min_arousal_check(npc.UUID) == "sex_aroused_min_no" %}
+    - When in safe areas (cities, towns, inns, homes, etc.) sexual converation and nudity will make you more aroused.
+
+    {% if sex_info.arousal < sex_info.arousal_sex %}
     - You are not aroused enough for sex and likely to rebuff any offers for it.
     - If somebody tries to force themselves on you, they deserved to be slapped.
     {% endif %}
-    {% set attraction = arcs_get_attraction_to_player(npc.UUID) %}
-    {% if attraction == "actor_not_attracted" %}
-    - You will rebuff flirtation and sexual comments from {{ player.name }}.
+
+    {# arousal checks #}
+    {# arraction not running or attraction running and attracted #}
+    {% if sex_info.attraction_enabled == 0 or sex_info.attraction_enabled == 1 and sex_info.attraction > 50 %}
+
+        {# npc - slighty turned on #}
+        {% if sex_info.arousal >= sex_info.slightly_aroused and sex_info.arousal < sex_info.very_aroused %}
+        - You are slightly turned on and might make comments about {{ player.name }}'s appearance and other attributes.
+        {% endif %}
+
+        {# npc - very turned on #}
+        {% if sex_info.arousal >= sex_info.very_aroused %}
+        - You are very turned on and likely make comments about {{ player.name }}'s appearance and other attributes.
+        - You might make some sexually suggestive comments towards {{ player.name }}.
+        {% endif %}
+
     {% endif %}
-    {% if attraction == "actor_attracted_not_aroused" %}
-    - You are OK with flirtation and sexual comments from {{ player.name }} but don't think it is a good time.
+
+    {# attraction enabled - use arousal and attraction #}
+    {% if sex_info.attraction_enabled == 1 %}
+
+        - If {{ player.name }} engages in conversation that demonstrate shared values, interests, or experiences, your attraction level might increase.
+        - If {{ player.name }} engages in conversation or actions that you find objectionable or not showing shared values, your attraction level might decrease.
+
+        {# attraction to player - sexual comments and flirtation #}
+        {% if sex_info.attraction > 50 %}
+        - You are attracted to {{ player.name }} and are likely to make very kind or flirty comments and offer them better deals.
+        {% endif %}
+
     {% endif %}
-    {% if attraction == "actor_attracted_slightly_aroused" %}
-    - You are receptive to flirtation and sexual comments from {{ player.name }}.
-    {% endif %}
-    {% if attraction == "actor_attracted_aroused" %}
-    - You are very receptive to flirtation and sexual comments from {{ player.name }} and likely to act on them.
-    {% endif %}
+
+  
+
 {% endif %}
+

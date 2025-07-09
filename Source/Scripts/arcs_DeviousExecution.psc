@@ -6,7 +6,10 @@ function ExtCmdAddBdsmDevice_Execute(Actor akOriginator, string contextJson, str
     arcs_Utility.WriteInfo("contextJson: " + contextJson)
     arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
 
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+
+    Actor thePlayer = Game.GetPlayer()
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
 
     arcs_Movement.FaceTarget(akOriginator, akTarget)
     arcs_Movement.PlayDoWork(akOriginator)
@@ -62,9 +65,20 @@ function ExtCmdAddBdsmDevice_Execute(Actor akOriginator, string contextJson, str
 
     Armor dev = zDevicesList.GetRandomDevice(itemsList)
     if dev
+
+        if config.arcs_GlobalDeviousConfirm.GetValue() == 1 && akTarget == thePlayer
+            if !arcs_Utility.ConfirmBox(akOriginator.GetDisplayName() + " wants to add - " + type, "Allow this?", "Reject this")
+                return
+            endif
+        endif
+
         arcs_Utility.WriteInfo("Adding DD: " + dev.GetName())
         bool result = zlib.LockDevice(akTarget, dev, true)
         StorageUtil.SetFormValue(akTarget, "arcs_worn_item_" + type, dev)
+        ;store item added
+        ;StorageUtil.SetStringValue(akTarget, "arcs_worn_item_added_" + type, 0.0) ;getcurrenttime
+        ;StorageUtil.SetStringValue(akTarget, "arcs_worn_item_desc_" + type, dev.GetName())
+      
     else
         arcs_Utility.WriteInfo("No DD found")
     endif
@@ -77,18 +91,28 @@ function ExtCmdRemoveBdsmDevice_Execute(Actor akOriginator, string contextJson, 
     arcs_Utility.WriteInfo("contextJson: " + contextJson)
     arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
 
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
 
+    Actor thePlayer = Game.GetPlayer()
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
     string type = SkyrimNetApi.GetJsonString(paramsJson, "type", "") 
 
     zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
     Form dev = StorageUtil.GetFormValue(akTarget, "arcs_worn_item_" + type, none)
     if dev
 
+        if config.arcs_GlobalDeviousConfirm.GetValue() == 1 && akTarget == thePlayer
+            if !arcs_Utility.ConfirmBox(akOriginator.GetDisplayName() + " wants to remove - " + type, "Allow this?", "Reject this")
+                return
+            endif
+        endif
+
         arcs_Movement.FaceTarget(akOriginator, akTarget)
         arcs_Movement.PlayDoWork(akOriginator)
 
         bool result = zlib.UnlockDevice(akTarget, dev as Armor, none, none, true)
+
+        StorageUtil.SetFormValue(akTarget, "arcs_worn_item_" + type, none) ;todo - make sure this works
         
         arcs_Utility.WriteInfo("Removeing DD: " + dev.GetName())
 
@@ -104,7 +128,8 @@ function RemoveAllBdsmRestraints_Execute(Actor akOriginator, string contextJson,
     arcs_Utility.WriteInfo("contextJson: " + contextJson)
     arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
 
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+    Actor thePlayer = Game.GetPlayer()
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
 
     string type = SkyrimNetApi.GetJsonString(paramsJson, "type", "") 
 

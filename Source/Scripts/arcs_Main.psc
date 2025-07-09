@@ -110,20 +110,27 @@ endstate
 function RegisterDecorators()
 
     SkyrimNetApi.RegisterDecorator("arcs_get_sex_blocked", "arcs_Decorators", "GetActorBlocked")
-    SkyrimNetApi.RegisterDecorator("arcs_get_sex_purity", "arcs_Decorators", "GetActorSexualPurity")
-    SkyrimNetApi.RegisterDecorator("arcs_get_sex_preference", "arcs_Decorators", "GetActorSexualPreference")
+    ;SkyrimNetApi.RegisterDecorator("arcs_get_sex_purity", "arcs_Decorators", "GetActorSexualPurity")
+    ;SkyrimNetApi.RegisterDecorator("arcs_get_sex_preference", "arcs_Decorators", "GetActorSexualPreference")
     SkyrimNetApi.RegisterDecorator("arcs_get_nudity", "arcs_Decorators", "GetActorNudity")
     SkyrimNetApi.RegisterDecorator("arcs_get_arousal", "arcs_Decorators", "GetArousalLevel")
-    SkyrimNetApi.RegisterDecorator("arcs_get_attraction_to_player", "arcs_Decorators", "GetAttractionToPlayer")
-    SkyrimNetApi.RegisterDecorator("arcs_sex_min_arousal_check", "arcs_Decorators", "SexMinimumArousalCheck")
+    ;SkyrimNetApi.RegisterDecorator("arcs_get_attraction_to_player", "arcs_Decorators", "GetAttractionToPlayer")
+    ;SkyrimNetApi.RegisterDecorator("arcs_sex_min_arousal_check", "arcs_Decorators", "SexMinimumArousalCheck")
     SkyrimNetApi.RegisterDecorator("arcs_get_sex_thread_id", "arcs_Decorators", "GetSexThreadId")
     SkyrimNetApi.RegisterDecorator("arcs_in_sex_scene", "arcs_Decorators", "InSexScene")
+
+    SkyrimNetApi.RegisterDecorator("arcs_get_nudity_value", "arcs_Decorators", "GetNudityValue")
+    SkyrimNetApi.RegisterDecorator("arcs_get_arousal_value", "arcs_Decorators", "GetArousalValue")
+    SkyrimNetApi.RegisterDecorator("arcs_get_sex_info", "arcs_Decorators", "GetSexInfo")
 
     ;other
     ;sex thread ID decorator - pull the sl thread id stored on actor
     ;check sex enjoyment
     ;is victim 
     ;is agressor 
+
+    ;arcs_get_info decorator - return json with nudity, arousal, sex preferences, purity, etc. with one call
+    ;min mentioned single calls were more performant
 
 endfunction
 
@@ -187,6 +194,23 @@ function RegisterActions()
                                     1, "", \
                                     "", "")
 
+    SkyrimNetApi.RegisterAction("ExtCmdIncreaseAttraction", "Use this to indicate you are {change_amount} attracted to {target}", \
+                                    "arcs_Eligibility", "ExtCmdIncreaseAttraction_IsEligible", \
+                                    "arcs_Execution", "ExtCmdIncreaseAttraction_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\",\"change_amount\":\"somewhat more|more|much more\"}", \
+                                    "", "")
+
+    SkyrimNetApi.RegisterAction("ExtCmdDecreaseAttraction", "Use this to indicate you are {change_amount} attracted to {target}", \
+                                    "arcs_Eligibility", "ExtCmdDecreaseAttraction_IsEligible", \
+                                    "arcs_Execution", "ExtCmdDecreaseAttraction_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\",\"change_amount\":\"somewhat less|less|much less\"}", \
+                                    "", "")
+
+    ;ExtCmdIncreaseSexualAttraction
+    ;ExtCmdDecreaseSexualAttraction
+
 
     ;sex_type should be curated tags list, start with tags that minai used for sex events
     ;pull the SL tag selector out of binding?
@@ -195,7 +219,6 @@ function RegisterActions()
     ;other actions
     ;**********************
     ;stop sex
-    ;speed up sex
     ;masturbate
     ;multi-party sex?
     
@@ -304,17 +327,19 @@ function ShowHotkeyMenu()
 
     if listReturn == 0 && inCrosshairs
         bool result = arcs_SkyrimNet.CreateDirectNarration("{{ player.name }} pulls you close and starts unbuttoning your robe for sex.", inCrosshairs)
-        if arcs_Arousal.GetActorArousal(inCrosshairs) > 0
+        int arousalVal = arcs_Arousal.GetActorArousalValue(inCrosshairs)
+        if arousalVal > 0
+            arcs_Utility.WriteInfo("Player started sex event - attraction passed")
             Utility.Wait(5.0)
             Actor[] actors = new Actor[2]
             actors[0] = thePlayer
             actors[1] = inCrosshairs
-            if slab.StartSex(actors, "vaginal", "aggressive")
+            if slab.StartSex(actors, "", "")
             else 
                 arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
             endif
         else 
-            
+            arcs_Utility.WriteInfo("Player started sex event - attraction failed")
         endif
 
     elseif listReturn == 1
