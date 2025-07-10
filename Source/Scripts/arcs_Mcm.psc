@@ -9,15 +9,21 @@ int toggleActionUndress
 int toggleActionDress
 int toggleActionDecreaseArousal
 int toggleActionIncreaseArousal
+int toggleActionDecreaseAttraction
+int toggleActionIncreaseAttraction
 
 int toggleActionAllDevious
 
-
 int toggleShowSexConfirm
+int toggleDeviousConfirm
 
 int sliderArousalForSex
 int sliderSlightlyAroused
 int sliderVeryAroused
+int toggleUseSexualityInCheck
+
+int toggleAttractionSystem
+int toggleAttractionSeeding
 
 int keyCodeLeftControl = 29
 int keyCodeRightControl = 157
@@ -35,13 +41,15 @@ event OnConfigOpen()
 
     thePlayer = Game.GetPlayer()
     
-    Pages = new string[5]
+    Pages = new string[7]
 
     Pages[0] = "Settings"
     Pages[1] = "Arousal Settings"
-    Pages[2] = "SexLab Tags"
-    Pages[3] = "Manage Actions"
-    Pages[4] = "Diagnostics"
+    Pages[2] = "Attraction Settings"
+    Pages[3] = "SexLab Tags"
+    Pages[4] = "Manage Actions"
+    Pages[5] = "Devious Devices"
+    Pages[6] = "Diagnostics"
 
 endevent
 
@@ -56,12 +64,16 @@ event OnPageReset(string page)
         DisplaySettings()
     elseif page == "Arousal Settings"
         DisplayArousal()
+    elseif page == "Attraction Settings"
+        DisplayAttraction()
     elseif page == "SexLab Tags"
         DisplaySexLabTags()
     elseif page == "Manage Actions"
         DisplayActions()
     elseif page == "Diagnostics"
         DisplayDiagnostics()
+    elseif page == "Devious Devices"
+        DisplayDevious()
 
     endif
 
@@ -126,6 +138,21 @@ function DisplayArousal()
     sliderSlightlyAroused = AddSliderOption("Slightly Aroused Conversation", arcs_GlobalSlightlyAroused.GetValue() as int, "{0}")
     sliderVeryAroused = AddSliderOption("Very Aroused Conversation", arcs_GlobalVeryAroused.GetValue() as int, "{0}")
 
+
+
+endfunction
+
+function DisplayAttraction()
+
+    AddHeaderOption("Attraction Settings")
+    AddHeaderOption("")
+
+    toggleAttractionSystem = AddToggleOption("Use Attraction System", config.arcs_GlobalUseAttractionSystem.GetValue() as int)
+    toggleAttractionSeeding = AddToggleOption("Use Attraction Seeding", config.arcs_GlobalUseAttractionSeed.GetValue() as int)
+
+    toggleUseSexualityInCheck = AddToggleOption("Use SL Sexuality - Bi, Gay, Straight", config.arcs_GlobalUseSexualityCheck.GetValue() as int)
+
+
 endfunction
 
 function DisplaySexLabTags()
@@ -143,19 +170,23 @@ function DisplayActions()
     AddHeaderOption("")
 
     toggleActionStartSex = AddToggleOption("Action - Start Sex", config.arcs_GlobalActionStartSex.GetValue() as int)
-    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdStartSex", thePlayer))
+    AddTextOption("Used Times - Start Sex", arcs_Utility.GetTimesUsed("ExtCmdStartSex", thePlayer))
     toggleActionStripTarget = AddToggleOption("Action - Strip Target", config.arcs_GlobalActionStripTarget.GetValue() as int)
-    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdStripTarget", thePlayer))
+    AddTextOption("Used Times - Strip Target", arcs_Utility.GetTimesUsed("ExtCmdStripTarget", thePlayer))
     toggleActionDressTarget = AddToggleOption("Action - Dress Target", config.arcs_GlobalActionDressTarget.GetValue() as int)
-    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdDressTarget", thePlayer))
+    AddTextOption("Used Times - Dress Target", arcs_Utility.GetTimesUsed("ExtCmdDressTarget", thePlayer))
     toggleActionUndress = AddToggleOption("Action - Undress", config.arcs_GlobalActionUndress.GetValue() as int)
-    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdUndress", thePlayer))
+    AddTextOption("Used Times - Undress", arcs_Utility.GetTimesUsed("ExtCmdUndress", thePlayer))
     toggleActionDress = AddToggleOption("Action - Dress", config.arcs_GlobalActionDress.GetValue() as int)
-    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdDress", thePlayer))
+    AddTextOption("Used Times - Dres", arcs_Utility.GetTimesUsed("ExtCmdDress", thePlayer))
     toggleActionDecreaseArousal = AddToggleOption("Action - Decrease Arousal", config.arcs_GlobalActionDecreaseArousal.GetValue() as int)
-    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdDecreaseArousal", thePlayer))
+    AddTextOption("Used Times - Decrease Arousal", arcs_Utility.GetTimesUsed("ExtCmdDecreaseArousal", thePlayer))
     toggleActionIncreaseArousal = AddToggleOption("Action - Increase Arousal", config.arcs_GlobalActionIncreaseArousal.GetValue() as int)
-    AddTextOption("Used Times", arcs_Utility.GetTimesUsed("ExtCmdIncreaseArousal", thePlayer))
+    AddTextOption("Used Times - Increase Arousal", arcs_Utility.GetTimesUsed("ExtCmdIncreaseArousal", thePlayer))
+    toggleActionDecreaseAttraction = AddToggleOption("Action - Decrease Attraction", config.arcs_GlobalActionDecreaseAttraction.GetValue() as int)
+    AddTextOption("Used Times - Decrease Attraction", arcs_Utility.GetTimesUsed("ExtCmdDecreaseAttraction", thePlayer))
+    toggleActionIncreaseAttraction = AddToggleOption("Action - Increase Attraction", config.arcs_GlobalActionIncreaseAttraction.GetValue() as int)
+    AddTextOption("Used Times - Increase Attraction", arcs_Utility.GetTimesUsed("ExtCmdIncreaseAttraction", thePlayer))
 
     if config.arcs_GlobalHasDeviousDevices.GetValue() == 1
 
@@ -164,6 +195,23 @@ function DisplayActions()
 
     toggleActionAllDevious = AddToggleOption("Action - All Devious Device", config.arcs_GlobalActionAllDevious.GetValue() as int)
 
+    endif
+
+endfunction
+
+function DisplayDevious()
+
+    AddHeaderOption("Devious Device Settings")
+    AddHeaderOption("")
+
+    if config.arcs_GlobalHasDeviousDevices.GetValue() == 1
+
+        toggleDeviousConfirm = AddToggleOption("Show Confirm For Device Change", config.arcs_GlobalDeviousConfirm.GetValue() as int)
+        AddTextOption("", "")
+
+
+    else
+        AddTextOption("Not installed", "")
     endif
 
 endfunction
@@ -189,6 +237,20 @@ event OnOptionSelect(int option)
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionIncreaseArousal))
     elseif option == toggleActionAllDevious
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionAllDevious))
+    elseif option == toggleDeviousConfirm
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousConfirm))
+    elseif option == toggleUseSexualityInCheck
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalUseSexualityCheck))
+    elseif option == toggleAttractionSystem
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalUseAttractionSystem))
+    elseif option == toggleAttractionSeeding
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalUseAttractionSeed))
+    elseif option == toggleActionDecreaseAttraction
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionDecreaseAttraction))
+    elseif option == toggleActionIncreaseAttraction
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionIncreaseAttraction))
+
+
 
 
     endif

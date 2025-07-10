@@ -94,17 +94,25 @@ function RegisterActions()
                                     1, "{\"target\":\"Actor\",\"type\":\"anal|vaginal\"}", \
                                     "", "")  
 
-
-    ;todo:
-    ;add/remove chastity
-    ;add/remove plugs
-    ;add/remove piercings
+    ;vibrate plug
+    ;shock?
 
 endfunction
 
 function RegisterDecorators()
 
-    ;item description decorators
+    ;dd enabled decorator
+    ;item description decorators & time worn (return json)
+
+    ;min's example:
+    ;{% set my_payload = get_worn_gear_info(actorUUID) %}
+    {% if worn_has_keyword(actorUUID, "zad_DeviousBelt") %}
+    ;  - {{ actor_name }} is locked in a {{ my_payload.belt.description }} for {{ my_payload.belt.duration }}, denying (etc)
+
+
+    ;what's in the bondage bag decorator
+    ;this would use a favorites list to let the dom/top know these are the items that they can use for play
+    ;getting a lot of tie in silk ropes comments from LLM when adding metal cuffs
 
 endfunction
 

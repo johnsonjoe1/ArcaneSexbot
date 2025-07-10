@@ -20,7 +20,7 @@ bool function ExtCmdAddBdsmDevice_IsEligible(Actor akOriginator, string contextJ
 
     Form dev = StorageUtil.GetFormValue(akTarget, "arcs_worn_item_" + type, none)
     if dev
-        result = false ;no item to unequip
+        result = false ;already wearning this type of item
     endif
     ;TODO - add a zad keyword check based on type also
 
