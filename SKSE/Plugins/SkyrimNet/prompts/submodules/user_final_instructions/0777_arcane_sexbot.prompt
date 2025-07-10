@@ -1,0 +1,5 @@
+{% set actor_name = decnpc(npc.UUID).name %}
+{% set actor_arousal = arcs_get_arousal(npc.UUID) %}
+{% if actor_arousal == "actor_very_aroused" %}
+REMEMBER: {{ actor_name }} is currently highly aroused. Consider subtly factoring this into the response if appropriate, but don't force it otherwise.
+{% endif %}
