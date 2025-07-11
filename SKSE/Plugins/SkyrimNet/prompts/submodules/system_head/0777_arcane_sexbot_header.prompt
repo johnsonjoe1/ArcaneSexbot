@@ -1,3 +1,4 @@
+{% if render_mode == "full" or render_mode == "static" %}
 {% set sex_info = arcs_get_sex_info(npc.UUID) %}
 
 {% if sex_info.having_sex == 1 %}
@@ -42,8 +43,5 @@
         {% endif %}
 
     {% endif %}
-
-  
-
 {% endif %}
-
+{% endif %}
