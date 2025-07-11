@@ -42,6 +42,10 @@ function CreateDefaultTagsList()
     ;TODO - not sure the plan for this yet
 endfunction
 
+SexLabFramework function GetSexLab() global
+    return Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
+endfunction
+
 bool function ActorInSexScene(Actor akActor) global
     SexLabFramework slFramework = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
     return slFramework.IsActorActive(akActor)
@@ -83,14 +87,17 @@ bool function StartSex(Actor[] actors, string type, string intensity)
 
     bool result = false
 
-    string useTags = type
+    string useTags = ""
+    if type != "all"
+        useTags = type
+    endif
 
     ;if not type was provided
-    if type == ""
+    if useTags == ""
         if actors.length == 1
-            type = MakeDefaultSLTag(actors[0])
+            useTags = MakeDefaultSLTag(actors[0])
         elseif actors.length == 2
-            type = MakeDefaultSLTag(actors[0], actors[1])
+            useTags = MakeDefaultSLTag(actors[0], actors[1])
         endif
     endif
 
@@ -104,7 +111,7 @@ bool function StartSex(Actor[] actors, string type, string intensity)
         endif
     endif
 
-    arcs_Utility.WriteInfo("arcs_SexLab - useTags : " + useTags + " blockTags: " + blockTags)
+    arcs_Utility.WriteInfo("arcs_SexLab - type: " + type + " useTags : " + useTags + " blockTags: " + blockTags)
 
     sslThreadModel tm = sfx.NewThread()
     if tm
@@ -160,7 +167,7 @@ event OnHavingSexFactionHookOrgasm(Form FormRef, int tid)
     Actor akActor = FormRef as Actor
     arcs_Utility.WriteInfo(akActor.GetDisplayName() + " just had an orgasm")
 
-    bool result = arcs_SkyrimNet.CreateDirectNarration("I am having an orgasm...", akActor)
+    bool result = arcs_SkyrimNet.CreateDirectNarration(akActor.GetDisplayName() + " is having an orgasm", akActor)
     arcs_Utility.WriteInfo("OnHavingSexFactionHookOrgasm - registered dialogue: " + result + " actor: " + akActor.GetDisplayName())
 
     ; if akActor != Game.GetPlayer()

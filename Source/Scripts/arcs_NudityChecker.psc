@@ -50,31 +50,31 @@ bool function BakaChecks(Actor a)
 
     bool found = false
 
-    if !slaArmorPrettyKeyword && !found
+    if slaArmorPrettyKeyword != none && !found
         if a.WornHasKeyword(slaArmorPrettyKeyword)
             found = true
         endif
     endif
 
-    if !eroticArmorKeyword && !found
+    if eroticArmorKeyword != none && !found
         if a.WornHasKeyword(eroticArmorKeyword)
             found = true
         endif
     endif
 
-    if !slaAmorSpendexKeyword && !found
+    if slaAmorSpendexKeyword != none && !found
         if a.WornHasKeyword(slaAmorSpendexKeyword)
             found = true
         endif
     endif
 
-    if !slaArmorHalfNakedBikniKeyword && !found
+    if slaArmorHalfNakedBikniKeyword != none && !found
         if a.WornHasKeyword(slaArmorHalfNakedBikniKeyword)
             found = true
         endif
     endif
 
-    if !slaArmorHalfNakedKeyword && !found
+    if slaArmorHalfNakedKeyword != none && !found
         if a.WornHasKeyword(slaArmorHalfNakedKeyword)
             found = true
         endif
@@ -98,6 +98,12 @@ endfunction
 
 int function NudityCheck(Actor a)
 
+    if a == none
+        arcs_Utility.WriteInfo("Nudity check - none actor sent, exiting")
+        return -1
+    endif
+
+    ;-1 - failure
     ;0 - nude
     ;1 - skimpy
     ;2 - dressed

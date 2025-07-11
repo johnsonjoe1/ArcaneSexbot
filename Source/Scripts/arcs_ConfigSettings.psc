@@ -26,3 +26,7 @@ GlobalVariable property arcs_GlobalActionIncreaseAttraction auto
 GlobalVariable property arcs_GlobalHasDeviousDevices auto
 GlobalVariable property arcs_GlobalActionAllDevious auto
 GlobalVariable property arcs_GlobalDeviousConfirm auto
+
+Actor property ThePlayer auto
+
+int property DhlpSuspend auto

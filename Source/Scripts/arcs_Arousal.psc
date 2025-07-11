@@ -33,7 +33,7 @@ int function GetActorArousalValue(Actor akActor) global
     elseif arousal > config.arcs_GlobalVeryAroused.GetValue()
         result = arcs_Arousal.ACTOR_VERY_AROUSED()
     endif
-    arcs_Utility.WriteInfo("arcs_Arousal - GetActorArousalValue check - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " result: " + result)
+    ;arcs_Utility.WriteInfo("arcs_Arousal - GetActorArousalValue check - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " result: " + result)
     return result
 endfunction
 
@@ -50,5 +50,5 @@ function ChangeActorExposure(Actor akActor, int changeAmount) global
     ; endif
     int newExposure = slaf.UpdateActorExposure(akActor, changeAmount, "Arcane Sexbot updated exposure change: " + changeAmount)
     ;int newExposure = slaf.GetActorExposure(akActor)
-    arcs_Utility.WriteInfo("arcs_Arousal - ChangeActorExposure - actor: " + akActor.GetDisplayName() + " old: " + exposure + " new: " + newExposure)
+    ;arcs_Utility.WriteInfo("arcs_Arousal - ChangeActorExposure - actor: " + akActor.GetDisplayName() + " old: " + exposure + " new: " + newExposure)
 endfunction

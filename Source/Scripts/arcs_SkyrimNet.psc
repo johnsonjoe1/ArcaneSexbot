@@ -28,6 +28,8 @@ endfunction
 
 bool function CreateDirectNarration(string content, Actor sourceActor = none, Actor targetActor = none) global
 
+    arcs_Utility.WriteInfo("DN prompt: " + content)
+
     ;int function DirectNarration(String content, Actor originatorActor = None, Actor targetActor = None) Global Native
 
     int result = SkyrimNetApi.DirectNarration(content, sourceActor, targetActor)

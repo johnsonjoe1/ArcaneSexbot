@@ -90,3 +90,16 @@ endfunction
 string function JsonIntValueReturn(string name, int value) global
     return "{\"" + name + "\":\"" + value + "\"}"    
 endfunction
+
+float function GetTime() global
+    return Utility.GetCurrentGameTime()
+endfunction
+
+int function GetElapsedHours(float startTime, float endTime, bool roundUp) global
+    float hoursPassed = endTime - startTime
+    if roundUp
+        return Math.Ceiling(hoursPassed) as int
+    else
+        return Math.Floor(hoursPassed) as int
+    endif
+endfunction

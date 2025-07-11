@@ -81,7 +81,7 @@ int function AttractionToPlayerCheck(Actor akActor) global
 
     endif
 
-    arcs_Utility.WriteInfo("AttractionToPlayerCheck - attraction: " + attraction + " who: " + akActor.GetDisplayName())
+    ;arcs_Utility.WriteInfo("AttractionToPlayerCheck - attraction: " + attraction + " who: " + akActor.GetDisplayName())
 
     return attraction
 

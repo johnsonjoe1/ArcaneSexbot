@@ -20,7 +20,7 @@ function TestPlayer()
 
     int nudity = ncheck.NudityCheck(thePlayer)
 
-    arcs_Utility.WriteInfo("player: " + playerName + " nudity check: " + nudity)
+    ;arcs_Utility.WriteInfo("player: " + playerName + " nudity check: " + nudity)
 
     ;need llm message queue
 
@@ -37,7 +37,7 @@ function TestPlayer()
             ;int result = SkyrimNetApi.DirectNarration(playerName + " is wearing skimpy clothing that reveals their body.")
         endif
         bool result = arcs_SkyrimNet.CreateShortLivedEvent("nudity_event_" + thePlayer.GetDisplayName(), "sex_event_orgasm", desc, data, thePlayer, thePlayer)
-        arcs_Utility.WriteInfo("arcs_NudityDetection - created short term event: " + result + " actor: " + playerName)
+        ;arcs_Utility.WriteInfo("arcs_NudityDetection - created short term event: " + result + " actor: " + playerName)
     endif
 
 endfunction
@@ -82,7 +82,7 @@ function TestActor(Actor a)
     int purity = slStats.GetPurityLevel(a)
     int sexuality = slStats.GetSexuality(a)
 
-    arcs_Utility.WriteInfo("actor found - name: " + actorName + " nudity check: " + nudity + " arousal: " + arousal + " purity: " + purity + " sexuality: " + sexuality + " exbitionist: " + exbitionist + " genderPreference: " + genderPreference)
+    ;arcs_Utility.WriteInfo("actor found - name: " + actorName + " nudity check: " + nudity + " arousal: " + arousal + " purity: " + purity + " sexuality: " + sexuality + " exbitionist: " + exbitionist + " genderPreference: " + genderPreference)
 
 endfunction
 

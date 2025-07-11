@@ -1,0 +1,8 @@
+    {% if worn_has_keyword(player.UUID, "zad_DeviousGag") %}
+    - {{ player.name }} has a gag in their mouth. You need to pretend anything they say is ONLY gagged grunts and mumbling, and that you can't undertand them. This is VERY important for immersion.
+    - If {{ player.name }} is gagged, DO NOT make your own gagged sounds in responses.
+    {% endif %}
+
+    {% if worn_has_keyword(npc.UUID, "zad_DeviousGag") %}
+    - {{ decnpc(npc.UUID).name }} is gagged. Speech is blocked. Convert words to grunts and mumbling of similar length.
+    {% endif %}

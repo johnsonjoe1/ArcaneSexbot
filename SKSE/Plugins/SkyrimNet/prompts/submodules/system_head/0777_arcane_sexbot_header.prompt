@@ -6,7 +6,7 @@
 {% if sex_info.having_sex == 0 %}
     
     - When adventuring or dealing with serious issues AVOID starting sexy talk yourself. Non sexual conversation will make you less aroused.
-    - When in safe areas (cities, towns, inns, homes, etc.) sexual converation and nudity will make you more aroused.
+    - When in safe areas (cities, towns, inns, homes, etc.), relaxed times in the wilds, or social gatherings, sexual conversation and nudity will make you more aroused.
 
     {% if sex_info.arousal < sex_info.arousal_sex %}
     - You are not aroused enough for sex and likely to rebuff any offers for it.

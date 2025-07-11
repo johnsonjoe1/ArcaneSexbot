@@ -63,46 +63,46 @@ string function GetArousalValue(Actor akActor) global
     return arcs_Utility.JsonIntValueReturn("arousal", arousal)
 endfunction
 
-string function GetAttractionToPlayer(Actor akActor) global
+; string function GetAttractionToPlayer(Actor akActor) global
 
-    string outputString = "actor_not_attracted"
+;     string outputString = "actor_not_attracted"
 
-    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
-    slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
-    sslActorStats slStat = Quest.GetQuest("SexLabQuestFramework") as sslActorStats
+;     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+;     slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+;     sslActorStats slStat = Quest.GetQuest("SexLabQuestFramework") as sslActorStats
     
-    int arousal = slau.GetActorArousal(akActor)
-    ;bool exbitionist = slau.IsActorExhibitionist(akActor)
-    int purity = slStat.GetPurityLevel(akActor)
-    int sexuality = slStat.GetSexuality(akActor)
-    int gender = akActor.GetLeveledActorBase().GetSex()
+;     int arousal = slau.GetActorArousal(akActor)
+;     ;bool exbitionist = slau.IsActorExhibitionist(akActor)
+;     int purity = slStat.GetPurityLevel(akActor)
+;     int sexuality = slStat.GetSexuality(akActor)
+;     int gender = akActor.GetLeveledActorBase().GetSex()
 
-    Actor thePlayer = Game.GetPlayer()
-    int playerPurity = slStat.GetPurityLevel(thePlayer)
-    int playerGender = thePlayer.GetLeveledActorBase().GetSex()
+;     Actor thePlayer = Game.GetPlayer()
+;     int playerPurity = slStat.GetPurityLevel(thePlayer)
+;     int playerGender = thePlayer.GetLeveledActorBase().GetSex()
 
-    bool sexCompatible = false
-    if config.arcs_GlobalUseAttractionSystem.GetValue() == 1
-        sexCompatible = arcs_Attraction.AttractionToPlayerCheck(akActor)
-    else
-        sexCompatible = true
-    endif
+;     bool sexCompatible = false
+;     if config.arcs_GlobalUseAttractionSystem.GetValue() == 1
+;         sexCompatible = arcs_Attraction.AttractionToPlayerCheck(akActor)
+;     else
+;         sexCompatible = true
+;     endif
 
-    if sexCompatible
-        if arousal <= config.arcs_GlobalSlightlyAroused.GetValue()
-            outputString = "actor_attracted_not_aroused"  
-        elseif arousal > config.arcs_GlobalSlightlyAroused.GetValue()  && arousal < config.arcs_GlobalVeryAroused.GetValue()
-            outputString = "actor_attracted_slightly_aroused"
-        elseif  arousal >= config.arcs_GlobalVeryAroused.GetValue()
-            outputString = "actor_attracted_aroused"
-        endif
-    endif
+;     if sexCompatible
+;         if arousal <= config.arcs_GlobalSlightlyAroused.GetValue()
+;             outputString = "actor_attracted_not_aroused"  
+;         elseif arousal > config.arcs_GlobalSlightlyAroused.GetValue()  && arousal < config.arcs_GlobalVeryAroused.GetValue()
+;             outputString = "actor_attracted_slightly_aroused"
+;         elseif  arousal >= config.arcs_GlobalVeryAroused.GetValue()
+;             outputString = "actor_attracted_aroused"
+;         endif
+;     endif
 
-    arcs_Utility.WriteInfo("GetAttractionToPlayer decorator - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " sexCompatible: " + sexCompatible + " output: " + outputString)
+;     arcs_Utility.WriteInfo("GetAttractionToPlayer decorator - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " sexCompatible: " + sexCompatible + " output: " + outputString)
 
-    return outputString
+;     return outputString
 
-endfunction
+; endfunction
 
 string function SexMinimumArousalCheck(Actor akActor) global
 
@@ -146,23 +146,35 @@ string function GetSexInfo(Actor akActor) global
     sslActorStats slStat = Quest.GetQuest("SexLabQuestFramework") as sslActorStats
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
 
-    int nudity = ncheck.NudityCheck(akActor)
-    int arousal = slau.GetActorArousal(akActor)
-    int purity = slStat.GetPurityLevel(akActor)
-    int sexuality = slStat.GetSexuality(akActor)
-    int gender = akActor.GetLeveledActorBase().GetSex()
-    bool inScene = arcs_SexLab.ActorInSexScene(akActor)
-    int inSceneInt = 0
-    if inScene
-        inSceneInt = 1
+    int nudity = -1
+    int arousal = -1
+    int purity = -1
+    int sexuality = -1
+    int gender = -1
+    int inSceneInt = -1
+    string displayName = ""
+
+    if akActor != none
+        nudity = ncheck.NudityCheck(akActor)
+        arousal = slau.GetActorArousal(akActor)
+        purity = slStat.GetPurityLevel(akActor)
+        sexuality = slStat.GetSexuality(akActor)
+        gender = akActor.GetLeveledActorBase().GetSex()
+        bool inScene = arcs_SexLab.ActorInSexScene(akActor)
+        inSceneInt = 0
+        if inScene
+            inSceneInt = 1
+        endif
+        displayName = akActor.GetDisplayName()
     endif
+
     int arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
     int slightlyArousedThreshold =  config.arcs_GlobalSlightlyAroused.GetValue() as int
     int veryArousedThreshold = config.arcs_GlobalVeryAroused.GetValue() as int
 
     int attraction = 0
     int attractionEnabled = 0
-    if config.arcs_GlobalUseAttractionSystem.GetValue() == 1
+    if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akActor != none
         attractionEnabled = 1
         attraction = arcs_Attraction.AttractionToPlayerCheck(akActor)
     else
@@ -171,7 +183,7 @@ string function GetSexInfo(Actor akActor) global
 
     string output = "{"
 
-    output += "\"npcname\":\"" + akActor.GetDisplayName() + "\","
+    output += "\"npcname\":\"" + displayName + "\","
     output += "\"having_sex\":" + inSceneInt + ","
     output += "\"nudity\":" + nudity + ","
     output += "\"attraction_enabled\":" + attractionEnabled + ","

@@ -35,13 +35,22 @@ int keyCodeRightShift = 54
 int hotkeyKeymapOption
 int hotkeyModifierOption
 
+int actorCountMenu
+int selectSlPageMenu
+int selectedActorCount
+int selectedSlPage
+string[] actorCountArr
+string[] slPagesArr
+string[] slEditPageArr
+int[] slToggleArr
+
 Actor thePlayer
 
 event OnConfigOpen()
 
     thePlayer = Game.GetPlayer()
     
-    Pages = new string[7]
+    Pages = new string[8]
 
     Pages[0] = "Settings"
     Pages[1] = "Arousal Settings"
@@ -49,9 +58,34 @@ event OnConfigOpen()
     Pages[3] = "SexLab Tags"
     Pages[4] = "Manage Actions"
     Pages[5] = "Devious Devices"
-    Pages[6] = "Diagnostics"
+    Pages[6] = "Submission & Slavery"
+    Pages[7] = "Diagnostics"
+
+    ;load
+    actorCountArr = CreateNumberMenu(5)
+
+    slEditPageArr = new string[12]
+    slToggleArr = new int[12]
+
+    if selectedActorCount == 0
+        selectedActorCount = 1
+        selectedSlPage = 1
+    endif
 
 endevent
+
+string[] function CreateNumberMenu(int max)
+    string str = ""
+    int i = 1
+    while i <= max
+        if str != ""
+            str += "|"
+        endif
+        str += i
+        i += 1
+    endwhile
+    return StringUtil.Split(str, "|")
+endfunction
 
 event OnPageReset(string page)
 
@@ -74,6 +108,8 @@ event OnPageReset(string page)
         DisplayDiagnostics()
     elseif page == "Devious Devices"
         DisplayDevious()
+    elseif page == "Submission & Slavery"
+        DisplaySlavery()
 
     endif
 
@@ -160,7 +196,30 @@ function DisplaySexLabTags()
     AddHeaderOption("SexLab Tags")
     AddHeaderOption("")
 
+    SexLabFramework sfx = arcs_SexLab.GetSexLab()
 
+    string[] tags = sfx.GetAllAnimationTags(selectedActorCount, true)
+
+    slPagesArr = CreateNumberMenu(Math.Ceiling(tags.Length as float / 12.0))
+
+    actorCountMenu = AddMenuOption("View For Actor Count", selectedActorCount)
+    selectSlPageMenu = AddMenuOption("Select Page", selectedSlPage)
+
+    AddTextOption("Total For Count", tags.Length)
+    AddTextOption("", "")
+
+    int ip = (12 * (selectedSlPage - 1))
+    int i = 0
+    while ip < tags.Length && i < 12
+
+        slEditPageArr[i] = tags[ip]
+
+        slToggleArr[i] = AddTextOption(slEditPageArr[i], "")
+
+        ip += 1
+        i += 1
+
+    endwhile
 
 endfunction
 
@@ -211,10 +270,57 @@ function DisplayDevious()
 
 
     else
-        AddTextOption("Not installed", "")
+        AddTextOption("Devious Devices Not installed", "")
     endif
 
 endfunction
+
+function DisplaySlavery()
+
+    AddHeaderOption("Submission & Slavery")
+    AddHeaderOption("")
+
+    if config.arcs_GlobalHasDeviousDevices.GetValue() == 1
+
+
+
+
+    else
+        AddTextOption("Devious Devices Not installed", "")
+    endif
+
+endfunction
+
+event OnOptionMenuOpen(int option)
+
+    if option == actorCountMenu
+        SetMenuDialogOptions(actorCountArr)
+        SetMenuDialogStartIndex(actorCountArr.Find("" + selectedActorCount))
+
+    elseif option == selectSlPageMenu
+        SetMenuDialogOptions(slPagesArr)
+        SetMenuDialogStartIndex(slPagesArr.Find("" + selectedSlPage))
+
+    endif
+
+endevent
+
+event OnOptionMenuAccept(int option, int index)
+
+    if option == actorCountMenu
+        selectedActorCount = index + 1
+        selectedSlPage = 1 ;go back to the first page
+        SetMenuOptionValue(actorCountMenu, index + 1)
+        ForcePageReset()
+
+    elseif option == selectSlPageMenu
+        selectedSlPage = index + 1
+        SetMenuOptionValue(selectSlPageMenu, index + 1)
+        ForcePageReset() 
+
+    endif
+
+endevent
 
 event OnOptionSelect(int option)
 

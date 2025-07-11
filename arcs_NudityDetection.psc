@@ -20,7 +20,7 @@ function TestPlayer()
 
     int nudity = ncheck.NudityCheck(thePlayer)
 
-    arcs_Utility.WriteInfo("player: " + playerName + " nudity check: " + nudity)
+    ;arcs_Utility.WriteInfo("player: " + playerName + " nudity check: " + nudity)
 
     ;need llm message queue
 
@@ -72,7 +72,7 @@ function TestActor(Actor a)
     int purity = slStats.GetPurityLevel(a)
     int sexuality = slStats.GetSexuality(a)
 
-    arcs_Utility.WriteInfo("actor found - name: " + actorName + " nudity check: " + nudity + " arousal: " + arousal + " purity: " + purity + " sexuality: " + sexuality + " exbitionist: " + exbitionist + " genderPreference: " + genderPreference)
+    ;arcs_Utility.WriteInfo("actor found - name: " + actorName + " nudity check: " + nudity + " arousal: " + arousal + " purity: " + purity + " sexuality: " + sexuality + " exbitionist: " + exbitionist + " genderPreference: " + genderPreference)
 
 endfunction
 
