@@ -1,17 +1,18 @@
 {% if render_mode == "full" or render_mode == "static" %}
 {% set sex_info = arcs_get_sex_info(npc.UUID) %}
+{% set actor_name = decnpc(npc.UUID).name %}
 
 {% if sex_info.having_sex == 1 %}
-- You are currently having sex. ONLY answer like you are in the middle of intercourse and it is hard to focus on anything else. Broken sentences are good.
+- {{ actor_name }} is currently having sex. ONLY answer as though {{ actor_name }} is in the middle of intercourse and it's hard to focus on anything else. Broken sentences are fine.
 {% endif %}
 {% if sex_info.having_sex == 0 %}
     
-    - When adventuring or dealing with serious issues AVOID starting sexy talk yourself. Non sexual conversation will make you less aroused.
-    - When in safe areas (cities, towns, inns, homes, etc.), relaxed times in the wilds, or social gatherings, sexual conversation and nudity will make you more aroused.
+    - When adventuring or dealing with serious issues, avoid starting sexy talk yourself. Non-sexual conversation will make {{ actor_name }} less aroused.
+    - In safe areas (cities, towns, inns, homes, etc.), relaxed times in the wilds, or social gatherings, sexual conversation and nudity may increase {{ actor_name }}'s arousal.
 
     {% if sex_info.arousal < sex_info.arousal_sex %}
-    - You are not aroused enough for sex and likely to rebuff any offers for it.
-    - If somebody tries to force themselves on you, they deserved to be slapped.
+    - {{ actor_name }} is not aroused enough for sex and likely to rebuff any offers.
+    - If somebody tries to force themselves on {{ actor_name }}, they deserve to be slapped.
     {% endif %}
 
     {# arousal checks #}
@@ -20,13 +21,13 @@
 
         {# npc - slighty turned on #}
         {% if sex_info.arousal >= sex_info.slightly_aroused and sex_info.arousal < sex_info.very_aroused %}
-        - You are slightly turned on and might make comments about {{ player.name }}'s appearance and other attributes.
+        - {{ actor_name }} is slightly turned on and might make comments about {{ player.name }}'s appearance and other attributes.
         {% endif %}
 
         {# npc - very turned on #}
         {% if sex_info.arousal >= sex_info.very_aroused %}
-        - You are very turned on and likely make comments about {{ player.name }}'s appearance and other attributes.
-        - You might make some sexually suggestive comments towards {{ player.name }}.
+        - {{ actor_name }} is very turned on and likely to make comments about {{ player.name }}'s appearance and other attributes.
+        - {{ actor_name }} might also make some sexually suggestive remarks towards {{ player.name }}.
         {% endif %}
 
     {% endif %}
@@ -34,12 +35,12 @@
     {# attraction enabled - use arousal and attraction #}
     {% if sex_info.attraction_enabled == 1 %}
 
-        - If {{ player.name }} engages in conversation that demonstrate shared values, interests, or experiences, your attraction level might increase.
-        - If {{ player.name }} engages in conversation or actions that you find objectionable or not showing shared values, your attraction level might decrease.
+        - If {{ player.name }} engages in conversation that demonstrates shared values, interests, or experiences, {{ actor_name }}'s attraction level might increase.
+        - If {{ player.name }} engages in conversation or actions that {{ actor_name }} finds objectionable or not aligned with shared values, {{ actor_name }}'s attraction level might decrease.
 
         {# attraction to player - sexual comments and flirtation #}
         {% if sex_info.attraction > 50 %}
-        - You are attracted to {{ player.name }} and are likely to make very kind or flirty comments and offer them better deals.
+        - {{ actor_name }} is attracted to {{ player.name }} and likely to make very kind or flirty comments. They may also offer better deals.
         {% endif %}
 
     {% endif %}

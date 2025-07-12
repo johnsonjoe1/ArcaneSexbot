@@ -1,9 +1,14 @@
 Scriptname arcs_Utility   
 
-function WriteInfo(string msg) global
+;1 - log, 2 - console, 3 - both
+function WriteInfo(string msg, int target = 1) global
     ;get global to see if this is enabled
-    MiscUtil.PrintConsole("[Arcane Sexbot]: " + msg)
-    Debug.Trace("[Arcane Sexbot]: " + msg)
+    if target == 2 || target == 3
+        MiscUtil.PrintConsole("[Arcane Sexbot]: " + msg)
+    endif
+    if target == 1 || target == 3
+        Debug.Trace("[Arcane Sexbot]: " + msg)
+    endif
 endfunction
 
 function DoSleep(float f = 0.5) global

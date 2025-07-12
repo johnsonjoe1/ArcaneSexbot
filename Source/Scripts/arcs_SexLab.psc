@@ -98,6 +98,8 @@ bool function StartSex(Actor[] actors, string type, string intensity)
             useTags = MakeDefaultSLTag(actors[0])
         elseif actors.length == 2
             useTags = MakeDefaultSLTag(actors[0], actors[1])
+        elseif actors.length == 3
+            useTags = "" ;see what it finds??
         endif
     endif
 

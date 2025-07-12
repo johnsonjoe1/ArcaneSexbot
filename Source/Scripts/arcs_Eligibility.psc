@@ -38,8 +38,6 @@ endfunction
 ;TODO - create function to add to IsEligible calls to run high level checks like DHLP so not duplicated or missed
 bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
 
-    
-
     bool result = true 
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
@@ -86,6 +84,67 @@ bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, 
 
 endfunction
 
+bool function ExtCmdStartThreePersonSex_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+
+    ;NOTE - I need to ask about this one. paramsJson is not working in here, but it works in the execute method??
+
+    arcs_Utility.WriteInfo("ExtCmdStartThreePersonSex_IsEligible - contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
+
+    bool result = true 
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if config.arcs_GlobalActionStartSex.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdStartSex_IsEligible - disabled action")
+        return false
+    endif
+    
+    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+        result = false
+    endif
+
+    if arcs_SexLab.ActorInSexScene(akOriginator)
+        result = false ;in a sex scene already
+    endif
+
+    Actor akTarget1 = SkyrimNetApi.GetJsonActor(paramsJson, "target", none)
+    Actor akTarget2 = SkyrimNetApi.GetJsonActor(paramsJson, "sexpartner2", none)
+
+    string target1Name = ""
+    string target2Name = ""
+    ; if akTarget1 == none || akTarget2 == none
+    ;     result = false
+    ; Else
+    ;     target1Name = akTarget1.GetDisplayName()
+    ;     target2Name = akTarget2.GetDisplayName()
+    ;     if akTarget1.IsChild() || akTarget2.IsChild()
+    ;         result = false ;adults only
+    ;     endif
+    ; endif
+
+    slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+    int arousal = slau.GetActorArousal(akOriginator)
+    int arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
+    if arousal < arousalNeeded
+        result = false
+    endif
+
+    ; if akTarget1 == akTarget2 || akOriginator == akTarget1 || akOriginator == akTarget2
+    ;     result = false ;can't be the same person
+    ; endif
+
+    ;TODO - target 1 & 2 arousal check
+    ;TODO - if NC 1 or 2 sex, target arousal is not needed
+
+    ; arcs_Utility.WriteInfo("contextJson: " + contextJson)
+    ; arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
+
+    arcs_Utility.WriteInfo("ExtCmdStartSexWith3_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + \
+        " arousal: " + arousal + " needed: " + arousalNeeded + " akTarget1: " + target1Name + " akTarget2: " + target2Name + " result: " + result)
+
+    return result
+
+endfunction
+
 bool function ExtCmdUpdateSexualPreferences_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
     return true ;TODO - make this work
 endfunction
@@ -121,7 +180,7 @@ bool function ExtCmdStripTarget_IsEligible(Actor akOriginator, string contextJso
 
     endif
 
-    arcs_Utility.WriteInfo("ExtCmdStripTarget_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + " akTarget: " + targetName + " result: " + result)
+    arcs_Utility.WriteInfo("ExtCmdStripTarget_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + " akTarget: " + targetName + " result: " + result, 2)
 
     return result
 

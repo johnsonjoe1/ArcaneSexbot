@@ -35,6 +35,39 @@ function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string p
 
 endfunction
 
+function ExtCmdStartThreePersonSex_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    arcs_Utility.WriteInfo("ExtCmdStartThreePersonSex_Execute - contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
+
+    Actor thePlayer = Game.GetPlayer()
+    arcs_Utility.StoreTimesUsed("ExtCmdStartSexWith3", thePlayer)
+    Actor akTarget1 = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) 
+    Actor akTarget2 = SkyrimNetApi.GetJsonActor(paramsJson, "sexpartner2", none) 
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+
+    if config.arcs_GlobalShowSexConfirm.GetValue() == 1 && (akTarget1 == thePlayer || akTarget2 == thePlayer)
+        if !arcs_Utility.ConfirmBox("Have 3 way sex with " + akOriginator.GetDisplayName() + "?", "Continue the sex scene", "Skip the sex scene")
+            return
+        endif
+    endif
+
+    string type = "" ; SkyrimNetApi.GetJsonString(paramsJson, "type", "") 
+    string intensity = SkyrimNetApi.GetJsonString(paramsJson, "intensity", "") 
+
+	Actor[] actors = new Actor[3]
+	actors[0] = akOriginator
+	actors[1] = akTarget1
+    actors[2] = akTarget2
+
+    arcs_SexLab slab = Quest.GetQuest("arcs_MainQuest") as arcs_SexLab
+    if slab.StartSex(actors, type, intensity)
+    else 
+        arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+    endif
+
+endfunction
+
 function ExtCmdUpdateSexualPreferences_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 
     Actor thePlayer = Game.GetPlayer()

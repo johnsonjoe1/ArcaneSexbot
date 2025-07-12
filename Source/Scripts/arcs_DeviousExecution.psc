@@ -1,6 +1,8 @@
 Scriptname arcs_DeviousExecution extends Quest  
 
 Form function FindAColor(LeveledItem list, string color) global
+    ;TODO - this needs to randomly pick one of the items of the color in the list vs the first item
+    ;TODO - add a keyword search for some items (simple, penta, etc.)
     Form result
     int size = list.GetNumForms()
     int i = 0

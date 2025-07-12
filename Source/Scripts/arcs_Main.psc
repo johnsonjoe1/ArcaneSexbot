@@ -144,11 +144,19 @@ function RegisterActions()
     ;                                 1, "{\"target\":\"Actor\",\"type\":\"oral|anal|vaginal|hands\"}", \
     ;                                 "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdStartSex", "Have {type} sex with {target}.", \
+    SkyrimNetApi.RegisterAction("ExtCmdStartSex", "Have {intensity} {type} sex with {target}.", \
                                     "arcs_Eligibility", "ExtCmdStartSex_IsEligible", \
                                     "arcs_Execution", "ExtCmdStartSex_Execute", \
                                     "", "PAPYRUS", \
                                     1, "{\"target\":\"Actor\",\"type\":\"all|oral|anal|vaginal|hands\",\"intensity\":\"loving|aggressive\"}", \
+                                    "", "")
+
+                                ;with {{ decnpc(npc.UUID).name }}, {target1} and {target2}
+    SkyrimNetApi.RegisterAction("ExtCmdStartThreePersonSex", "Start three person sex.", \
+                                    "arcs_Eligibility", "ExtCmdStartThreePersonSex_IsEligible", \
+                                    "arcs_Execution", "ExtCmdStartThreePersonSex_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\",\"sexpartner2\":\"Actor\",\"intensity\":\"loving|aggressive\"}", \
                                     "", "")
 
     SkyrimNetApi.RegisterAction("ExtCmdStripTarget", "Remove {target}'s clothing.", \
@@ -410,7 +418,7 @@ function ShowDeviousMenu(Actor akSource, Actor akTarget)
            ;debug.MessageBox("selectedType: " + selectedType + " idx: " + idx)
             if selectedType != ""
                 if akTarget == thePlayer
-                    arcs_SkyrimNet.CreateDirectNarration(akSource.GetDisplayName() + " needs to remove " + selectedType + " from " + akTarget.GetDisplayName(), akSource, akTarget)
+                    arcs_SkyrimNet.CreateDirectNarration(akSource.GetDisplayName() + " wants to remove " + selectedType + " from " + akTarget.GetDisplayName(), akSource, akTarget)
                 else
                     if arcs_API.RemoveDeviousItem(akSource, akTarget, selectedType, true) == 1
                         arcs_SkyrimNet.CreateDirectNarration(akSource.GetDisplayName() + " removed a " + arcs_Devious.GetDeviousDisplayName(selectedType) + " from " + inCrosshairs.GetDisplayName(), akSource, akTarget)
