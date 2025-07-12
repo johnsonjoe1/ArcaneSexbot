@@ -57,6 +57,28 @@ bool function IsEligible(zadLibs zlib, Actor akOriginator, string contextJson, s
     endif
 endfunction
 
+;SHOCK
+
+bool function ArcbotShock_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+    zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", config.ThePlayer) 
+    bool foundPlug = false 
+    bool foundPiercing = false 
+    if aktarget != none
+        foundPlug = akTarget.WornHasKeyword(zlib.zad_DeviousPlug)
+        foundPiercing = akTarget.WornHasKeyword(zlib.zad_DeviousPiercingsNipple) || akTarget.WornHasKeyword(zlib.zad_DeviousPiercingsVaginal)
+        if !(foundPlug || foundPiercing)
+            result = false
+        endif
+    else
+        result = false
+    endif
+    arcs_Utility.WriteInfo("ArcbotShock_IsEligible: " + result + " plugs: " + foundPlug + " piercings: " + foundPiercing, 2)
+    return result
+endfunction
+
 ;BINDER
 
 bool function ArcbotAddArmbinder_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global

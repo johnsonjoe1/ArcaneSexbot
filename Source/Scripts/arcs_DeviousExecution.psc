@@ -219,6 +219,58 @@ function RemoveExecute(string category, Actor akOriginator, string contextJson, 
 
 endfunction
 
+;SHOCK
+
+function ArcbotShock_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    ;debug.Notification("CALLED ArcbotShock_Execute")
+    ;debug.MessageBox("in here??")
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", config.ThePlayer) ;not sure if the PC is a good fall back for targets or it would be better to have none 
+
+    zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
+    if akTarget != none
+
+        arcs_Movement.FaceTarget(akOriginator, akTarget)
+        ;arcs_Movement.PlayDoWork(akOriginator)
+
+        zlib.ShockActor(akTarget)
+
+        akOriginator.PushActorAway(akTarget, 1.0) ;TODO - replace this with a stagger
+
+        zlib.Moan(akTarget, 100)
+
+        StorageUtil.SetFloatValue(akTarget, "arcs_devious_last_shocked", arcs_Utility.GetTime())
+
+        string desc = "Devious shock"
+
+        bool foundPlug = akTarget.WornHasKeyword(zlib.zad_DeviousPlug)
+        bool foundPiercing = akTarget.WornHasKeyword(zlib.zad_DeviousPiercingsNipple) || akTarget.WornHasKeyword(zlib.zad_DeviousPiercingsVaginal)
+
+        string shockType = "" 
+        
+        if foundPlug && foundPiercing
+            shockType = "'s ass plug and piercings give a painful electrical jolt"
+        elseif foundPlug
+            shockType = "'s ass plug gives a painful electrical jolt"
+        elseif foundPiercing
+            shockType = "'s piercings give a painful electrical jolt"
+        endif
+
+        string data = akTarget.GetDisplayName() + shockType
+
+        bool result = arcs_SkyrimNet.CreateShortLivedEvent("devious_shock_event_" + akOriginator.GetDisplayName(), "devious_shock_event", desc, data, akOriginator, akTarget)
+        result = arcs_SkyrimNet.CreateDirectNarration(data, akTarget)
+
+    else 
+        arcs_Utility.WriteInfo("No stored DD found")
+    endif
+
+    arcs_Utility.WriteInfo("ArcbotShock_Execute target: " + akTarget, 2)
+
+endfunction
+
 ;BINDER
 
 function ArcbotAddArmbinder_Execute(Actor akOriginator, string contextJson, string paramsJson) global

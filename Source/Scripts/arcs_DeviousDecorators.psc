@@ -1,5 +1,17 @@
 Scriptname arcs_DeviousDecorators extends Quest  
 
+string function GetDeviousHoursSinceLastShocked(Actor akActor) global
+    float lastShocked = -1.0 
+    if akActor != none
+        lastShocked = StorageUtil.GetFloatValue(akActor, "arcs_devious_hours_since_last_shocked", 0.0)
+    endif
+    int hoursSince = 0
+    if lastShocked > 0.0
+        hoursSince = arcs_Utility.GetElapsedHours(lastShocked, arcs_Utility.GetTime(), false)
+    endif
+    return arcs_Utility.JsonIntValueReturn("last_shocked", hoursSince)
+endfunction
+
 string function GetDeviousInfo(Actor akActor) global
 
     return "{\"test\":1}"

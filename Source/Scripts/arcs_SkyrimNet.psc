@@ -2,6 +2,8 @@ Scriptname arcs_SkyrimNet extends Quest
 
 bool function CreateShortLivedEvent(string eventId, string eventType, string description, string data, Actor sourceActor, Actor targetActor, int expires = 120) global
 
+    ;debug.MessageBox("short event messagebox")
+
     ; int function RegisterShortLivedEvent(String eventId, String eventType, String description, \
     ;                                     String data, int ttlMs, Actor sourceActor, Actor targetActor) Global Native
 
@@ -27,6 +29,8 @@ bool function CreateLongLivedEvent(string eventType, string content, Actor sourc
 endfunction
 
 bool function CreateDirectNarration(string content, Actor sourceActor = none, Actor targetActor = none) global
+
+    ;debug.MessageBox("dn messagebox")
 
     arcs_Utility.WriteInfo("DN prompt: " + content)
 

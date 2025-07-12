@@ -47,8 +47,20 @@ SexLabFramework function GetSexLab() global
 endfunction
 
 bool function ActorInSexScene(Actor akActor) global
+
     SexLabFramework slFramework = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
-    return slFramework.IsActorActive(akActor)
+    if slFramework.IsActorActive(akActor)
+        return true
+    endif
+
+    ;NOTE - this will catch in this mod before the sex scene starts
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_Main") as arcs_ConfigSettings
+    if akActor.IsInFaction(config.arcs_HavingSexFaction)
+        return true
+    Else
+        return false
+    endif
+
 endfunction
 
 int function GetActorThreadId(Actor akActor) global
@@ -87,6 +99,14 @@ bool function StartSex(Actor[] actors, string type, string intensity)
 
     bool result = false
 
+    int i = 0
+    while i < actors.length
+        if !actors[i].IsInFaction(arcs_HavingSexFaction)
+            actors[i].AddToFaction(arcs_HavingSexFaction)
+        endif
+        i += 1
+    endwhile
+
     string useTags = ""
     if type != "all"
         useTags = type
@@ -118,11 +138,11 @@ bool function StartSex(Actor[] actors, string type, string intensity)
     sslThreadModel tm = sfx.NewThread()
     if tm
         ;add actors to the thread
-        int i = 0
+        i = 0
         while i < actors.length
-            if !actors[i].IsInFaction(arcs_HavingSexFaction)
-                actors[i].AddToFaction(arcs_HavingSexFaction)
-            endif
+            ; if !actors[i].IsInFaction(arcs_HavingSexFaction)
+            ;     actors[i].AddToFaction(arcs_HavingSexFaction)
+            ; endif
             tm.AddActor(actors[i])
             i += 1
         endwhile
@@ -145,7 +165,7 @@ bool function StartSex(Actor[] actors, string type, string intensity)
 
     else 
         arcs_Utility.WriteInfo("arcs_SexLab - StartThread - NewTread() creation failed")      
-
+        RemoveActorsFromFaction(actors)
     endif
 
     arcs_Utility.WriteInfo("arcs_SexLab - result : " + result)

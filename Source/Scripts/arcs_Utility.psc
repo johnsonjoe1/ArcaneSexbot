@@ -96,6 +96,10 @@ string function JsonIntValueReturn(string name, int value) global
     return "{\"" + name + "\":\"" + value + "\"}"    
 endfunction
 
+string function JsonFloatValueReturn(string name, float value) global
+    return "{\"" + name + "\":\"" + value + "\"}"    
+endfunction
+
 float function GetTime() global
     return Utility.GetCurrentGameTime()
 endfunction

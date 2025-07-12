@@ -27,6 +27,8 @@ GlobalVariable property arcs_GlobalHasDeviousDevices auto
 GlobalVariable property arcs_GlobalActionAllDevious auto
 GlobalVariable property arcs_GlobalDeviousConfirm auto
 
+Faction property arcs_HavingSexFaction auto
+
 Actor property ThePlayer auto
 
 int property DhlpSuspend auto
