@@ -3,7 +3,7 @@ Scriptname arcs_HotkeyMenu extends Quest
 function ShowHotkeyMenu(Actor thePlayer, Actor inCrosshairs) global
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
-    arcs_SexLab slab = Quest.GetQuest("arcs_SexLab") as arcs_SexLab
+    arcs_SexLab slab = Quest.GetQuest("arcs_MainQuest") as arcs_SexLab
 
     ;TODO - hotkey sex stuff needs a reaction from the NPC when you start sex with them
     ;should do a arousal / attraction check and tell the player to piss off if not wanting 

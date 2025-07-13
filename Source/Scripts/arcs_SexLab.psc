@@ -48,13 +48,17 @@ endfunction
 
 bool function ActorInSexScene(Actor akActor) global
 
+    if akActor == none
+        return false
+    endif
+
     SexLabFramework slFramework = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
     if slFramework.IsActorActive(akActor)
         return true
     endif
 
     ;NOTE - this will catch in this mod before the sex scene starts
-    arcs_ConfigSettings config = Quest.GetQuest("arcs_Main") as arcs_ConfigSettings
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     if akActor.IsInFaction(config.arcs_HavingSexFaction)
         return true
     Else
@@ -64,6 +68,9 @@ bool function ActorInSexScene(Actor akActor) global
 endfunction
 
 int function GetActorThreadId(Actor akActor) global
+    if akActor == none
+        return -1
+    endif
     int result = 0
     SexLabFramework slFramework = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
     result = slFramework.FindActorController(akActor)
@@ -74,6 +81,9 @@ int function GetActorThreadId(Actor akActor) global
 endfunction
 
 string function MakeDefaultSLTag(Actor actor1, Actor actor2 = none)
+    if actor1 == none
+        return ""
+    endif
     string tag = ""
     if actor1.GetActorBase().GetSex() == 1
         tag += "F"

@@ -46,10 +46,16 @@ int[] slToggleArr
 
 Actor thePlayer
 
+arcs_Main main
+arcs_ConfigSettings config
+
 event OnConfigOpen()
 
     thePlayer = Game.GetPlayer()
-    
+
+    main = Quest.GetQuest("arcs_MainQuest") as arcs_Main
+    config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+
     Pages = new string[8]
 
     Pages[0] = "Settings"
@@ -511,5 +517,5 @@ GlobalVariable property arcs_GlobalShowSexConfirm auto
 GlobalVariable property arcs_GlobalHotkey auto
 GlobalVariable property arcs_GlobalModifierKey auto
 
-arcs_Main property main auto
-arcs_ConfigSettings property config auto
+; arcs_Main property main auto
+; arcs_ConfigSettings property config auto

@@ -2,19 +2,26 @@ Scriptname arcs_Register extends Quest
 
 function RegisterDecorators() global
 
-    SkyrimNetApi.RegisterDecorator("arcs_get_sex_blocked", "arcs_Decorators", "GetActorBlocked")
-    ;SkyrimNetApi.RegisterDecorator("arcs_get_sex_purity", "arcs_Decorators", "GetActorSexualPurity")
-    ;SkyrimNetApi.RegisterDecorator("arcs_get_sex_preference", "arcs_Decorators", "GetActorSexualPreference")
+    ;active
     SkyrimNetApi.RegisterDecorator("arcs_get_nudity", "arcs_Decorators", "GetActorNudity")
     SkyrimNetApi.RegisterDecorator("arcs_get_arousal", "arcs_Decorators", "GetArousalLevel")
+    SkyrimNetApi.RegisterDecorator("arcs_get_sex_info", "arcs_Decorators", "GetSexInfo")
+
+    ;turn these back on when they are used
+    ;SkyrimNetApi.RegisterDecorator("arcs_get_sex_blocked", "arcs_Decorators", "GetActorBlocked")
+    ;SkyrimNetApi.RegisterDecorator("arcs_in_sex_scene", "arcs_Decorators", "InSexScene")
+    ;SkyrimNetApi.RegisterDecorator("arcs_get_nudity_value", "arcs_Decorators", "GetNudityValue")
+    ;SkyrimNetApi.RegisterDecorator("arcs_get_arousal_value", "arcs_Decorators", "GetArousalValue")
+
+    
+    ;retired?
+    ;SkyrimNetApi.RegisterDecorator("arcs_get_sex_purity", "arcs_Decorators", "GetActorSexualPurity")
+    ;SkyrimNetApi.RegisterDecorator("arcs_get_sex_preference", "arcs_Decorators", "GetActorSexualPreference")
+
     ;SkyrimNetApi.RegisterDecorator("arcs_get_attraction_to_player", "arcs_Decorators", "GetAttractionToPlayer")
     ;SkyrimNetApi.RegisterDecorator("arcs_sex_min_arousal_check", "arcs_Decorators", "SexMinimumArousalCheck")
-    SkyrimNetApi.RegisterDecorator("arcs_get_sex_thread_id", "arcs_Decorators", "GetSexThreadId")
-    SkyrimNetApi.RegisterDecorator("arcs_in_sex_scene", "arcs_Decorators", "InSexScene")
+    ;SkyrimNetApi.RegisterDecorator("arcs_get_sex_thread_id", "arcs_Decorators", "GetSexThreadId")
 
-    SkyrimNetApi.RegisterDecorator("arcs_get_nudity_value", "arcs_Decorators", "GetNudityValue")
-    SkyrimNetApi.RegisterDecorator("arcs_get_arousal_value", "arcs_Decorators", "GetArousalValue")
-    SkyrimNetApi.RegisterDecorator("arcs_get_sex_info", "arcs_Decorators", "GetSexInfo")
 
     ;other
     ;sex thread ID decorator - pull the sl thread id stored on actor
