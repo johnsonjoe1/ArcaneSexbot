@@ -1,5 +1,10 @@
 Scriptname arcs_DeviousDecorators extends Quest  
 
+string function GetDeviousEnabled(Actor akActor) global
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    return arcs_Utility.JsonIntValueReturn("devious_enabled", config.arcs_GlobalActionAllDevious.GetValue() as int)
+endfunction
+
 string function GetDeviousHoursSinceLastShocked(Actor akActor) global
     float lastShocked = -1.0 
     if akActor != none
