@@ -133,7 +133,7 @@ function RegisterDecorators() global
     ;SkyrimNetApi.RegisterDecorator("arcs_get_devious_info", "arcs_DeviousDecorators", "GetDeviousInfo")
     ;SkyrimNetApi.RegisterDecorator("arcs_devious_enabled", "arcs_DeviousDecorators", "GetDeviousEnabled")
     ;SkyrimNetApi.RegisterDecorator("arcs_devious_hours_since_last_shocked", "arcs_DeviousDecorators", "GetDeviousHoursSinceLastShocked") ;{"last_shocked":0} - hours since event rounded down
-    ;SkyrimNetApi.RegisterDecorator("arcs_devious_being_vibrated", "arcs_DeviousDecorators", "GetDeviousBeingVibrated") ;{"being_vibrated":1} -1 no actor, 0 no, 1 yes
+    SkyrimNetApi.RegisterDecorator("arcs_devious_being_vibrated", "arcs_DeviousDecorators", "GetDeviousBeingVibrated") ;{"being_vibrated":1} -1 no actor, 0 no, 1 yes
 
 
 
