@@ -12,6 +12,18 @@ string function GetDeviousHoursSinceLastShocked(Actor akActor) global
     return arcs_Utility.JsonIntValueReturn("last_shocked", hoursSince)
 endfunction
 
+string function GetDeviousBeingVibrated(Actor akActor) global
+    ;-1 no actor, 0 - no, 1 - yes
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    int vibrated = -1
+    if akActor != none
+        if akActor.IsInFaction(config.arcs_GettingVibratedFaction)
+            vibrated = 1
+        endif
+    endif
+    return arcs_Utility.JsonIntValueReturn("being_vibrated", vibrated)
+endfunction
+
 string function GetDeviousInfo(Actor akActor) global
 
     return "{\"test\":1}"

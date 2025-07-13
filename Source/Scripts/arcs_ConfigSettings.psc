@@ -27,7 +27,9 @@ GlobalVariable property arcs_GlobalHasDeviousDevices auto
 GlobalVariable property arcs_GlobalActionAllDevious auto
 GlobalVariable property arcs_GlobalDeviousConfirm auto
 
+Faction property arcs_ActorBusyFaction auto
 Faction property arcs_HavingSexFaction auto
+Faction property arcs_GettingVibratedFaction auto
 
 Actor property ThePlayer auto
 

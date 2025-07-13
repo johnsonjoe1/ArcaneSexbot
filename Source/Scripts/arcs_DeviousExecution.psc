@@ -176,6 +176,11 @@ function AddExecute(string category, Actor akOriginator, string contextJson, str
 
         ;arcs_Utility.WriteInfo("Adding DD: " + dev.GetName())
         if zlib.LockDevice(akTarget, dev, true)
+            if category == "npiercing" || category == "vpiercing" || category == "aplug" || category == "vplug"
+                ;the actor feels these
+                zlib.Moan(akTarget, 100)
+            endif
+
             StorageUtil.StringListAdd(akTarget, "arcs_dd_items", category, false)
             StorageUtil.SetFormValue(akTarget, "arcs_worn_item_" + category, dev)
             StorageUtil.SetFloatValue(akTarget, "arcs_worn_time_" + category, arcs_Utility.GetTime())
@@ -219,6 +224,92 @@ function RemoveExecute(string category, Actor akOriginator, string contextJson, 
 
 endfunction
 
+;VIBRATE
+
+function ArcbotStartVibration_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    ;debug.Notification("CALLED ArcbotStartVibration_Execute")
+    ;debug.MessageBox("in here??")
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none)
+
+    arcs_Utility.WriteInfo("ArcbotStartVibration_Execute target: " + akTarget, 2)
+
+    string duration = SkyrimNetApi.GetJsonString(paramsJson, "duration", "") 
+    int seconds = 60
+    if duration == "medium"
+        seconds = 120
+    elseif duration == "long"
+        seconds = 180
+    endif
+
+    zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
+    if akTarget != none
+
+        arcs_Movement.FaceTarget(akOriginator, akTarget)
+        ;arcs_Movement.PlayDoWork(akOriginator)
+
+        ;zlib.SetVibrating(akTarget, 30)
+
+        if !aktarget.IsInFaction(config.arcs_GettingVibratedFaction)
+            aktarget.AddToFaction(config.arcs_GettingVibratedFaction)
+        endif
+
+        int orgasms = zlib.VibrateEffect(akTarget, 4, seconds, teaseOnly = false, silent = false)
+        ;this has a timed loop
+
+        if aktarget.IsInFaction(config.arcs_GettingVibratedFaction)
+            aktarget.RemoveFromFaction(config.arcs_GettingVibratedFaction)
+        endif
+
+        string data = ""
+        if orgasms == 0
+            data = akTarget.GetDisplayName() + " was only teased by the vibrating plug."
+        elseif orgasms == 1
+            data = akTarget.GetDisplayName() + " orgasmed " + orgasms + " time by the vibrating plug."
+        else
+            data = akTarget.GetDisplayName() + " orgasmed " + orgasms + " times by the vibrating plug."
+        endif
+
+        bool result = arcs_SkyrimNet.CreateShortLivedEvent("arc_start_vibrate_event_" + akOriginator.GetDisplayName(), "arc_start_vibrate_event", data, data, akOriginator, akTarget)
+        result = arcs_SkyrimNet.CreateDirectNarration(data, akTarget)
+
+    else 
+        arcs_Utility.WriteInfo("No target found")
+    endif
+
+endfunction
+
+function ArcbotStopVibration_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    debug.Notification("CALLED ArcbotStopVibration_Execute")
+    ;debug.MessageBox("in here??")
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none)
+
+    arcs_Utility.WriteInfo("ArcbotStopVibration_Execute target: " + akTarget, 2)
+
+    zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
+    if akTarget != none
+
+        zlib.StopVibrating(akTarget)
+
+        if aktarget.IsInFaction(config.arcs_GettingVibratedFaction)
+            aktarget.RemoveFromFaction(config.arcs_GettingVibratedFaction)
+        endif
+
+        string data = akTarget.GetDisplayName() + " vibrating plug mercifully stops."
+        bool result = arcs_SkyrimNet.CreateShortLivedEvent("arc_stop_vibrate_event_" + akOriginator.GetDisplayName(), "arc_stop_vibrate_event", data, data, akOriginator, akTarget)
+        result = arcs_SkyrimNet.CreateDirectNarration(data, akTarget)
+
+    else 
+        arcs_Utility.WriteInfo("No target found")
+    endif
+
+endfunction
+
 ;SHOCK
 
 function ArcbotShock_Execute(Actor akOriginator, string contextJson, string paramsJson) global
@@ -243,24 +334,22 @@ function ArcbotShock_Execute(Actor akOriginator, string contextJson, string para
 
         StorageUtil.SetFloatValue(akTarget, "arcs_devious_last_shocked", arcs_Utility.GetTime())
 
-        string desc = "Devious shock"
-
         bool foundPlug = akTarget.WornHasKeyword(zlib.zad_DeviousPlug)
         bool foundPiercing = akTarget.WornHasKeyword(zlib.zad_DeviousPiercingsNipple) || akTarget.WornHasKeyword(zlib.zad_DeviousPiercingsVaginal)
 
         string shockType = "" 
         
         if foundPlug && foundPiercing
-            shockType = "'s ass plug and piercings give a painful electrical jolt"
+            shockType = "'s plug and piercings give a painful electrical jolt"
         elseif foundPlug
-            shockType = "'s ass plug gives a painful electrical jolt"
+            shockType = "'s plug gives a painful electrical jolt"
         elseif foundPiercing
             shockType = "'s piercings give a painful electrical jolt"
         endif
 
         string data = akTarget.GetDisplayName() + shockType
 
-        bool result = arcs_SkyrimNet.CreateShortLivedEvent("devious_shock_event_" + akOriginator.GetDisplayName(), "devious_shock_event", desc, data, akOriginator, akTarget)
+        bool result = arcs_SkyrimNet.CreateShortLivedEvent("devious_shock_event_" + akOriginator.GetDisplayName(), "devious_shock_event", "devious shock", data, akOriginator, akTarget)
         result = arcs_SkyrimNet.CreateDirectNarration(data, akTarget)
 
     else 

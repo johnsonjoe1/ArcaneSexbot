@@ -57,6 +57,45 @@ bool function IsEligible(zadLibs zlib, Actor akOriginator, string contextJson, s
     endif
 endfunction
 
+;VIBRATE
+
+bool function ArcbotStartVibration_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+    zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", config.ThePlayer) 
+    bool foundPlug = false 
+    if aktarget != none
+        foundPlug = akTarget.WornHasKeyword(zlib.zad_DeviousPlug)
+        if !(foundPlug)
+            result = false
+        endif
+        if akTarget.IsInFaction(config.arcs_GettingVibratedFaction)
+            result = false ;already being vibrated
+        endif
+    else
+        result = false
+    endif
+    arcs_Utility.WriteInfo("ArcbotStartVibration_IsEligible: " + result + " plugs: " + foundPlug, 2)
+    return result
+endfunction
+
+bool function ArcbotStopVibration_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+    zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", config.ThePlayer) 
+    if aktarget != none
+        if !akTarget.IsInFaction(config.arcs_GettingVibratedFaction)
+            result = false ;not being vibrated
+        endif
+    else
+        result = false
+    endif
+    arcs_Utility.WriteInfo("ArcbotStartVibration_IsEligible: " + result, 2)
+    return result
+endfunction
+
 ;SHOCK
 
 bool function ArcbotShock_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
