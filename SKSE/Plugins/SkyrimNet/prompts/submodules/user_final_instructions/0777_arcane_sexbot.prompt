@@ -1,3 +1,4 @@
+{% if not isTimePaused %}
 {% set actor_name = decnpc(npc.UUID).name %}
 {% set actor_arousal = arcs_get_arousal(npc.UUID) %}
 {% if actor_arousal == "actor_very_aroused" %}
@@ -10,4 +11,5 @@ REMEMBER: {{ actor_name }} is currently highly aroused. Consider subtly factorin
 
 {% if worn_has_keyword(player.UUID, "zad_DeviousGag") %}
 - {{ player.name }} has a gag in their mouth. {{ actor_name }} should pretend anything {{ player.name }} says is ONLY gagged grunts and mumbling, and can't undertand them. This is VERY important for immersion.
+{% endif %}
 {% endif %}
