@@ -6,7 +6,7 @@
 {% set actor_arousal = lower(arcs_get_arousal(actorUUID)) %}
 {% set show_everything = (render_mode == "full" or render_mode == "thought" or render_mode == "book") %}
 {% set can_vibrate = (worn_has_keyword(actorUUID, "zad_DeviousPlugVaginal") or worn_has_keyword(actorUUID, "zad_DeviousPlugAnal") or worn_has_keyword(actorUUID, "zad_DeviousPiercingsNipple") or worn_has_keyword(actorUUID, "zad_DeviousPiercingsVaginal")) %}
-{% set being_vibrated = arcs_devious_being_vibrated(actorUUID) %}
+{% set being_vibrated = arcs_devious_being_vibrated(actorUUID).being_vibrated %}
 
 {% if render_mode == "full" or render_mode == "dynamic" or render_mode == "thought" %} {# START FULL MODE #}
 {# Check for nudity using the proper system - appropriate for arousal references #}
