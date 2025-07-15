@@ -1,5 +1,9 @@
 Scriptname arcs_DeviousDecorators extends Quest  
 
+zadLibs function GetDeviousZadlibs() global
+    return Quest.GetQuest("zadQuest") as zadLibs
+endfunction
+
 string function GetDeviousEnabled(Actor akActor) global
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     return arcs_Utility.JsonIntValueReturn("devious_enabled", config.arcs_GlobalActionAllDevious.GetValue() as int)
@@ -19,14 +23,14 @@ endfunction
 
 string function GetDeviousBeingVibrated(Actor akActor) global
     ;-1 no actor, 0 - no, 1 - yes
-    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
-    int vibrated = -1
+    zadLibs libs = GetDeviousZadlibs()
+    bool vibrated = false
     if akActor != none
-        if akActor.IsInFaction(config.arcs_GettingVibratedFaction)
-            vibrated = 1
+        if libs.IsVibrating(akActor)
+            vibrated = true
         endif
     endif
-    return arcs_Utility.JsonIntValueReturn("being_vibrated", vibrated)
+    return "{\"being_vibrated\":" + vibrated + "}"
 endfunction
 
 string function GetDeviousInfo(Actor akActor) global

@@ -23,9 +23,81 @@ function GameLoaded()
 
 endfunction
 
-function RegisterModEvents() global
-    
+function RegisterModEvents()
+    RegisterForModEvent("DeviceActorOrgasm", "OnOrgasm")
+    RegisterForModEvent("DeviceEdgedActor", "OnEdged")
+    RegisterForModEvent("DeviceVibrateEffectStart", "OnVibrateStart")
+    RegisterForModEvent("DeviceVibrateEffectStop", "OnVibrateStop")
 endfunction
+
+; Helper function to convert vibration strength to descriptive text
+string function GetVibStrength(float vibStrength) global
+    string strength = ""
+    if vibStrength <= 0.5
+        strength = "weakly"
+    elseif vibStrength <= 1.0
+        strength = "strongly"  
+    elseif vibStrength <= 1.5
+        strength = "intensely"
+    else
+        strength = "extremely intensely"
+    endif
+    return strength
+endfunction
+
+; Event handlers for Devious Devices mod events
+Event OnOrgasm(string eventName, string actorName, float numArg, Form sender)
+    string messageStr = actorName + " cries out in ecstasy as their body shudders with an intense climax, overwhelmed by waves of pleasure from their intimate devices"
+    
+    ; Register short-lived event for immediate context awareness
+    SkyrimNetApi.RegisterShortLivedEvent("orgasm_" + actorName, "devious_orgasm", "", messageStr, 60000, Game.GetPlayer(), None)
+    
+    ; Also register as persistent event for historical tracking
+    SkyrimNetApi.RegisterEvent("devious_orgasm", messageStr, Game.GetPlayer(), None)
+    
+    arcs_Utility.WriteInfo("DD Event: " + messageStr)
+EndEvent
+
+Event OnEdged(string eventName, string actorName, float numArg, Form sender)
+    string messageStr = actorName + " gasps and whimpers in desperate frustration as they're brought right to the brink of climax, only to have the stimulation cruelly stop just before release, leaving them trembling with unfulfilled need"
+    
+    ; Register short-lived event for immediate context awareness
+    SkyrimNetApi.RegisterShortLivedEvent("edged_" + actorName, "devious_edged", "", messageStr, 60000, Game.GetPlayer(), None)
+    
+    ; Also register as persistent event for historical tracking
+    SkyrimNetApi.RegisterEvent("devious_edged", messageStr, Game.GetPlayer(), None)
+    
+    arcs_Utility.WriteInfo("DD Event: " + messageStr)
+EndEvent
+
+Event OnVibrateStart(string eventName, string actorName, float vibStrength, Form sender)
+    string strength = GetVibStrength(vibStrength)
+    string messageStr = actorName + "'s intimate devices have started vibrating " + strength + ", sending waves of pleasure through their body as the sexual stimulation begins"
+    
+    ; Register short-lived event for immediate context awareness - longer TTL since vibration continues
+    SkyrimNetApi.RegisterShortLivedEvent("vibrate_" + actorName, "devious_vibrate_start", "", messageStr, 60000, Game.GetPlayer(), None)
+    
+    ; Also register as persistent event for historical tracking
+    ; SkyrimNetApi.RegisterEvent("devious_vibrate_start", messageStr, Game.GetPlayer(), None)
+    
+    arcs_Utility.WriteInfo("DD Event: " + messageStr)
+EndEvent
+
+Event OnVibrateStop(string eventName, string actorName, float vibStrength, Form sender)
+    string strength = GetVibStrength(vibStrength)
+    string messageStr = actorName + "'s intimate devices have stopped vibrating, leaving them breathless and aching as the intense sexual stimulation suddenly ends"
+    
+    ; Register short-lived event for immediate context awareness
+    SkyrimNetApi.RegisterShortLivedEvent("vibrate_" + actorName, "devious_vibrate_stop", "", messageStr, 60000, Game.GetPlayer(), None)
+    
+    ; Also register as persistent event for historical tracking
+    ; SkyrimNetApi.RegisterEvent("devious_vibrate_stop", messageStr, Game.GetPlayer(), None)
+    
+    arcs_Utility.WriteInfo("DD Event: " + messageStr)
+EndEvent
+
+
+  
 
 string function DeviousListDisplayNames() global
     return "Armbinder|Chastity Belt|Boots|Blindfold|Collar|Corset|Gag|Gloves|Harness|Hood|Nipple Piercing|Vaginal Piercing|Anal Plug|Vaginal Plug"
