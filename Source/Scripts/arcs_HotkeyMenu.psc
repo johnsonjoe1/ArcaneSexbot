@@ -30,13 +30,13 @@ function ShowHotkeyMenu(Actor thePlayer, Actor inCrosshairs)
             listMenu.AddEntryItem("Devious items for player")
             listMenu.AddEntryItem("TEST - Devious action tests for player")
             listMenu.AddEntryItem("TEST - Action test for npc - masturbate")
-            listMenu.AddEntryItem("TEST - Action test for npc - kiss")
+            ;listMenu.AddEntryItem("TEST - Action test for npc - kiss")
         else
             listMenu.AddEntryItem("n/a")
             listMenu.AddEntryItem("n/a")
             listMenu.AddEntryItem("n/a")
             listMenu.AddEntryItem("n/a")
-            listMenu.AddEntryItem("n/a")
+            ;listMenu.AddEntryItem("n/a")
         endif
     endif
 

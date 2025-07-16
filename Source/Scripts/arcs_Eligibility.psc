@@ -116,7 +116,7 @@ bool function ExtCmdStartMasturbation_IsEligible(Actor akOriginator, string cont
         endif
     endif
 
-    debug.Notification("ExtCmdStartMasturbation_IsEligible result: " + result)
+    ;debug.Notification("ExtCmdStartMasturbation_IsEligible result: " + result)
 
     arcs_Utility.WriteInfo("ExtCmdStartMasturbation_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + \
         " result: " + result)    

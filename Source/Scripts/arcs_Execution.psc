@@ -26,7 +26,7 @@ endfunction
 
 function ExtCmdStartMasturbation_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 
-    debug.Notification("ExtCmdStartMasturbation_Execute - actor: " + akOriginator.GetDisplayName())
+    ;debug.Notification("ExtCmdStartMasturbation_Execute - actor: " + akOriginator.GetDisplayName())
 
     arcs_Utility.WriteInfo("ExtCmdStartMasturbation_Execute - actor: " + akOriginator.GetDisplayName() + " contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
 
