@@ -1,9 +1,8 @@
-{# {% if not isTimePaused %} #}
+{% if not isTimePaused %}
 {% set actor_name = decnpc(npc.UUID).name %}
 {% set actor_arousal = arcs_get_arousal(npc.UUID) %}
-{% if actor_arousal == "actor_very_aroused" %}
-REMEMBER: {{ actor_name }} is currently highly aroused. Consider subtly factoring this into the response if appropriate, but don't force it otherwise.
-{% endif %}
+{% set being_vibrated = arcs_devious_being_vibrated(npc.UUID).being_vibrated %}
+
 
 {% if worn_has_keyword(npc.UUID, "zad_DeviousGag") %}
 - {{ actor_name }} is gagged. Speech is blocked. Convert words to grunts and mumbling of similar length.
@@ -12,4 +11,13 @@ REMEMBER: {{ actor_name }} is currently highly aroused. Consider subtly factorin
 {% if worn_has_keyword(player.UUID, "zad_DeviousGag") %}
 - {{ player.name }} has a gag in their mouth. {{ actor_name }} should pretend anything {{ player.name }} says is ONLY gagged grunts and mumbling, and can't undertand them. This is VERY important for immersion.
 {% endif %}
-{# {% endif %} #}
+
+{% if being_vibrated %}
+{% if render_mode == "full" or render_mode == "thoughts"%}
+- {{ actor_name }} is currently being stimulated by vibrations! You must factor this into your response.
+{% else if render_mode == "dialogue_target" %}
+- A low humming noise is emitting from {{ actor_name }} as they squirm uncomfortably from unseen stimulation.
+{% endif %}
+
+{% endif %}
+{% endif %}
