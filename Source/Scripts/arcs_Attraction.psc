@@ -4,6 +4,12 @@ string function GetAttractionToPlayerStorageKey() global
     return "arcs_attraction_to_player"
 endfunction
 
+int function GetAttractionToPlayer(Actor akActor) global
+    string skey = arcs_Attraction.GetAttractionToPlayerStorageKey()
+    int attraction = StorageUtil.GetIntValue(akActor, skey, -1)
+    return attraction
+endfunction
+
 function ChangeAttractionToPlayer(Actor akActor, int amount) global
     string skey = arcs_Attraction.GetAttractionToPlayerStorageKey()
     int attraction = StorageUtil.GetIntValue(akActor, skey, -1)

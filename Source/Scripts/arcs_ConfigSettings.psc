@@ -1,5 +1,10 @@
 Scriptname arcs_ConfigSettings extends Quest  
 
+arcs_ConfigSettings function GetArcsConfig() global 
+    return Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+endfunction
+
+GlobalVariable property arcs_GlobalUseArousal auto
 GlobalVariable property arcs_GlobalArousalForSex auto
 GlobalVariable property arcs_GlobalSlightlyAroused auto
 GlobalVariable property arcs_GlobalVeryAroused auto
@@ -9,6 +14,8 @@ GlobalVariable property arcs_GlobalUseAttractionSystem auto
 GlobalVariable property arcs_GlobalUseSexualityCheck auto
 GlobalVariable property arcs_GlobalUseSexualityChange auto
 GlobalVariable property arcs_GlobalUseAttractionSeed auto
+GlobalVariable property arcs_GobalSlightlyAttracted auto
+GlobalVariable property arcs_GobalVeryAttracted auto
 
 GlobalVariable property arcs_GlobalHotkey auto
 GlobalVariable property arcs_GlobalModifierKey auto
@@ -22,10 +29,32 @@ GlobalVariable property arcs_GlobalActionDecreaseArousal auto
 GlobalVariable property arcs_GlobalActionIncreaseArousal auto
 GlobalVariable property arcs_GlobalActionDecreaseAttraction auto
 GlobalVariable property arcs_GlobalActionIncreaseAttraction auto
+GlobalVariable property arcs_GlobalActionStartThreePersonSex auto
+GlobalVariable property arcs_GlobalActionStartMasturbation auto
+GlobalVariable property arcs_GlobalActionKiss auto
 
 GlobalVariable property arcs_GlobalHasDeviousDevices auto
 GlobalVariable property arcs_GlobalActionAllDevious auto
 GlobalVariable property arcs_GlobalDeviousConfirm auto
+
+GlobalVariable property arcs_GlobalDeviousActionAPlug auto
+GlobalVariable property arcs_GlobalDeviousActionBelt auto
+GlobalVariable property arcs_GlobalDeviousActionBinder auto
+GlobalVariable property arcs_GlobalDeviousActionBlindfold auto
+GlobalVariable property arcs_GlobalDeviousActionBoots auto
+GlobalVariable property arcs_GlobalDeviousActionCollar auto
+GlobalVariable property arcs_GlobalDeviousActionCorset auto
+GlobalVariable property arcs_GlobalDeviousActionGag auto
+GlobalVariable property arcs_GlobalDeviousActionGloves auto
+GlobalVariable property arcs_GlobalDeviousActionHarness auto
+GlobalVariable property arcs_GlobalDeviousActionHood auto
+GlobalVariable property arcs_GlobalDeviousActionNPiercing auto
+GlobalVariable property arcs_GlobalDeviousActionShock auto
+GlobalVariable property arcs_GlobalDeviousActionSuit auto
+GlobalVariable property arcs_GlobalDeviousActionVibration auto
+GlobalVariable property arcs_GlobalDeviousActionStopVibration auto
+GlobalVariable property arcs_GlobalDeviousActionVPiercing auto
+GlobalVariable property arcs_GlobalDeviousActionVPlug auto
 
 Faction property arcs_ActorBusyFaction auto
 Faction property arcs_HavingSexFaction auto
@@ -33,4 +62,3 @@ Faction property arcs_GettingVibratedFaction auto
 
 Actor property ThePlayer auto
 
-int property DhlpSuspend auto

@@ -2,6 +2,14 @@ Scriptname arcs_SexLab extends Quest
 
 int activeThreads
 
+arcs_SexLab function GetArcSexLab() global
+    return Quest.GetQuest("arcs_MainQuest") as arcs_SexLab
+endfunction
+
+SexLabFramework function GetSexLab() global
+    return Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
+endfunction
+
 function GameLoaded()
 
     activeThreads = 0
@@ -28,22 +36,8 @@ function GameLoaded()
 
 endfunction
 
-function RegisterActions()
-
-    ;TODO - migrate these from the arcs_Main script
-
-endfunction
-
-function RegisterDecorators()
-
-endfunction
-
 function CreateDefaultTagsList()
     ;TODO - not sure the plan for this yet
-endfunction
-
-SexLabFramework function GetSexLab() global
-    return Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
 endfunction
 
 bool function ActorInSexScene(Actor akActor) global
@@ -58,8 +52,8 @@ bool function ActorInSexScene(Actor akActor) global
     endif
 
     ;NOTE - this will catch in this mod before the sex scene starts
-    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
-    if akActor.IsInFaction(config.arcs_HavingSexFaction)
+    arcs_ConfigSettings cfg = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if akActor.IsInFaction(cfg.arcs_HavingSexFaction)
         return true
     Else
         return false
@@ -103,17 +97,72 @@ string function MakeDefaultSLTag(Actor actor1, Actor actor2 = none)
     return tag
 endfunction
 
+bool function Kiss(Actor akActor1, Actor akActor2)
+
+    bool result = true
+
+	Actor[] sceneActors = new Actor[2]
+	sceneActors[0] = akActor1
+	sceneActors[1] = akActor2
+	sslBaseAnimation[] sanims
+	sanims = sfx.GetAnimationsByTags(ActorCount = 2, Tags = "Kissing", TagSuppress = "", RequireAll = true)
+	If sanims.Length > 0		
+		if sfx.StartSex(Positions = sceneActors, anims = sanims, allowbed = true) == -1
+			result = false
+		endif
+	Else
+		Debug.MessageBox("No sexlab animations could be found")
+		result = false
+    EndIf
+
+endfunction
+
 bool function StartSex(Actor[] actors, string type, string intensity)
 
+    Actor thePlayer = Game.GetPlayer()
+    bool playerInScene = false 
+    bool busyActors = false
+    int i = 0
+    while i < actors.length
+        if actors[i] == thePlayer
+            playerInScene = true
+        endif
+        if arcs_SexLab.ActorInSexScene(actors[i])
+            busyActors = true
+        endif
+        i += 1
+    endwhile
+
+    if busyActors
+        arcs_Utility.WriteInfo("arcs_SexLab - StartSex - Failed due to busy actors", 2)
+        return false
+    endif
+
+    if playerInScene
+        ;NOTE - having a problem with sex actions coming in in batches, need to block
+        if arcs_API.IsDhlpActive()
+            arcs_Utility.WriteInfo("arcs_SexLab - StartSex - DHLP blocked from starting", 2)
+            return false
+        endif
+
+        if !arcs_Main.StartDhlp()
+            arcs_Utility.WriteInfo("arcs_SexLab - StartSex - DHLP suspend failed", 2)
+            return false
+        endif
+    endif
+        
     ;TODO - test this with 3p and starting orgies
 
     bool result = false
 
-    int i = 0
+    i = 0
     while i < actors.length
         if !actors[i].IsInFaction(arcs_HavingSexFaction)
             actors[i].AddToFaction(arcs_HavingSexFaction)
         endif
+        ; if !actors[i].IsInFaction(config.arcs_ActorBusyFaction)
+        ;     actors[i].AddToFaction(config.arcs_ActorBusyFaction)
+        ; endif
         i += 1
     endwhile
 
@@ -169,20 +218,28 @@ bool function StartSex(Actor[] actors, string type, string intensity)
             result = true
             activeThreads += 1
         else 
-            RemoveActorsFromFaction(actors)
+            ;RemoveActorsFromFaction(actors)
             arcs_Utility.WriteInfo("arcs_SexLab - StartThread - StartThread() did not return a thread controller.")   
         endif
 
     else 
         arcs_Utility.WriteInfo("arcs_SexLab - StartThread - NewTread() creation failed")      
-        RemoveActorsFromFaction(actors)
+        ;RemoveActorsFromFaction(actors)
     endif
 
     arcs_Utility.WriteInfo("arcs_SexLab - result : " + result)
 
+    if !result
+        RemoveActorsFromFaction(actors)
+        if arcs_API.IsDhlpActive()
+            arcs_Main.EndDhlp()
+        endif
+        Debug.Notification("Arcane Sexbot - could not start sex scene")
+    endif
+
     return result
 
-endfunction
+endfunction 
 
 function RemoveActorsFromFaction(Actor[] actors)
     int i = 0
@@ -190,6 +247,9 @@ function RemoveActorsFromFaction(Actor[] actors)
         if actors[i].IsInFaction(arcs_HavingSexFaction)
             actors[i].RemoveFromFaction(arcs_HavingSexFaction)
         endif
+        ; if actors[i].IsInFaction(config.arcs_ActorBusyFaction)
+        ;     actors[i].RemoveFromFaction(config.arcs_ActorBusyFaction)
+        ; endif
         i += 1
     endwhile
 endfunction
@@ -243,6 +303,10 @@ event OnAnimationEnd(int tid, bool HasPlayer) ;EndSexScene in minai
         result = arcs_SkyrimNet.CreateDirectNarration(GetSourceActor(actors).GetDisplayName() + " finished masturbating.")
     else
         result = arcs_SkyrimNet.CreateDirectNarration(MakeActorsString(actors) + " finished having sex.") 
+    endif
+
+    if arcs_API.IsDhlpActive()
+        arcs_Main.EndDhlp()
     endif
 
 endevent
@@ -305,3 +369,5 @@ endfunction
 SexLabFramework property sfx auto
 
 Faction property arcs_HavingSexFaction auto
+
+arcs_ConfigSettings property config auto

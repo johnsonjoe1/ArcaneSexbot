@@ -1,10 +1,18 @@
 Scriptname arcs_Eligibility extends Quest  
 
-bool function ActorIsEligible(Actor akActor) global
+bool function ActorIsEligible(Actor akActor, arcs_ConfigSettings config) global
     ;TODO - add other global checks here
     bool valid = true
 
-    if akActor == Game.GetPlayer()
+    ; if arcs_API.IsDhlpActive()
+    ;     return false
+    ; endif
+
+    ; if arcs_Main.ActorBusy(akActor)
+    ;     return false
+    ; endif
+
+    if akActor == config.ThePlayer
         valid = false ;the player should never be the source of these
     endif
 
@@ -17,10 +25,13 @@ bool function ActorIsEligible(Actor akActor) global
     return valid
 endfunction
 
-bool function TargetIsElibible(Actor akActor) global
-
+bool function TargetIsElibible(Actor akActor, arcs_ConfigSettings config) global
     ;TODO - add other global checks here
     bool valid = true
+
+    ; if akActor.IsInFaction(config.arcs_ActorBusyFaction)
+    ;     return false
+    ; endif
 
     if akActor.IsChild()
         valid = false ;adults onlly
@@ -29,8 +40,88 @@ bool function TargetIsElibible(Actor akActor) global
     ;TODO - add DHLP check
 
     return valid
+endfunction
+
+bool function ExtCmdKiss_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+
+    ;debug.Notification("ExtCmdKiss_IsEligible - actor: " + akOriginator.GetDisplayName())
 
     return false
+
+    bool result = true 
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if config.arcs_GlobalActionKiss.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdKiss_IsEligible - disabled action")
+        return false
+    endif
+    
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
+        result = false
+    endif
+
+    if arcs_SexLab.ActorInSexScene(akOriginator)
+        result = false ;in a sex scene already
+    endif
+
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) 
+
+    ; string targetName = ""
+    ; if !akTarget
+    ;     result = false
+    ; Else
+    ;     targetName = akTarget.GetDisplayName()
+    ;     if akTarget.IsChild()
+    ;         result = false
+    ;     endif
+    ;     if arcs_SexLab.ActorInSexScene(akTarget)
+    ;         result = false ;in a sex scene already
+    ;     endif
+    ; endif
+
+    arcs_Utility.WriteInfo("ExtCmdKiss_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + \
+        " akTarget: " + akTarget + " result: " + result)
+
+    return result
+
+endfunction
+
+bool function ExtCmdStartMasturbation_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+
+    bool result = true 
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    if config.arcs_GlobalActionStartMasturbation.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdStartMasturbation_IsEligible - disabled action")
+        return false
+    endif
+    
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
+        result = false
+    endif
+
+    if arcs_SexLab.ActorInSexScene(akOriginator)
+        result = false ;in a sex scene already
+    endif
+
+    int arousal = -1
+    int arousalNeeded = -1
+
+    if config.arcs_GlobalUseArousal.GetValue() == 1
+        slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+        arousal = slau.GetActorArousal(akOriginator)
+        arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
+        if arousal < arousalNeeded
+            result = false
+        endif
+    endif
+
+    debug.Notification("ExtCmdStartMasturbation_IsEligible result: " + result)
+
+    arcs_Utility.WriteInfo("ExtCmdStartMasturbation_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + \
+        " result: " + result)    
+
+    return result
 
 endfunction
 
@@ -46,7 +137,7 @@ bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, 
         return false
     endif
     
-    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
 
@@ -54,23 +145,28 @@ bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, 
         result = false ;in a sex scene already
     endif
 
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) 
 
-    string targetName = ""
-    if !akTarget
-        result = false
-    Else
-        targetName = akTarget.GetDisplayName()
-        if akTarget.IsChild()
+    ; string targetName = ""
+    ; if !akTarget
+    ;     result = false
+    ; Else
+    ;     targetName = akTarget.GetDisplayName()
+    ;     if akTarget.IsChild()
+    ;         result = false
+    ;     endif
+    ; endif
+
+    int arousal = -1
+    int arousalNeeded = -1
+
+    if config.arcs_GlobalUseArousal.GetValue() == 1
+        slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+        arousal = slau.GetActorArousal(akOriginator)
+        arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
+        if arousal < arousalNeeded
             result = false
         endif
-    endif
-
-    slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
-    int arousal = slau.GetActorArousal(akOriginator)
-    int arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
-    if arousal < arousalNeeded
-        result = false
     endif
 
     ;TODO - target arousal check
@@ -78,7 +174,7 @@ bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, 
 
 
     arcs_Utility.WriteInfo("ExtCmdStartSex_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + \
-        " arousal: " + arousal + " needed: " + arousalNeeded + " akTarget: " + targetName + " result: " + result)
+        " arousal: " + arousal + " needed: " + arousalNeeded + " akTarget: " + akTarget + " result: " + result)
 
     return result
 
@@ -93,12 +189,12 @@ bool function ExtCmdStartThreePersonSex_IsEligible(Actor akOriginator, string co
     bool result = true 
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
-    if config.arcs_GlobalActionStartSex.GetValue() == 0
-        arcs_Utility.WriteInfo("ExtCmdStartSex_IsEligible - disabled action")
+    if config.arcs_GlobalActionStartThreePersonSex.GetValue() == 0
+        arcs_Utility.WriteInfo("ExtCmdStartThreePersonSex_IsEligible - disabled action")
         return false
     endif
     
-    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
 
@@ -121,11 +217,16 @@ bool function ExtCmdStartThreePersonSex_IsEligible(Actor akOriginator, string co
     ;     endif
     ; endif
 
-    slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
-    int arousal = slau.GetActorArousal(akOriginator)
-    int arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
-    if arousal < arousalNeeded
-        result = false
+    int arousal = -1
+    int arousalNeeded = -1
+
+    if config.arcs_GlobalUseArousal.GetValue() == 1
+        slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+        arousal = slau.GetActorArousal(akOriginator)
+        arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
+        if arousal < arousalNeeded
+            result = false
+        endif
     endif
 
     ; if akTarget1 == akTarget2 || akOriginator == akTarget1 || akOriginator == akTarget2
@@ -159,17 +260,17 @@ bool function ExtCmdStripTarget_IsEligible(Actor akOriginator, string contextJso
         return false
     endif
 
-    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
     
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
     string targetName = ""
     if !akTarget
         result = false
     Else
         targetName = akTarget.GetDisplayName()
-        if !arcs_Eligibility.TargetIsElibible(akTarget) 
+        if !arcs_Eligibility.TargetIsElibible(akTarget, config) 
             result = false
         endif
 
@@ -198,17 +299,17 @@ bool function ExtCmdDressTarget_IsEligible(Actor akOriginator, string contextJso
         return false
     endif
 
-    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
     
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", Game.GetPlayer()) ;todo - pull this from the quest?
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
     string targetName = ""
     if !akTarget
         result = false
     Else
         targetName = akTarget.GetDisplayName()
-        if !arcs_Eligibility.TargetIsElibible(akTarget) 
+        if !arcs_Eligibility.TargetIsElibible(akTarget, config) 
             result = false
         endif
 
@@ -236,7 +337,7 @@ bool function ExtCmdUndress_IsEligible(Actor akOriginator, string contextJson, s
         return false
     endif
 
-    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
 
@@ -265,7 +366,7 @@ bool function ExtCmdDress_IsEligible(Actor akOriginator, string contextJson, str
         return false
     endif
 
-    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
 
@@ -294,7 +395,7 @@ bool function ExtCmdDecreaseArousal_IsEligible(Actor akOriginator, string contex
         return false
     endif
 
-    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
 
@@ -312,7 +413,7 @@ bool function ExtCmdIncreaseArousal_IsEligible(Actor akOriginator, string contex
         return false
     endif
 
-    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
 
@@ -330,13 +431,21 @@ bool function ExtCmdDecreaseAttraction_IsEligible(Actor akOriginator, string con
 
     ;TODO - check for disabled actions
 
-    Actor thePlayer = Game.GetPlayer()
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
-    if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akTarget == thePlayer
-        return true
-    endif
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
 
-    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+    if akTarget != none
+        if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akTarget != config.ThePlayer
+            result = false
+        endif
+
+        if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
+            result = false
+        endif
+
+        if arcs_Attraction.GetAttractionToPlayer(akOriginator) == 0
+            return false ;min value
+        endif
+    else 
         result = false
     endif
 
@@ -354,13 +463,22 @@ bool function ExtCmdIncreaseAttraction_IsEligible(Actor akOriginator, string con
 
     ;TODO - check for disabled actions
 
-    Actor thePlayer = Game.GetPlayer()
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
-    if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akTarget == thePlayer
-        return true
-    endif
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
 
-    if !arcs_Eligibility.ActorIsEligible(akOriginator) 
+    if akTarget != none
+
+        if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akTarget != config.ThePlayer
+            result = false
+        endif
+
+        if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
+            result = false
+        endif
+
+        if arcs_Attraction.GetAttractionToPlayer(akOriginator) == 100
+            return false ;maxed out
+        endif
+    Else
         result = false
     endif
 

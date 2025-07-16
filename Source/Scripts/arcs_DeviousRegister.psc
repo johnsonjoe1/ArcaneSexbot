@@ -14,19 +14,19 @@ function RegisterActions() global
     ;shock?
 
     SkyrimNetApi.RegisterAction("ArcbotStartVibration", "Starts plugs vibrating to give {taget} sexual pleasure.", "arcs_DeviousEligibility", "ArcbotStartVibration_IsEligible", \
-        "arcs_DeviousExecution", "ArcbotStartVibration_Execute", "", "PAPYRUS", 1, "{\"target\":\"Actor\",\"duration\":\"short|medium|long\"}", "", "")
+        "arcs_DeviousExecution", "ArcbotStartVibration_Execute", "", "PAPYRUS", 1, "{\"target\":\"Actor\",\"duration\":\"short|medium|long\",\"strength\":\"very weak|weak|standard|strong|very strong\",\"goal\":\"orgasm|tease\"}", "", "")
 
     SkyrimNetApi.RegisterAction("ArcbotStopVibration", "Starts plugs vibrating to give {taget} sexual pleasure.", "arcs_DeviousEligibility", "ArcbotStopVibration_IsEligible", \
         "arcs_DeviousExecution", "ArcbotStopVibration_Execute", "", "PAPYRUS", 1, "{\"target\":\"Actor\"}", "", "")
 
     SkyrimNetApi.RegisterAction("ArcbotShock", "Makes piercings and plugs give {target} a shock for sexual pleasure or torment.", "arcs_DeviousEligibility", "ArcbotShock_IsEligible", \
-        "arcs_DeviousExecution", "ArcbotShock_Execute", "", "PAPYRUS", 1, "{\"target\":\"Actor\"}", "", "")
+        "arcs_DeviousExecution", "ArcbotShock_Execute", "", "PAPYRUS", 1, "{\"target\":\"Actor\",\"strength\":\"low|medium|high\"}", "", "")
 
     ;BINDER
-    SkyrimNetApi.RegisterAction("ArcbotAddArmbinder", "Equip a armbinder on {target} to bind their hands", "arcs_DeviousEligibility", "ArcbotAddArmbinder_IsEligible", \
+    SkyrimNetApi.RegisterAction("ArcbotAddArmbinder", "Equip a armbinder on {target} to bind hands", "arcs_DeviousEligibility", "ArcbotAddArmbinder_IsEligible", \
         "arcs_DeviousExecution", "ArcbotAddArmbinder_Execute", "", "PAPYRUS", 1, "{\"target\":\"Actor\",\"material\":\"ebonite|leather|rope\",\"color\":\"black|red|white\"}", "", "")  
 
-    SkyrimNetApi.RegisterAction("ArcbotRemoveArmbinder", "Remove a armbinder from {target} to unbind their hands", "arcs_DeviousEligibility", "ArcbotRemoveArmbinder_IsEligible", \
+    SkyrimNetApi.RegisterAction("ArcbotRemoveArmbinder", "Remove a armbinder from {target} to unbind hands", "arcs_DeviousEligibility", "ArcbotRemoveArmbinder_IsEligible", \
         "arcs_DeviousExecution", "ArcbotRemoveArmbinder_Execute", "", "PAPYRUS", 1, "{\"target\":\"Actor\"}", "", "")  
  
     ;BELT

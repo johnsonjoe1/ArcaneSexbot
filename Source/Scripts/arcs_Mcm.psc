@@ -2,6 +2,8 @@ Scriptname arcs_Mcm extends SKI_ConfigBase
 
 bool skyrimNetFound
 
+int toggleClearDhlp
+
 int toggleActionStartSex
 int toggleActionStripTarget
 int toggleActionDressTarget
@@ -11,12 +13,35 @@ int toggleActionDecreaseArousal
 int toggleActionIncreaseArousal
 int toggleActionDecreaseAttraction
 int toggleActionIncreaseAttraction
+int toggleActionStartThreePerson
+int toggleActionStartMasturbation
+int toggleActionKiss
 
 int toggleActionAllDevious
+
+;armbinder|belt|boots|blindfold|collar|corset|gag|gloves|harness|hood|npiercing|vpiercing|aplug|vplug
+int toggleDeviousShocks
+int toggleDeviousStartVibration
+int toggleDeviousStopVibration
+int toggleDeviousArmbinder
+int toggleDeviousBelt
+int toggleDeviousBoots
+int toggleDeviousBlindfold
+int toggleDeviousCollar
+int toggleDeviousCorset
+int toggleDeviousGag
+int toggleDeviousGloves
+int toggleDeviousHarness
+int toggleDeviousHood
+int toggleDeviousNPiercing
+int toggleDeviousVPiercing
+int toggleDeviousAPlug
+int toggleDeviousVPlug
 
 int toggleShowSexConfirm
 int toggleDeviousConfirm
 
+int toggleUseArousal
 int sliderArousalForSex
 int sliderSlightlyAroused
 int sliderVeryAroused
@@ -46,15 +71,12 @@ int[] slToggleArr
 
 Actor thePlayer
 
-arcs_Main main
-arcs_ConfigSettings config
-
 event OnConfigOpen()
 
     thePlayer = Game.GetPlayer()
 
-    main = Quest.GetQuest("arcs_MainQuest") as arcs_Main
-    config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    ;main = Quest.GetQuest("arcs_MainQuest") as arcs_Main
+    ;config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
 
     Pages = new string[8]
 
@@ -133,6 +155,26 @@ endfunction
 
 function DisplayDiagnostics()
 
+    AddHeaderOption("Status Information")
+    AddHeaderOption("")
+
+    string dhlpStatus = "No"
+    if !(gdata.DhlpSuspend == 0)
+        dhlpStatus = "Yes - "
+        if StringUtil.GetLength(gdata.DhlpSuspendByMod) > 15
+            dhlpStatus += StringUtil.Substring(gdata.DhlpSuspendByMod, 0, 15)
+        Else
+            dhlpStatus += gdata.DhlpSuspendByMod
+        endif
+    endif
+
+    AddTextOption("DHLP Suspended", dhlpStatus)
+    if !(gdata.DhlpSuspend == 0)
+        toggleClearDhlp = AddTextOption("Click to end DHLP suspended", "")
+    else
+        AddTextOption("", "")
+    endif
+
     AddHeaderOption("Requied Mods")
     AddHeaderOption("")
 
@@ -176,6 +218,7 @@ function DisplayArousal()
     AddHeaderOption("Arousal Settings")
     AddHeaderOption("")
 
+    toggleUseArousal = AddToggleOption("Use Arousal In Sex", config.arcs_GlobalUseArousal.GetValue() as int)
     sliderArousalForSex = AddSliderOption("Arousal Needed For Sex", arcs_GlobalArousalForSex.GetValue() as int, "{0}")
     sliderSlightlyAroused = AddSliderOption("Slightly Aroused Conversation", arcs_GlobalSlightlyAroused.GetValue() as int, "{0}")
     sliderVeryAroused = AddSliderOption("Very Aroused Conversation", arcs_GlobalVeryAroused.GetValue() as int, "{0}")
@@ -234,33 +277,18 @@ function DisplayActions()
     AddHeaderOption("Manage Actions")
     AddHeaderOption("")
 
-    toggleActionStartSex = AddToggleOption("Action - Start Sex", config.arcs_GlobalActionStartSex.GetValue() as int)
-    AddTextOption("Used Times - Start Sex", arcs_Utility.GetTimesUsed("ExtCmdStartSex", thePlayer))
-    toggleActionStripTarget = AddToggleOption("Action - Strip Target", config.arcs_GlobalActionStripTarget.GetValue() as int)
-    AddTextOption("Used Times - Strip Target", arcs_Utility.GetTimesUsed("ExtCmdStripTarget", thePlayer))
-    toggleActionDressTarget = AddToggleOption("Action - Dress Target", config.arcs_GlobalActionDressTarget.GetValue() as int)
-    AddTextOption("Used Times - Dress Target", arcs_Utility.GetTimesUsed("ExtCmdDressTarget", thePlayer))
-    toggleActionUndress = AddToggleOption("Action - Undress", config.arcs_GlobalActionUndress.GetValue() as int)
-    AddTextOption("Used Times - Undress", arcs_Utility.GetTimesUsed("ExtCmdUndress", thePlayer))
-    toggleActionDress = AddToggleOption("Action - Dress", config.arcs_GlobalActionDress.GetValue() as int)
-    AddTextOption("Used Times - Dres", arcs_Utility.GetTimesUsed("ExtCmdDress", thePlayer))
-    toggleActionDecreaseArousal = AddToggleOption("Action - Decrease Arousal", config.arcs_GlobalActionDecreaseArousal.GetValue() as int)
-    AddTextOption("Used Times - Decrease Arousal", arcs_Utility.GetTimesUsed("ExtCmdDecreaseArousal", thePlayer))
-    toggleActionIncreaseArousal = AddToggleOption("Action - Increase Arousal", config.arcs_GlobalActionIncreaseArousal.GetValue() as int)
-    AddTextOption("Used Times - Increase Arousal", arcs_Utility.GetTimesUsed("ExtCmdIncreaseArousal", thePlayer))
-    toggleActionDecreaseAttraction = AddToggleOption("Action - Decrease Attraction", config.arcs_GlobalActionDecreaseAttraction.GetValue() as int)
-    AddTextOption("Used Times - Decrease Attraction", arcs_Utility.GetTimesUsed("ExtCmdDecreaseAttraction", thePlayer))
-    toggleActionIncreaseAttraction = AddToggleOption("Action - Increase Attraction", config.arcs_GlobalActionIncreaseAttraction.GetValue() as int)
-    AddTextOption("Used Times - Increase Attraction", arcs_Utility.GetTimesUsed("ExtCmdIncreaseAttraction", thePlayer))
-
-    if config.arcs_GlobalHasDeviousDevices.GetValue() == 1
-
-    AddHeaderOption("Devious Device Actions")
-    AddHeaderOption("")
-
-    toggleActionAllDevious = AddToggleOption("Action - All Devious Device", config.arcs_GlobalActionAllDevious.GetValue() as int)
-
-    endif
+    toggleActionStartSex = AddToggleOption("Action - Start Sex (" + arcs_Utility.GetTimesUsed("ExtCmdStartSex", thePlayer) + ")", config.arcs_GlobalActionStartSex.GetValue() as int)
+    toggleActionStartThreePerson = AddToggleOption("Action - Start 3 Person Sex (" + arcs_Utility.GetTimesUsed("ExtCmdStartThreePersonSex", thePlayer) + ")", config.arcs_GlobalActionStartSex.GetValue() as int)
+    toggleActionStartMasturbation = AddToggleOption("Action - Start Masturbation (" + arcs_Utility.GetTimesUsed("ExtCmdStartMasturbation", thePlayer) + ")", config.arcs_GlobalActionStartMasturbation.GetValue() as int)
+    toggleActionKiss = AddToggleOption("Action - Kiss (" + arcs_Utility.GetTimesUsed("ExtCmdKiss", thePlayer) + ")", config.arcs_GlobalActionKiss.GetValue() as int)
+    toggleActionStripTarget = AddToggleOption("Action - Strip Target (" + arcs_Utility.GetTimesUsed("ExtCmdStripTarget", thePlayer) + ")", config.arcs_GlobalActionStripTarget.GetValue() as int)
+    toggleActionDressTarget = AddToggleOption("Action - Dress Target (" + arcs_Utility.GetTimesUsed("ExtCmdDressTarget", thePlayer) + ")", config.arcs_GlobalActionDressTarget.GetValue() as int)
+    toggleActionUndress = AddToggleOption("Action - Undress (" + arcs_Utility.GetTimesUsed("ExtCmdUndress", thePlayer) + ")", config.arcs_GlobalActionUndress.GetValue() as int)
+    toggleActionDress = AddToggleOption("Action - Dress (" + arcs_Utility.GetTimesUsed("ExtCmdDress", thePlayer) + ")", config.arcs_GlobalActionDress.GetValue() as int)
+    toggleActionDecreaseArousal = AddToggleOption("Action - Decrease Arousal (" + arcs_Utility.GetTimesUsed("ExtCmdDecreaseArousal", thePlayer) + ")", config.arcs_GlobalActionDecreaseArousal.GetValue() as int)
+    toggleActionIncreaseArousal = AddToggleOption("Action - Increase Arousal (" + arcs_Utility.GetTimesUsed("ExtCmdIncreaseArousal", thePlayer) + ")", config.arcs_GlobalActionIncreaseArousal.GetValue() as int)
+    toggleActionDecreaseAttraction = AddToggleOption("Action - Decrease Attraction (" + arcs_Utility.GetTimesUsed("ExtCmdDecreaseAttraction", thePlayer) + ")", config.arcs_GlobalActionDecreaseAttraction.GetValue() as int)
+    toggleActionIncreaseAttraction = AddToggleOption("Action - Increase Attraction (" + arcs_Utility.GetTimesUsed("ExtCmdIncreaseAttraction", thePlayer) + ")", config.arcs_GlobalActionIncreaseAttraction.GetValue() as int)
 
 endfunction
 
@@ -272,7 +300,30 @@ function DisplayDevious()
     if config.arcs_GlobalHasDeviousDevices.GetValue() == 1
 
         toggleDeviousConfirm = AddToggleOption("Show Confirm For Device Change", config.arcs_GlobalDeviousConfirm.GetValue() as int)
+        toggleActionAllDevious = AddToggleOption("Enable Devious Actions", config.arcs_GlobalActionAllDevious.GetValue() as int)
+
+        AddHeaderOption("Devious Device Actions")
+        AddHeaderOption("")
+
+        toggleDeviousShocks = AddToggleOption("Action - Shocks (" + arcs_Utility.GetTimesUsed("ArcbotShock", thePlayer) + ")", config.arcs_GlobalDeviousActionShock.GetValue() as int)
         AddTextOption("", "")
+        toggleDeviousStartVibration = AddToggleOption("Action - Start Vibration (" + arcs_Utility.GetTimesUsed("ArcbotStartVibration", thePlayer) + ")", config.arcs_GlobalDeviousActionVibration.GetValue() as int)
+        toggleDeviousStopVibration = AddToggleOption("Action - Stop Vibration (" + arcs_Utility.GetTimesUsed("ArcbotStopVibration", thePlayer) + ")", config.arcs_GlobalDeviousActionStopVibration.GetValue() as int)
+        toggleDeviousArmbinder = AddToggleOption("Action - Add Binder (" + arcs_Utility.GetTimesUsed("ArcbotAddArmbinder", thePlayer) + ")", config.arcs_GlobalDeviousActionBinder.GetValue() as int)
+        toggleDeviousBelt = AddToggleOption("Action - Add Belt (" + arcs_Utility.GetTimesUsed("ArcbotAddChastityBelt", thePlayer) + ")", config.arcs_GlobalDeviousActionBelt.GetValue() as int)
+        toggleDeviousBoots = AddToggleOption("Action - Add Boots (" + arcs_Utility.GetTimesUsed("ArcbotAddSlaveBoots", thePlayer) + ")", config.arcs_GlobalDeviousActionBoots.GetValue() as int)
+        toggleDeviousBlindfold = AddToggleOption("Action - Add Blindfold (" + arcs_Utility.GetTimesUsed("ArcbotAddBlindfold", thePlayer) + ")", config.arcs_GlobalDeviousActionBlindfold.GetValue() as int)
+        toggleDeviousCollar = AddToggleOption("Action - Add Collar (" + arcs_Utility.GetTimesUsed("ArcbotAddCollar", thePlayer) + ")", config.arcs_GlobalDeviousActionCollar.GetValue() as int)
+        toggleDeviousCorset = AddToggleOption("Action - Add Corset (" + arcs_Utility.GetTimesUsed("ArcbotAddCorset", thePlayer) + ")", config.arcs_GlobalDeviousActionCorset.GetValue() as int)
+        toggleDeviousGag = AddToggleOption("Action - Add Gag (" + arcs_Utility.GetTimesUsed("ArcbotAddGag", thePlayer) + ")", config.arcs_GlobalDeviousActionGag.GetValue() as int)
+        toggleDeviousGloves = AddToggleOption("Action - Add Gloves (" + arcs_Utility.GetTimesUsed("ArcbotAddSlaveGloves", thePlayer) + ")", config.arcs_GlobalDeviousActionGloves.GetValue() as int)
+        toggleDeviousHarness = AddToggleOption("Action - Add Harness (" + arcs_Utility.GetTimesUsed("ArcbotAddHarness", thePlayer) + ")", config.arcs_GlobalDeviousActionHarness.GetValue() as int)
+        toggleDeviousHood = AddToggleOption("Action - Add Hood (" + arcs_Utility.GetTimesUsed("ArcbotAddHood", thePlayer) + ")", config.arcs_GlobalDeviousActionHood.GetValue() as int)
+        toggleDeviousNPiercing = AddToggleOption("Action - Add Nipple Piercing (" + arcs_Utility.GetTimesUsed("ArcbotAddNipplePiercing", thePlayer) + ")", config.arcs_GlobalDeviousActionNPiercing.GetValue() as int)
+        toggleDeviousVPiercing = AddToggleOption("Action - Add Vaginal Piercing (" + arcs_Utility.GetTimesUsed("ArcbotAddVaginalPiercing", thePlayer) + ")", config.arcs_GlobalDeviousActionVPiercing.GetValue() as int)
+        toggleDeviousAPlug = AddToggleOption("Action - Add Anal Plug (" + arcs_Utility.GetTimesUsed("ArcbotAddAnalPlug", thePlayer) + ")", config.arcs_GlobalDeviousActionAPlug.GetValue() as int)
+        toggleDeviousVPlug = AddToggleOption("Action - Add Vaginal Plug (" + arcs_Utility.GetTimesUsed("ArcbotAddVaginalPlug", thePlayer) + ")", config.arcs_GlobalDeviousActionVPlug.GetValue() as int)
+        
 
 
     else
@@ -361,7 +412,50 @@ event OnOptionSelect(int option)
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionDecreaseAttraction))
     elseif option == toggleActionIncreaseAttraction
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionIncreaseAttraction))
+    elseif option == toggleActionStartThreePerson
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionStartThreePersonSex))
+    elseif option == toggleActionStartMasturbation
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionStartMasturbation))
+    elseif option == toggleActionKiss
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionKiss))
+    elseif option == toggleUseArousal
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalUseArousal))
 
+
+    elseif option == toggleDeviousShocks
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionShock))
+    elseif option == toggleDeviousStartVibration
+         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionVibration))       
+    elseif option == toggleDeviousStopVibration
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionStopVibration))
+    elseif option == toggleDeviousArmbinder
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionBinder))
+    elseif option == toggleDeviousBelt
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionBelt))
+    elseif option == toggleDeviousBoots
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionBoots))
+    elseif option == toggleDeviousBlindfold
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionBlindfold))
+    elseif option == toggleDeviousCollar
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionCollar))
+    elseif option == toggleDeviousCorset
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionCorset))
+    elseif option == toggleDeviousGag
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionGag))
+    elseif option == toggleDeviousGloves
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionGloves))
+    elseif option == toggleDeviousHarness
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionHarness))
+    elseif option == toggleDeviousHood
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionHood))
+    elseif option == toggleDeviousNPiercing
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionNPiercing))
+    elseif option == toggleDeviousVPiercing
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionVPiercing))
+    elseif option == toggleDeviousAPlug
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionAPlug))
+    elseif option == toggleDeviousVPlug
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousActionVPlug))
 
 
 
@@ -373,6 +467,13 @@ event OnOptionSelect(int option)
         arcs_GlobalModifierKey.SetValue(newModifier)
         SetTextOptionValue(option, GetModifierString(newModifier))
 
+    endif
+
+    if option == toggleClearDhlp
+        if ShowMessage("Clear DHLP event? WARNING: another mod could be running a long process and clearing DHLP could have undesirable impacts.", true, "$Yes", "$No")
+            arcs_Main.EndDhlp()
+            ForcePageReset()
+        endif
     endif
 
 endevent
@@ -517,5 +618,6 @@ GlobalVariable property arcs_GlobalShowSexConfirm auto
 GlobalVariable property arcs_GlobalHotkey auto
 GlobalVariable property arcs_GlobalModifierKey auto
 
-; arcs_Main property main auto
-; arcs_ConfigSettings property config auto
+arcs_Main property main auto
+arcs_ConfigSettings property config auto
+arcs_Data property gdata auto

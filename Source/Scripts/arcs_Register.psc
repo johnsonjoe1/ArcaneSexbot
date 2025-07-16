@@ -43,7 +43,21 @@ function RegisterActions() global
     ;                                 1, "{\"target\":\"Actor\",\"type\":\"oral|anal|vaginal|hands\"}", \
     ;                                 "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdStartSex", "Have {intensity} {type} sex with {target}.", \
+    SkyrimNetApi.RegisterAction("ExtCmdKiss", "Kiss {target}.", \
+                                    "arcs_Eligibility", "ExtCmdKiss_IsEligible", \
+                                    "arcs_Execution", "ExtCmdKiss_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "{\"target\":\"Actor\"}", \
+                                    "", "")
+
+    SkyrimNetApi.RegisterAction("ExtCmdStartMasturbation", "Start masturbating.", \
+                                    "arcs_Eligibility", "ExtCmdStartMasturbation_IsEligible", \
+                                    "arcs_Execution", "ExtCmdStartMasturbation_Execute", \
+                                    "", "PAPYRUS", \
+                                    1, "", \
+                                    "", "")
+
+    SkyrimNetApi.RegisterAction("ExtCmdStartSex", "Start two person sex.", \
                                     "arcs_Eligibility", "ExtCmdStartSex_IsEligible", \
                                     "arcs_Execution", "ExtCmdStartSex_Execute", \
                                     "", "PAPYRUS", \
@@ -65,21 +79,21 @@ function RegisterActions() global
                                     1, "{\"target\":\"Actor\"}", \
                                     "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdDressTarget", "Dress {target} back into their clothing.", \
+    SkyrimNetApi.RegisterAction("ExtCmdDressTarget", "Dress {target} back into clothing.", \
                                     "arcs_Eligibility", "ExtCmdDressTarget_IsEligible", \
                                     "arcs_Execution", "ExtCmdDressTarget_Execute", \
                                     "", "PAPYRUS", \
                                     1, "{\"target\":\"Actor\"}", \
                                     "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdUndress", "Undress and remove your clothing.", \
+    SkyrimNetApi.RegisterAction("ExtCmdUndress", "Undress and remove clothing.", \
                                     "arcs_Eligibility", "ExtCmdUndress_IsEligible", \
                                     "arcs_Execution", "ExtCmdUndress_Execute", \
                                     "", "PAPYRUS", \
                                     1, "", \
                                     "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdDress", "Dress back into your clothing.", \
+    SkyrimNetApi.RegisterAction("ExtCmdDress", "Dress back into clothing.", \
                                     "arcs_Eligibility", "ExtCmdDress_IsEligible", \
                                     "arcs_Execution", "ExtCmdDress_Execute", \
                                     "", "PAPYRUS", \
@@ -87,7 +101,7 @@ function RegisterActions() global
                                     "", "")
 
     ;The current serious coversation, lack of sexual stimulus, or combat is making you less horny
-    SkyrimNetApi.RegisterAction("ExtCmdDecreaseArousal", "Use this to indicate you are getting less aroused.", \
+    SkyrimNetApi.RegisterAction("ExtCmdDecreaseArousal", "Use this to indicate getting less aroused.", \
                                     "arcs_Eligibility", "ExtCmdDecreaseArousal_IsEligible", \
                                     "arcs_Execution", "ExtCmdDecreaseArousal_Execute", \
                                     "", "PAPYRUS", \
@@ -95,21 +109,21 @@ function RegisterActions() global
                                     "", "")
 
     ;The current sexy coversation or sexual events around you are making you horny
-    SkyrimNetApi.RegisterAction("ExtCmdIncreaseArousal", "Use this to indicate that you are getting more aroused.", \
+    SkyrimNetApi.RegisterAction("ExtCmdIncreaseArousal", "Use this to indicate getting more aroused.", \
                                     "arcs_Eligibility", "ExtCmdIncreaseArousal_IsEligible", \
                                     "arcs_Execution", "ExtCmdIncreaseArousal_Execute", \
                                     "", "PAPYRUS", \
                                     1, "", \
                                     "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdIncreaseAttraction", "Use this to indicate you are {change_amount} attracted to {target}", \
+    SkyrimNetApi.RegisterAction("ExtCmdIncreaseAttraction", "Use this to indicate more attracted to {target}", \
                                     "arcs_Eligibility", "ExtCmdIncreaseAttraction_IsEligible", \
                                     "arcs_Execution", "ExtCmdIncreaseAttraction_Execute", \
                                     "", "PAPYRUS", \
                                     1, "{\"target\":\"Actor\",\"change_amount\":\"somewhat more|more|much more\"}", \
                                     "", "")
 
-    SkyrimNetApi.RegisterAction("ExtCmdDecreaseAttraction", "Use this to indicate you are {change_amount} attracted to {target}", \
+    SkyrimNetApi.RegisterAction("ExtCmdDecreaseAttraction", "Use this to indicate less attracted to {target}", \
                                     "arcs_Eligibility", "ExtCmdDecreaseAttraction_IsEligible", \
                                     "arcs_Execution", "ExtCmdDecreaseAttraction_Execute", \
                                     "", "PAPYRUS", \

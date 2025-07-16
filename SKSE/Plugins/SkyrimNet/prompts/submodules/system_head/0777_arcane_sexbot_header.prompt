@@ -1,4 +1,5 @@
-{% if render_mode == "full" or render_mode == "dynamic" %}
+{# {% if not isTimePaused %} #}
+{# {% if render_mode == "full" or render_mode == "dynamic" %} #}
 {% set sex_info = arcs_get_sex_info(npc.UUID) %}
 {% set actor_name = decnpc(npc.UUID).name %}
 
@@ -45,4 +46,5 @@
 
     {% endif %}
 {% endif %}
-{% endif %}
+{# {% endif %} #}
+{# {% endif %} #}

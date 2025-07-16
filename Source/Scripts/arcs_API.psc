@@ -1,7 +1,8 @@
 Scriptname arcs_API   
 
 bool function IsDhlpActive() global
-    
+    arcs_Data gdata = arcs_Data.GetArcsData()
+    return gdata.DhlpSuspend != 0
 endfunction
 
 int function CheckNudity(Actor akActor) global
@@ -9,8 +10,8 @@ int function CheckNudity(Actor akActor) global
         return -1
     endif
     ;0 - nude, 1 - skimpy, 2 - dressed
-    arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
-    return ncheck.NudityCheck(akActor)
+    ;arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
+    return (arcs_NudityChecker.GetArcsNudityChecker()).NudityCheck(akActor)
 endfunction
 
 ;types: armbinder|belt|boots|blindfold|collar|corset|gag|gloves|harness|hood|npiercing|vpiercing|aplug|vplug

@@ -23,6 +23,10 @@ int Property kSlotMask43 = 0x00002000 AutoReadOnly ; Ears
 
 int Property kSlotMask52 = 0x00400000 AutoReadOnly ; ???
 
+arcs_NudityChecker function GetArcsNudityChecker() global 
+    return Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
+endfunction
+
 event OnInit()
 
     if self.IsRunning()

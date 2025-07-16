@@ -1,22 +1,76 @@
 Scriptname arcs_Execution extends Quest  
 
-;TODO - move sexlab functions to their own script
-function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+function ExtCmdKiss_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 
-    Actor thePlayer = Game.GetPlayer()
-    arcs_Utility.StoreTimesUsed("ExtCmdStartSex", thePlayer)
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
+    ;debug.Notification("ExtCmdKiss_Execute - actor: " + akOriginator.GetDisplayName())
+
+    arcs_Utility.WriteInfo("ExtCmdKiss_Execute - actor: " + akOriginator.GetDisplayName() + " contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    arcs_Utility.StoreTimesUsed("ExtCmdKiss", config.ThePlayer)
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none)
 
-    if config.arcs_GlobalShowSexConfirm.GetValue() == 1 && akTarget == thePlayer
+    if config.arcs_GlobalShowSexConfirm.GetValue() == 1 && akTarget == config.ThePlayer
+        if !arcs_Utility.ConfirmBox("Kiss " + akOriginator.GetDisplayName() + "?", "Continue the scene", "Skip the scene")
+            return
+        endif
+    endif
+
+    arcs_Utility.WriteInfo("ExtCmdKiss_Execute")
+    arcs_Utility.WriteInfo("contextJson: " + contextJson)
+    arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
+
+
+endfunction
+
+
+function ExtCmdStartMasturbation_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    debug.Notification("ExtCmdStartMasturbation_Execute - actor: " + akOriginator.GetDisplayName())
+
+    arcs_Utility.WriteInfo("ExtCmdStartMasturbation_Execute - actor: " + akOriginator.GetDisplayName() + " contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    arcs_Utility.StoreTimesUsed("ExtCmdStartSex", config.ThePlayer)
+
+    arcs_Utility.WriteInfo("ExtCmdStartMasturbation_Execute")
+    arcs_Utility.WriteInfo("contextJson: " + contextJson)
+    arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
+
+	Actor[] actors = new Actor[1]
+	actors[0] = akOriginator
+
+    arcs_SexLab slab = Quest.GetQuest("arcs_MainQuest") as arcs_SexLab
+    if slab.StartSex(actors, "", "")
+        ;debug.Notification("arcs_SexLab - StartSex success")
+    else 
+        arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+        ;debug.Notification("arcs_SexLab - StartSex failed")
+    endif
+
+endfunction
+
+function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    ;debug.Notification("ExtCmdStartSex_Execute - actor: " + akOriginator.GetDisplayName())
+
+    arcs_Utility.WriteInfo("ExtCmdStartSex_Execute - actor: " + akOriginator.GetDisplayName() + " contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    arcs_Utility.StoreTimesUsed("ExtCmdStartSex", config.ThePlayer)
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none)
+
+    if arcs_SexLab.ActorInSexScene(akTarget)
+        return
+    endif
+
+    if config.arcs_GlobalShowSexConfirm.GetValue() == 1 && akTarget == config.ThePlayer
         if !arcs_Utility.ConfirmBox("Have sex with " + akOriginator.GetDisplayName() + "?", "Continue the sex scene", "Skip the sex scene")
             return
         endif
     endif
 
     arcs_Utility.WriteInfo("ExtCmdStartSex_Execute")
-
     arcs_Utility.WriteInfo("contextJson: " + contextJson)
     arcs_Utility.WriteInfo("paramsJson: " + paramsJson)
 
@@ -37,16 +91,23 @@ endfunction
 
 function ExtCmdStartThreePersonSex_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 
-    arcs_Utility.WriteInfo("ExtCmdStartThreePersonSex_Execute - contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
+    ;debug.Notification("ExtCmdStartThreePersonSex_Execute - actor: " + akOriginator.GetDisplayName())
 
-    Actor thePlayer = Game.GetPlayer()
-    arcs_Utility.StoreTimesUsed("ExtCmdStartSexWith3", thePlayer)
-    Actor akTarget1 = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) 
-    Actor akTarget2 = SkyrimNetApi.GetJsonActor(paramsJson, "sexpartner2", none) 
+    arcs_Utility.WriteInfo("ExtCmdStartThreePersonSex_Execute - actor: " + akOriginator.GetDisplayName() + " contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
 
-    if config.arcs_GlobalShowSexConfirm.GetValue() == 1 && (akTarget1 == thePlayer || akTarget2 == thePlayer)
+    arcs_Utility.StoreTimesUsed("ExtCmdStartThreePersonSex", config.ThePlayer)
+    Actor akTarget1 = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) 
+    Actor akTarget2 = SkyrimNetApi.GetJsonActor(paramsJson, "sexpartner2", none) 
+
+    ;TODO - need to OK checks since no target in eligibility
+
+    if arcs_SexLab.ActorInSexScene(akTarget1) || arcs_SexLab.ActorInSexScene(akTarget1)
+        return
+    endif
+
+    if config.arcs_GlobalShowSexConfirm.GetValue() == 1 && (akTarget1 == config.ThePlayer || akTarget2 == config.ThePlayer)
         if !arcs_Utility.ConfirmBox("Have 3 way sex with " + akOriginator.GetDisplayName() + "?", "Continue the sex scene", "Skip the sex scene")
             return
         endif
@@ -94,7 +155,7 @@ function ExtCmdStripTarget_Execute(Actor akOriginator, string contextJson, strin
 
     SexLabFramework sfx = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
 
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) 
 
     arcs_Movement.FaceTarget(akOriginator, akTarget)
     arcs_Movement.PlayDoWork(akOriginator)
@@ -116,7 +177,7 @@ function ExtCmdDressTarget_Execute(Actor akOriginator, string contextJson, strin
 
     SexLabFramework sfx = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
 
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", thePlayer) ;todo - pull this from the quest?
+    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none)
 
     arcs_Movement.FaceTarget(akOriginator, akTarget)
     arcs_Movement.PlayDoWork(akOriginator)

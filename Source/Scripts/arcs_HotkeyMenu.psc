@@ -1,36 +1,36 @@
 Scriptname arcs_HotkeyMenu extends Quest  
 
-function ShowHotkeyMenu(Actor thePlayer, Actor inCrosshairs) global
+function ShowHotkeyMenu(Actor thePlayer, Actor inCrosshairs)
 
-    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
-    arcs_SexLab slab = Quest.GetQuest("arcs_MainQuest") as arcs_SexLab
+    arcs_SexLab slab = arcs_SexLab.GetArcSexLab()
 
     ;TODO - hotkey sex stuff needs a reaction from the NPC when you start sex with them
     ;should do a arousal / attraction check and tell the player to piss off if not wanting 
     ;not sure how to handle NC from the players side, should you really need to be able to overpower a target?
 
     ;sex faction check on actor to block starting more sex
-    if thePlayer.IsInFaction(config.arcs_HavingSexFaction)
+    if arcs_Main.ActorBusy(thePlayer)
         return ;TODO - this should only impact parts of this menu if other settings are available here
     endif
 
     UIListMenu listMenu = UIExtensions.GetMenu("UIListMenu") as UIListMenu
     
     if inCrosshairs
-        listMenu.AddEntryItem("Start sex with " + inCrosshairs.GetDisplayName())
+        listMenu.AddEntryItem("Start sex " + inCrosshairs.GetDisplayName())
     else
         listMenu.AddEntryItem("No actor targeted for sex")
     endif
 
     listMenu.AddEntryItem("Masturbate")
+    listMenu.AddEntryItem("Get Stats")
 
     if config.arcs_GlobalHasDeviousDevices.GetValue() == 1
         if inCrosshairs
             listMenu.AddEntryItem("Devious items for " + inCrosshairs.GetDisplayName())
             listMenu.AddEntryItem("Devious items for player")
-            listMenu.AddEntryItem("Devious action tests for player")
-            listMenu.AddEntryItem("Action test for player - shock")
-            listMenu.AddEntryItem("Action test for player - vibrate")
+            listMenu.AddEntryItem("TEST - Devious action tests for player")
+            listMenu.AddEntryItem("TEST - Action test for npc - masturbate")
+            listMenu.AddEntryItem("TEST - Action test for npc - kiss")
         else
             listMenu.AddEntryItem("n/a")
             listMenu.AddEntryItem("n/a")
@@ -44,11 +44,18 @@ function ShowHotkeyMenu(Actor thePlayer, Actor inCrosshairs) global
     int listReturn = listMenu.GetResultInt()
 
     if listReturn == 0 && inCrosshairs
-        bool result = arcs_SkyrimNet.CreateDirectNarration("{{ player.name }} pulls " + inCrosshairs.GetDisplayName() + " close and starts unbuttoning their clothing for sex.", inCrosshairs)
-        int arousalVal = arcs_Arousal.GetActorArousalValue(inCrosshairs)
-        if arousalVal > 0
+        
+        ;int arousalVal = arcs_Arousal.GetActorArousalValue(inCrosshairs)
+        ;debug.MessageBox(arousalVal)
+        slaUtilScr slau = Quest.GetQuest("sla_Framework") as slaUtilScr
+        int arousalVal = slau.GetActorArousal(inCrosshairs)
+        int arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
+        if arousalVal >= arousalNeeded || config.arcs_GlobalUseArousal.GetValue() == 0
+            Debug.Notification(inCrosshairs.GetDisplayName() + " is aroused enough for sex...")
+            ;bool result = arcs_SkyrimNet.CreateDirectNarration("{{ player.name }} wants to have sex, " + inCrosshairs.GetDisplayName() + " is aroused and ready for it.", inCrosshairs)
+        ;if arousalVal > 0
             arcs_Utility.WriteInfo("Player started sex event - attraction passed")
-            Utility.Wait(5.0)
+            ;Utility.Wait(5.0)
             Actor[] actors = new Actor[2]
             actors[0] = thePlayer
             actors[1] = inCrosshairs
@@ -57,6 +64,8 @@ function ShowHotkeyMenu(Actor thePlayer, Actor inCrosshairs) global
                 arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
             endif
         else 
+            Debug.Notification(inCrosshairs.GetDisplayName() + " is not aroused enough for sex...")
+            bool result = arcs_SkyrimNet.CreateDirectNarration(inCrosshairs.GetDisplayName() + " turns down {{ player.name }} trying to start sex.", inCrosshairs)
             arcs_Utility.WriteInfo("Player started sex event - attraction failed")
         endif
 
@@ -69,28 +78,37 @@ function ShowHotkeyMenu(Actor thePlayer, Actor inCrosshairs) global
         endif
 
     elseif listReturn == 2 && inCrosshairs
-        ShowDeviousMenu(thePlayer, inCrosshairs, false)
+        debug.MessageBox("Stats - arousal: " + arcs_Arousal.GetActorArousalValue(inCrosshairs) + " attraction to " + config.ThePlayer.GetDisplayName() + ": " + arcs_Attraction.GetAttractionToPlayer(inCrosshairs))
 
     elseif listReturn == 3 && inCrosshairs
-        ShowDeviousMenu(inCrosshairs, thePlayer, false)
+        ShowDeviousMenu(thePlayer, inCrosshairs, false)
 
     elseif listReturn == 4 && inCrosshairs
-        ShowDeviousMenu(inCrosshairs, thePlayer, true)
+        ShowDeviousMenu(inCrosshairs, thePlayer, false)
 
     elseif listReturn == 5 && inCrosshairs
-        arcs_SkyrimNet.CreateDirectNarration(inCrosshairs.GetDisplayName() + " casts a spell to activate the shocking plug in " + thePlayer.GetDisplayName() + "'s ass", thePlayer)
+        ShowDeviousMenu(inCrosshairs, thePlayer, true)
 
     elseif listReturn == 6 && inCrosshairs
-        arcs_SkyrimNet.CreateDirectNarration(inCrosshairs.GetDisplayName() + " casts a spell to activate the vibrating plug in " + thePlayer.GetDisplayName() + "'s ass", thePlayer)
+        arcs_SkyrimNet.CreateDirectNarration(inCrosshairs.GetDisplayName() + " gets an unstoppable urge to masturbate", inCrosshairs)
+
+    elseif listReturn == 7 && inCrosshairs
+        arcs_SkyrimNet.CreateDirectNarration(inCrosshairs.GetDisplayName() + " gets an unstoppable urge to kiss " + thePlayer.GetDisplayName(), inCrosshairs)
+        ;arcs_SkyrimNet.CreateDirectNarration(inCrosshairs.GetDisplayName() + " casts a spell to activate the vibrating plug in " + thePlayer.GetDisplayName() + "'s ass", thePlayer)
 
     ; elseif listReturn == 4 && inCrosshairs
     ;     arcs_SkyrimNet.CreateDirectNarration(inCrosshairs.GetDisplayName() + " is removing the metal collar from " + thePlayer.GetDisplayName(), inCrosshairs, thePlayer)
+
+    ; elseif listReturn == 8 && inCrosshairs
+    ;     if !slab.Kiss(thePlayer, inCrosshairs)
+    ;         debug.MessageBox("the kiss failed")
+    ;     endif
 
     endif
 
 endfunction
 
-function ShowDeviousMenu(Actor akSource, Actor akTarget, bool useDirectNarration = false) global
+function ShowDeviousMenu(Actor akSource, Actor akTarget, bool useDirectNarration = false)
 
     Actor thePlayer = Game.GetPlayer()
 
@@ -118,7 +136,7 @@ function ShowDeviousMenu(Actor akSource, Actor akTarget, bool useDirectNarration
     elseif listReturn == 1
         ShowDeviousAddMenu(akSource, akTarget, useDirectNarration)
     else 
-        int idx = listReturn - 1
+        int idx = listReturn - 2
         ;debug.MessageBox("listreturn: " + listReturn + " idx: " + idx)
         if idx < types.Length
             string selectedType = types[idx]
@@ -145,7 +163,7 @@ function ShowDeviousMenu(Actor akSource, Actor akTarget, bool useDirectNarration
 
 endfunction
 
-function ShowDeviousAddMenu(Actor akSource, Actor akTarget, bool useDirectNarration = false) global
+function ShowDeviousAddMenu(Actor akSource, Actor akTarget, bool useDirectNarration = false)
 
     string types = arcs_Devious.DeviousList()
     string[] typesList = StringUtil.Split(types, "|")
@@ -169,7 +187,7 @@ function ShowDeviousAddMenu(Actor akSource, Actor akTarget, bool useDirectNarrat
         ShowDeviousMenu(akSource, akTarget)
     else 
         int idx = listReturn - 1
-        if idx < typesList.Length - 1
+        if idx < typesList.Length
             string selectedType = typesList[idx]
             string selectedTypeDisplayName = displayNamesList[idx]
             if selectedType != ""
@@ -195,3 +213,5 @@ function ShowDeviousAddMenu(Actor akSource, Actor akTarget, bool useDirectNarrat
     
 
 endfunction
+
+arcs_ConfigSettings property config auto

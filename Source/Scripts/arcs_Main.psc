@@ -2,10 +2,24 @@ Scriptname arcs_Main extends Quest
 
 Actor thePlayer
 
+;dectection quest
 float entryDelay = 5.0
 float processDelay = 2.0
 
 bool registrationsCompleted = false
+
+;hotkey
+bool processingKey
+int keyCodeLeftControl = 29
+int keyCodeRightControl = 157
+int keyCodeLeftAlt = 56
+int keyCodeRightAlt = 184
+int keyCodeLeftShift = 42
+int keyCodeRightShift = 54
+
+arcs_Main function GetArcsMain() global
+    return Quest.GetQuest("arcs_MainQuest") as arcs_Main
+endfunction
 
 event OnInit()
 
@@ -19,6 +33,16 @@ function GameLoaded()
 
     thePlayer = Game.GetPlayer()
     config.ThePlayer = thePlayer
+    gdata.ThePlayer = thePlayer
+
+    ;REMOVE THIS AFTER TESTING
+    ; if gdata.DhlpSuspend != gdata.DHLP_STATE_SUSPENDED_OTHER_MOD
+    ;     gdata.DhlpSuspend = gdata.DHLP_STATE_OFF
+    ; endif
+
+    ; if thePlayer.IsInFaction(config.arcs_ActorBusyFaction)
+    ;     thePlayer.RemoveFromFaction(config.arcs_ActorBusyFaction)
+    ; endif
 
     registrationsCompleted = false ;todo - remove this
 
@@ -108,7 +132,12 @@ state StopDetectionState
 
 endstate
 
+state DhlpSuspendedState
 
+    event OnKeyDown(int KeyCode)
+    endevent
+
+endstate
 
 event OnSexEndEvent(string eventName, string argString, float argNum, form sender)
 
@@ -119,25 +148,42 @@ event OnSexEndEvent(string eventName, string argString, float argNum, form sende
 endevent
 
 event OnDhlpSuspend(string eventName, string strArg, float numArg, Form sender)
+    gdata.DhlpSuspendByMod = sender.GetName()
+    GoToState("DhlpSuspendedState")
+    ;debug.MessageBox(config.DhlpSuspendByMod + " - " + sender.GetName())
     arcs_Utility.WriteInfo("OnDhlpSuspend - sender: " + sender.GetName() + " id: " + sender.GetFormID())
     if (sender != self) 
-
+        gdata.DhlpSuspend = gdata.DHLP_STATE_SUSPENDED_OTHER_MOD
+    else 
+        gdata.DhlpSuspend = gdata.DHLP_STATE_SUSPENDED
     endif
 endevent
 
 event OnDhlpResume(string eventName, string strArg, float numArg, Form sender)
+    ;debug.MessageBox("OnDhlpResume")
     arcs_Utility.WriteInfo("OnDhlpResume - sender: " + sender.GetName() + " id: " + sender.GetFormID())
-
+    gdata.DhlpSuspend = gdata.DHLP_STATE_OFF
+    GoToState("")
 endevent
 
-bool processingKey
+bool function StartDhlp() global
+    bool result = false
+    arcs_Data g = arcs_Data.GetArcsData()
+    if g.DhlpSuspend == g.DHLP_STATE_OFF
+        g.DhlpSuspend = g.DHLP_STATE_SUSPENDING
+        g.SendModEvent("dhlp-Suspend")
+        result = true
+    endif
+    return result
+endfunction
 
-int keyCodeLeftControl = 29
-int keyCodeRightControl = 157
-int keyCodeLeftAlt = 56
-int keyCodeRightAlt = 184
-int keyCodeLeftShift = 42
-int keyCodeRightShift = 54
+function EndDhlp() global
+    arcs_Data g = arcs_Data.GetArcsData()
+    if g.DhlpSuspend == g.DHLP_STATE_SUSPENDED
+        g.DhlpSuspend = g.DHLP_STATE_RESUMING
+        g.SendModEvent("dhlp-Resume")
+    endif
+endfunction
 
 event OnKeyDown(int KeyCode)
     ProcessKey(KeyCode, 0.0)
@@ -170,7 +216,7 @@ function ProcessKey(int keyCode, float holdTime)
                 else
 
                     if holdTime <= 0.5
-                        arcs_HotkeyMenu.ShowHotkeyMenu(thePlayer, inCrosshairs)
+                        hotkey.ShowHotkeyMenu(thePlayer, inCrosshairs)
                     else
                     endif
 
@@ -184,8 +230,6 @@ function ProcessKey(int keyCode, float holdTime)
         
 
 endfunction
-
-
 
 function ChangeHotkey(int newKeycode)
     if config.arcs_GlobalHotkey.GetValue() > 0
@@ -218,10 +262,33 @@ function RunSoftChecks()
 
 endfunction
 
+bool function ActorBusy(Actor akActor) global
+
+    bool result = true
+
+    ; SexLabFramework slFramework = arcs_SexLab.GetSexLab()
+    ; if slFramework.IsActorActive(akActor)
+    ;     result = true
+    ; endif
+
+    if (akActor.Is3DLoaded() && !akActor.IsDead() && !akActor.IsDisabled() && akActor.GetCurrentScene() == none && !akActor.IsInCombat())
+        result = false
+    endif
+
+    arcs_Utility.WriteInfo("ActorBusy - actor: " + akActor.GetDisplayName() + " result: " + result, 2)
+
+    ;Other tests??
+
+    ;vibrated??
+
+    return result
+
+endfunction
+
 Quest property arcs_NudityDetectionQuest auto
 
 arcs_SexLab property slab auto
 arcs_ConfigSettings property config auto
 arcs_Devious property devious auto
-
-Faction property arcs_HavingSexFaction auto
+arcs_Data property gdata auto
+arcs_HotkeyMenu property hotkey auto
