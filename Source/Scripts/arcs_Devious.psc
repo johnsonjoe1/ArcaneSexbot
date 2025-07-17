@@ -135,11 +135,41 @@ Keyword function ItemTypeToKeyword(string type) global
 
     zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
 
-    if type == "collar"
+    if type == "armbinder"
+        return zlib.zad_DeviousHeavyBondage  ;zad_DeviousArmbinder
+    elseif type == "belt"
+        return zlib.zad_DeviousBelt
+    elseif type == "boots"
+        return zlib.zad_DeviousBoots
+    elseif type == "blindfold"
+        return zlib.zad_DeviousBlindfold
+    elseif type == "collar"
         return zlib.zad_DeviousCollar
-    
-    elseif type == "wrist restraints"
-        return zlib.zad_DeviousHeavyBondage
+    elseif type == "corset"
+        return zlib.zad_DeviousCorset
+    elseif type == "gag"
+        return zlib.zad_DeviousGag
+    elseif type == "gloves"
+        return zlib.zad_DeviousGloves
+    elseif type == "harness"
+        return zlib.zad_DeviousHarness
+    elseif type == "hood"
+        return zlib.zad_DeviousHood
+    elseif type == "npiercing"
+        return zlib.zad_DeviousPiercingsNipple
+    elseif type == "vpiercing"
+        return zlib.zad_DeviousPiercingsVaginal
+    elseif type == "aplug"
+        return zlib.zad_DeviousPlugAnal
+    elseif type == "vplug"
+        return zlib.zad_DeviousPlugVaginal
+    elseif type == "suit"
+        return zlib.zad_DeviousSuit
+    ;ankles cuffs
+    ;arms cuffs
+    ;ankle shackles
+    ;other binders?
+
 
     else
         return none

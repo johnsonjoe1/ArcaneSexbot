@@ -30,7 +30,7 @@ int function GetActorArousalValue(Actor akActor) global
     elseif arousal >= config.arcs_GlobalVeryAroused.GetValue()
         result = aarousal.ACTOR_VERY_AROUSED
     endif
-    debug.MessageBox("arcs_Arousal - GetActorArousalValue check - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " result: " + result)
+    ;debug.MessageBox("arcs_Arousal - GetActorArousalValue check - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " result: " + result)
     arcs_Utility.WriteInfo("arcs_Arousal - GetActorArousalValue check - actor: " + akActor.GetDisplayName() + " arousal: " + arousal + " result: " + result)
     return result
 endfunction

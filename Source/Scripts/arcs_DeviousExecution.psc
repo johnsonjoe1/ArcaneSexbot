@@ -202,32 +202,37 @@ bool function AddExecute(string category, Actor akOriginator, string contextJson
             StorageUtil.SetFormValue(akTarget, "arcs_worn_item_" + category, dev)
             StorageUtil.SetFloatValue(akTarget, "arcs_worn_time_" + category, arcs_Utility.GetTime())
 
-            string data = akOriginator.GetDisplayName() + " locked " + dev.GetName() + " on " + akTarget.GetDisplayName()
-            bool dnResult = arcs_SkyrimNet.CreateShortLivedEvent("arc_devious_add_" + akOriginator.GetDisplayName(), "arc_devious_add", data, data, akOriginator, akTarget)
-
             result = true
         endif
 
+    endif
+
+    if result 
+        ;add success - write short term event for device removal
+        string data = akOriginator.GetDisplayName() + " locked " + dev.GetName() + " on " + akTarget.GetDisplayName()
+        bool dnResult = arcs_SkyrimNet.CreateShortLivedEvent("arc_devious_add_" + akOriginator.GetDisplayName(), "arc_devious_add", data, data, akOriginator, akTarget)
     endif
 
     return result
 
 endfunction
 
-function RemoveExecute(string category, Actor akOriginator, string contextJson, string paramsJson, string actionName) global
+bool function RemoveExecute(string category, Actor akOriginator, string contextJson, string paramsJson, string actionName) global
+
+    bool result = false
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none)
     arcs_Utility.StoreTimesUsed(actionName, config.ThePlayer)
 
     if aktarget == none
-        return
+        return false
     endif
 
     if akOriginator == aktarget
         ;don't let the NPCs remove their own gear
         ;might want to make this more granular at some point
-        return
+        return false
     endif
 
     zadLibs zlib = arcs_Devious.GetDeviousZadlibs()
@@ -238,7 +243,7 @@ function RemoveExecute(string category, Actor akOriginator, string contextJson, 
             string msg = akOriginator.GetDisplayName() + " wants to remove a device"
             ;msg = akOriginator.GetDisplayName() + " wants to remove - " + dev.GetName(), "Allow this?"
             if !arcs_Utility.ConfirmBox(msg, dev.GetName())
-                return
+                return false
             endif
         endif
 
@@ -250,19 +255,45 @@ function RemoveExecute(string category, Actor akOriginator, string contextJson, 
             StorageUtil.StringListRemove(akTarget, "arcs_dd_items", category, true)
             StorageUtil.SetFormValue(akTarget, "arcs_worn_item_" + category, none) ;todo - make sure this works
 
-            string data = akOriginator.GetDisplayName() + " removed " + dev.GetName() + " from " + akTarget.GetDisplayName()
-            bool result = arcs_SkyrimNet.CreateShortLivedEvent("arc_devious_remove_" + akOriginator.GetDisplayName(), "arc_devious_remove", data, data, akOriginator, akTarget)
+            result = true
  
         endif
         
-        ;arcs_Utility.WriteInfo("Removeing DD: " + dev.GetName())
-
     else 
-        arcs_Utility.WriteInfo("No stored DD found")
+
+        ;TODO - add an mcm option to disable this - ON by default
+        ;had a variety of people complian about mods that add items as generic and having biding remove them
+
+        Keyword kw = arcs_Devious.ItemTypeToKeyword(category)
+
+        ;debug.MessageBox("none found - checking category : " + category + " kw: " + kw.GetName())
+
+        if kw != none
+            dev = zlib.GetWornRenderedDeviceByKeyword(akTarget, kw)
+            ;debug.MessageBox(dev)
+            if dev
+                if config.arcs_GlobalDeviousConfirm.GetValue() == 1 && akTarget == config.ThePlayer
+                    string msg = akOriginator.GetDisplayName() + " wants to remove a device"
+                    if !arcs_Utility.ConfirmBox(msg, arcs_Devious.GetDeviousDisplayName(category))
+                        return false
+                    endif
+                endif
+
+                if zlib.UnlockDeviceByKeyword(akTarget, kw, false)
+                    result = true
+                endif
+            endif
+        endif
+
     endif
 
-    ;NOTE - support a keyword based remove of generic items? player might manually equip and item
-    ;could track this in the actor alias with the on equipped event - binding does it
+    if result
+        ;remvoe success - write short term event for device removal
+        string data = akOriginator.GetDisplayName() + " removed " + dev.GetName() + " from " + akTarget.GetDisplayName()
+        bool dnResult = arcs_SkyrimNet.CreateShortLivedEvent("arc_devious_remove_" + akOriginator.GetDisplayName(), "arc_devious_remove", data, data, akOriginator, akTarget)
+    endif
+
+    return result
 
 endfunction
 
