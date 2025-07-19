@@ -160,9 +160,13 @@ string function GetSexInfo(Actor akActor) global
         displayName = akActor.GetDisplayName()
     endif
 
+    int useArousal = config.arcs_GlobalUseArousal.GetValue() as int
     int arousalNeeded = config.arcs_GlobalArousalForSex.GetValue() as int
     int slightlyArousedThreshold =  config.arcs_GlobalSlightlyAroused.GetValue() as int
     int veryArousedThreshold = config.arcs_GlobalVeryAroused.GetValue() as int
+    int slightlyAttractedThreshold = config.arcs_GlobalSlightlyAttracted.GetValue() as int
+    int veryAttractedThreshold = config.arcs_GlobalVeryAttracted.GetValue() as int
+    int subAndSlave = config.arcs_GlobalUseSubmissionAndSlavery.GetValue() as int
 
     int attraction = 0
     int attractionEnabled = 0
@@ -177,9 +181,13 @@ string function GetSexInfo(Actor akActor) global
 
     output += "\"npcname\":\"" + displayName + "\","
     output += "\"having_sex\":" + inSceneInt + ","
+    output += "\"sub_and_slave\":" + subAndSlave + ","
     output += "\"nudity\":" + nudity + ","
     output += "\"attraction_enabled\":" + attractionEnabled + ","
     output += "\"attraction\":" + attraction + ","
+    output += "\"slightly_attracted\":" + slightlyAttractedThreshold + ","
+    output += "\"very_attracted\":" + veryAttractedThreshold + ","    
+    output += "\"use_arousal\":" + useArousal + ","    
     output += "\"arousal_sex\":" + arousalNeeded + ","
     output += "\"slightly_aroused\":" + slightlyArousedThreshold + ","
     output += "\"very_aroused\":" + veryArousedThreshold + ","

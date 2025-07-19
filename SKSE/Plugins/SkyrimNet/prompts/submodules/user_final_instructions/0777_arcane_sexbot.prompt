@@ -1,6 +1,5 @@
 {% if not isTimePaused %}
 {% set actor_name = decnpc(npc.UUID).name %}
-{% set actor_arousal = arcs_get_arousal(npc.UUID) %}
 {% set being_vibrated = arcs_devious_being_vibrated(npc.UUID).being_vibrated %}
 
 

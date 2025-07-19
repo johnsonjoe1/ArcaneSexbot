@@ -14,8 +14,8 @@ GlobalVariable property arcs_GlobalUseAttractionSystem auto
 GlobalVariable property arcs_GlobalUseSexualityCheck auto
 GlobalVariable property arcs_GlobalUseSexualityChange auto
 GlobalVariable property arcs_GlobalUseAttractionSeed auto
-GlobalVariable property arcs_GobalSlightlyAttracted auto
-GlobalVariable property arcs_GobalVeryAttracted auto
+GlobalVariable property arcs_GlobalSlightlyAttracted auto
+GlobalVariable property arcs_GlobalVeryAttracted auto
 
 GlobalVariable property arcs_GlobalHotkey auto
 GlobalVariable property arcs_GlobalModifierKey auto
@@ -55,6 +55,8 @@ GlobalVariable property arcs_GlobalDeviousActionVibration auto
 GlobalVariable property arcs_GlobalDeviousActionStopVibration auto
 GlobalVariable property arcs_GlobalDeviousActionVPiercing auto
 GlobalVariable property arcs_GlobalDeviousActionVPlug auto
+
+GlobalVariable property arcs_GlobalUseSubmissionAndSlavery auto
 
 Faction property arcs_ActorBusyFaction auto
 Faction property arcs_HavingSexFaction auto

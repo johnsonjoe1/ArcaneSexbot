@@ -75,9 +75,9 @@ function ChangedLocation(Location akOldLoc, Location akNewLoc)
 
     arcs_Utility.WriteInfo("entered: " + akNewLoc.GetName())
 
-    UnregisterForUpdate()
-    GoToState("StartDetectionState")
-    RegisterForSingleUpdate(entryDelay)
+    ; UnregisterForUpdate()
+    ; GoToState("StartDetectionState")
+    ; RegisterForSingleUpdate(entryDelay)
 
 endfunction
 

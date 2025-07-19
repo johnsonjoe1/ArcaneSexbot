@@ -15,30 +15,30 @@ endevent
 
 function TestPlayer()
 
-    Actor thePlayer = Game.GetPlayer() ;needs to pull from main/mcm scripts
-    string playerName = thePlayer.GetDisplayName()
+    ; Actor thePlayer = Game.GetPlayer() ;needs to pull from main/mcm scripts
+    ; string playerName = thePlayer.GetDisplayName()
 
-    int nudity = ncheck.NudityCheck(thePlayer)
+    ; int nudity = ncheck.NudityCheck(thePlayer)
 
-    ;arcs_Utility.WriteInfo("player: " + playerName + " nudity check: " + nudity)
+    ; ;arcs_Utility.WriteInfo("player: " + playerName + " nudity check: " + nudity)
 
-    ;need llm message queue
+    ; ;need llm message queue
 
-    if nudity < 2
-        string desc = ""
-        string data = ""
-        if nudity == 0
-            desc = "{{ player.name }} is nude"
-            data = "{{ player.name }} is walking around nude."
-            ;int result = SkyrimNetApi.DirectNarration(playerName + " is walking around nude.")
-        elseif nudity == 1
-            desc = "{{ player.name }} in skimpy clothing"
-            data = "{{ player.name }} is wearing skimpy clothing that reveals their body."
-            ;int result = SkyrimNetApi.DirectNarration(playerName + " is wearing skimpy clothing that reveals their body.")
-        endif
-        bool result = arcs_SkyrimNet.CreateShortLivedEvent("nudity_event_" + thePlayer.GetDisplayName(), "sex_event_orgasm", desc, data, thePlayer, thePlayer)
-        ;arcs_Utility.WriteInfo("arcs_NudityDetection - created short term event: " + result + " actor: " + playerName)
-    endif
+    ; if nudity < 2
+    ;     string desc = ""
+    ;     string data = ""
+    ;     if nudity == 0
+    ;         desc = "{{ player.name }} is nude"
+    ;         data = "{{ player.name }} is walking around nude."
+    ;         ;int result = SkyrimNetApi.DirectNarration(playerName + " is walking around nude.")
+    ;     elseif nudity == 1
+    ;         desc = "{{ player.name }} in skimpy clothing"
+    ;         data = "{{ player.name }} is wearing skimpy clothing that reveals their body."
+    ;         ;int result = SkyrimNetApi.DirectNarration(playerName + " is wearing skimpy clothing that reveals their body.")
+    ;     endif
+    ;     bool result = arcs_SkyrimNet.CreateShortLivedEvent("nudity_event_" + thePlayer.GetDisplayName(), "sex_event_orgasm", desc, data, thePlayer, thePlayer)
+    ;     ;arcs_Utility.WriteInfo("arcs_NudityDetection - created short term event: " + result + " actor: " + playerName)
+    ; endif
 
 endfunction
 

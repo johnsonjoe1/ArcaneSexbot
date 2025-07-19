@@ -49,6 +49,10 @@ int toggleUseSexualityInCheck
 
 int toggleAttractionSystem
 int toggleAttractionSeeding
+int sliderSlightlyAttracted
+int sliderVeryAttracted
+
+int toggleSubmissionAndSlavery
 
 int keyCodeLeftControl = 29
 int keyCodeRightControl = 157
@@ -78,7 +82,7 @@ event OnConfigOpen()
     ;main = Quest.GetQuest("arcs_MainQuest") as arcs_Main
     ;config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
 
-    Pages = new string[8]
+    Pages = new string[7]
 
     Pages[0] = "Settings"
     Pages[1] = "Arousal Settings"
@@ -86,8 +90,8 @@ event OnConfigOpen()
     Pages[3] = "SexLab Tags"
     Pages[4] = "Manage Actions"
     Pages[5] = "Devious Devices"
-    Pages[6] = "Submission & Slavery"
-    Pages[7] = "Diagnostics"
+    ;Pages[6] = "Submission & Slavery"
+    Pages[6] = "Diagnostics"
 
     ;load
     actorCountArr = CreateNumberMenu(5)
@@ -220,6 +224,7 @@ function DisplayArousal()
 
     toggleUseArousal = AddToggleOption("Use Arousal In Sex", config.arcs_GlobalUseArousal.GetValue() as int)
     sliderArousalForSex = AddSliderOption("Arousal Needed For Sex", arcs_GlobalArousalForSex.GetValue() as int, "{0}")
+
     sliderSlightlyAroused = AddSliderOption("Slightly Aroused Conversation", arcs_GlobalSlightlyAroused.GetValue() as int, "{0}")
     sliderVeryAroused = AddSliderOption("Very Aroused Conversation", arcs_GlobalVeryAroused.GetValue() as int, "{0}")
 
@@ -234,6 +239,9 @@ function DisplayAttraction()
 
     toggleAttractionSystem = AddToggleOption("Use Attraction System", config.arcs_GlobalUseAttractionSystem.GetValue() as int)
     toggleAttractionSeeding = AddToggleOption("Use Attraction Seeding", config.arcs_GlobalUseAttractionSeed.GetValue() as int)
+
+    sliderSlightlyAttracted = AddSliderOption("Slightly Attracted Conversation", config.arcs_GlobalSlightlyAttracted.GetValue() as int, "{0}")
+    sliderVeryAttracted = AddSliderOption("Very Attracted Conversation", config.arcs_GlobalVeryAttracted.GetValue() as int, "{0}")
 
     toggleUseSexualityInCheck = AddToggleOption("Use SL Sexuality - Bi, Gay, Straight", config.arcs_GlobalUseSexualityCheck.GetValue() as int)
 
@@ -339,7 +347,55 @@ function DisplaySlavery()
 
     if config.arcs_GlobalHasDeviousDevices.GetValue() == 1
 
+        toggleSubmissionAndSlavery = AddToggleOption("Use Submission & Slavery System", config.arcs_GlobalUseSubmissionAndSlavery.GetValue() as int)
 
+        ;PRMOPT or this for testing
+        ; {# submission and slavery system #}
+        ; {% if sex_info.sub_and_slave == 1 %}
+
+        ;     - Slavery is a legal system in Skyrim. It is widespread and commonplace.
+        ;     - Slaves are both owned for work and for pleasure.
+        ;     - Free people of Skyrim mostly ignore slaves but are happy to take their coin for business.
+        ;     - Slave owners will discuss slavery as a business venture.
+
+        ;     {% if is_in_faction(npc.UUID, "Arcane Sexbot In Submission And Slavery Faction") %}
+
+        ;         {% if is_in_faction(npc.UUID, "Arcane Sexbot Master Faction") %}
+        ;         - {{ actor_name }} is a slave owner, often refered to as Master or Mistress.
+        ;         - {{ actor_name }} exercises control over the day to day of life of owned slaves.
+        ;         - {{ actor_name }} might use owned slaves for sexual puproses.
+        ;         - {{ actor_name }} might develop a rules system for owned slaves.
+        ;         - {{ actor_name }} might bind and confine owned slaves.
+        ;         {% endif %}
+
+        ;         {% if is_in_faction(npc.UUID, "Arcane Sexbot Head Slave Faction") %}
+
+        ;         {% endif %}
+
+        ;         {% if is_in_faction(npc.UUID, "Arcane Sexbot Slave Faction") %}
+
+        ;         {% endif %}
+
+        ;         {% if is_in_faction(npc.UUID, "Arcane Sexbot Dominant Faction") %}
+
+        ;         {% endif %}
+
+        ;         {% if is_in_faction(npc.UUID, "Arcane Sexbot Switch Faction") %}
+
+        ;         {% endif %}
+
+        ;         {% if is_in_faction(npc.UUID, "Arcane Sexbot Submissive Faction") %}
+
+        ;         {% endif %}
+
+        ;         {% if responseTarget %}
+        ;             {% set npc_sas_group_id = get_faction_rank(npc.UUID, "Arcane Sexbot In Submission And Slavery Faction") %}
+
+        ;         {% endif %}
+
+        ;     {% endif %}
+
+        ; {% endif %}
 
 
     else
@@ -420,6 +476,8 @@ event OnOptionSelect(int option)
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionKiss))
     elseif option == toggleUseArousal
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalUseArousal))
+    elseif option == toggleSubmissionAndSlavery
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalUseSubmissionAndSlavery))
 
 
     elseif option == toggleDeviousShocks
@@ -516,10 +574,16 @@ event OnOptionSliderOpen(Int option)
         SetSlider(arcs_GlobalArousalForSex.GetValue(), 50, 1, 100, 1)
 
     elseif option == sliderSlightlyAroused
-        SetSlider(arcs_GlobalSlightlyAroused.GetValue(), 30, 1, 100, 1)
+        SetSlider(arcs_GlobalSlightlyAroused.GetValue(), 30, 0, 100, 1)
 
     elseif option == sliderVeryAroused
-        SetSlider(arcs_GlobalVeryAroused.GetValue(), 70, 1, 100, 1)
+        SetSlider(arcs_GlobalVeryAroused.GetValue(), 70, 0, 100, 1)
+
+    elseif option == sliderSlightlyAttracted
+        SetSlider(config.arcs_GlobalSlightlyAttracted.GetValue(), 30, 0, 100, 1)
+
+    elseif option == sliderVeryAttracted
+        SetSlider(config.arcs_GlobalVeryAttracted.GetValue(), 70, 0, 100, 1)
 
     endif
 
@@ -540,7 +604,10 @@ event OnOptionSliderAccept(Int option, Float value)
         arcs_GlobalSlightlyAroused.SetValue(value as int)
     elseif option == sliderVeryAroused
         arcs_GlobalVeryAroused.SetValue(value as int)
-
+    elseif option == sliderSlightlyAttracted
+        config.arcs_GlobalSlightlyAttracted.SetValue(value as int)
+    elseif option == sliderVeryAttracted
+        config.arcs_GlobalVeryAttracted.SetValue(value as int)
 
     endif
 

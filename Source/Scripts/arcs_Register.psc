@@ -3,8 +3,8 @@ Scriptname arcs_Register extends Quest
 function RegisterDecorators() global
 
     ;active
-    SkyrimNetApi.RegisterDecorator("arcs_get_nudity", "arcs_Decorators", "GetActorNudity")
-    SkyrimNetApi.RegisterDecorator("arcs_get_arousal", "arcs_Decorators", "GetArousalLevel")
+    SkyrimNetApi.RegisterDecorator("arcs_get_nudity", "arcs_Decorators", "GetActorNudity") ;min - kept this around because you are using it in your 900 prompt
+    SkyrimNetApi.RegisterDecorator("arcs_get_arousal", "arcs_Decorators", "GetArousalLevel") ;min - kept this around because you are using it in your 900 prompt
     SkyrimNetApi.RegisterDecorator("arcs_get_sex_info", "arcs_Decorators", "GetSexInfo")
 
     ;turn these back on when they are used

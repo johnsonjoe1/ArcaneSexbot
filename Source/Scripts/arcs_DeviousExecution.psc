@@ -47,7 +47,7 @@ bool function AddExecute(string category, Actor akOriginator, string contextJson
 
     LeveledItem itemsList
 
-    if category == "armbinder"
+    if category == "armbinder" ;TODO - change this to binder and have a types list (armbinder|elbowbinder|boxbinder|yoke)
         if material == "rope"
             itemsList = zDevicesList.zad_dev_armbinders_rope
         elseif material == "ebonite"
@@ -269,7 +269,7 @@ bool function RemoveExecute(string category, Actor akOriginator, string contextJ
         ;debug.MessageBox("none found - checking category : " + category + " kw: " + kw.GetName())
 
         if kw != none
-            dev = zlib.GetWornRenderedDeviceByKeyword(akTarget, kw)
+            dev = zlib.GetWornRenderedDeviceByKeyword(akTarget, kw) ;NOTE - could just also do a worn keyword check here
             ;debug.MessageBox(dev)
             if dev
                 if config.arcs_GlobalDeviousConfirm.GetValue() == 1 && akTarget == config.ThePlayer
@@ -466,7 +466,7 @@ function ArcbotShock_Execute(Actor akOriginator, string contextJson, string para
         zlib.ShockActor(akTarget)
 
         if strength == "high"
-            akOriginator.PushActorAway(akTarget, 0.1) ;TODO - replace this with a stagger
+            akOriginator.PushActorAway(akTarget, 0.1)
             ;zlib.Moan(akTarget, 100)
             zlib.SexlabMoan(akTarget)
         elseif strength == "medium"
