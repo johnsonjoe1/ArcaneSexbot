@@ -43,6 +43,13 @@ bool function AddExecute(string category, Actor akOriginator, string contextJson
         return false ;adults only
     endif
 
+    Keyword kw = arcs_Devious.ItemTypeToKeyword(category)
+    if kw
+        if akTarget.WornHasKeyword(kw)
+            return false
+        endif
+    endif
+
     arcs_Utility.StoreTimesUsed(actionName, config.ThePlayer)
 
     LeveledItem itemsList

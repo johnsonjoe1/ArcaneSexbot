@@ -10,6 +10,16 @@ zadDeviceLists function GetDeviousZadDevicesList() global
     return Quest.GetQuest("zadxQuest") as zadDeviceLists
 endfunction
 
+function FakeDecorators()
+    ;if DD is disabled
+    SkyrimNetApi.RegisterDecorator("arcs_devious_being_vibrated", "arcs_Devious", "GetDeviousBeingVibratedFake")
+endfunction
+
+string function GetDeviousBeingVibratedFake(Actor akActor) global
+    bool vibrated = false
+    return "{\"being_vibrated\":" + vibrated + "}"
+endfunction
+
 function GameLoaded()
 
     ;zlib = GetDeviousZadlib()

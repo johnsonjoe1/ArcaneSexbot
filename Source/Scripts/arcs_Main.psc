@@ -258,6 +258,7 @@ function RunSoftChecks()
         devious.GameLoaded()
     Else
         config.arcs_GlobalHasDeviousDevices.SetValue(2)
+        devious.FakeDecorators()
     endif
 
 endfunction
