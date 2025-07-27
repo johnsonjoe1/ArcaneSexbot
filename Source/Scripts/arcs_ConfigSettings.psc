@@ -37,6 +37,16 @@ GlobalVariable property arcs_GlobalHasDeviousDevices auto
 GlobalVariable property arcs_GlobalActionAllDevious auto
 GlobalVariable property arcs_GlobalDeviousConfirm auto
 
+GlobalVariable property arcs_GlobalHasOstim auto
+GlobalVariable property arcs_GlobalUseOstim auto
+GlobalVariable property arcs_GlobalHasOslAroused auto
+GlobalVariable property arcs_GlobalUseOslAroused auto
+GlobalVariable property arcs_GlobalHasSexLab auto
+GlobalVariable property arcs_GlobalUseSexLab auto
+GlobalVariable property arcs_GlobalHasSexLabAroused auto
+GlobalVariable property arcs_GlobalUseSexLabAroused auto
+
+
 GlobalVariable property arcs_GlobalDeviousActionAPlug auto
 GlobalVariable property arcs_GlobalDeviousActionBelt auto
 GlobalVariable property arcs_GlobalDeviousActionBinder auto
@@ -61,6 +71,8 @@ GlobalVariable property arcs_GlobalUseSubmissionAndSlavery auto
 Faction property arcs_ActorBusyFaction auto
 Faction property arcs_HavingSexFaction auto
 Faction property arcs_GettingVibratedFaction auto
+Faction property arcs_VibratedFaction auto
+Faction property arcs_AttractionToPlayerFaction auto
 
 Actor property ThePlayer auto
 

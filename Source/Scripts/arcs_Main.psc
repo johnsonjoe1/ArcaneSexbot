@@ -7,6 +7,7 @@ float entryDelay = 5.0
 float processDelay = 2.0
 
 bool registrationsCompleted = false
+bool runningSoftChecks = false
 
 ;hotkey
 bool processingKey
@@ -61,13 +62,14 @@ function GameLoaded()
 
     endif
 
-    arcs_Register.RegisterDecorators()
-    arcs_Register.RegisterActions()
+    ;debug.MessageBox("in main load game??")
 
+    ; arcs_Register.RegisterDecorators()
+    ; arcs_Register.RegisterActions()
+
+    runningSoftChecks = true
     GoToState("RunSoftChecksState")
-    RegisterForSingleUpdate(5.0)
-
-    slab.GameLoaded()
+    RegisterForSingleUpdate(3.0)
 
 endfunction
 
@@ -163,7 +165,10 @@ event OnDhlpResume(string eventName, string strArg, float numArg, Form sender)
     ;debug.MessageBox("OnDhlpResume")
     arcs_Utility.WriteInfo("OnDhlpResume - sender: " + sender.GetName() + " id: " + sender.GetFormID())
     gdata.DhlpSuspend = gdata.DHLP_STATE_OFF
-    GoToState("")
+    if !runningSoftChecks ;other blocks could be added here
+        ;debug.MessageBox("does this happen??")
+        GoToState("")
+    endif
 endevent
 
 bool function StartDhlp() global
@@ -253,13 +258,51 @@ EndEvent
 
 function RunSoftChecks()
 
+    ;debug.MessageBox("soft check")
+
     if Game.IsPluginInstalled("Devious Devices - Assets.esm")
+        ;debug.MessageBox("soft check - found devious")
         config.arcs_GlobalHasDeviousDevices.SetValue(1)
         devious.GameLoaded()
     Else
         config.arcs_GlobalHasDeviousDevices.SetValue(2)
         devious.FakeDecorators()
     endif
+
+    if Game.IsPluginInstalled("SexLab.esm")
+        config.arcs_GlobalHasSexLab.SetValue(1)
+        slab.GameLoaded()
+    else
+        config.arcs_GlobalHasSexLab.SetValue(2)
+    endif
+
+    if Game.IsPluginInstalled("OStim.esp")
+        config.arcs_GlobalHasOstim.SetValue(1)
+        ost.GameLoaded()
+    else
+        config.arcs_GlobalHasOstim.SetValue(2)
+    endif
+
+    if Game.IsPluginInstalled("SexLabAroused.esm")
+        config.arcs_GlobalHasSexLabAroused.SetValue(1)
+    else
+        config.arcs_GlobalHasSexLabAroused.SetValue(2)
+    endif
+
+    if Game.IsPluginInstalled("OSLAroused.esp")
+        config.arcs_GlobalHasOslAroused.SetValue(1)
+    else
+        config.arcs_GlobalHasOslAroused.SetValue(2)
+    endif
+
+    ;SexLabAroused.esm
+    ;OSLAroused.esp
+
+    ;run these after soft checks are completed
+    arcs_Register.RegisterDecorators()
+    arcs_Register.RegisterActions()
+
+    runningSoftChecks = false
 
 endfunction
 
@@ -293,3 +336,4 @@ arcs_ConfigSettings property config auto
 arcs_Devious property devious auto
 arcs_Data property gdata auto
 arcs_HotkeyMenu property hotkey auto
+arcs_Ostim property ost auto

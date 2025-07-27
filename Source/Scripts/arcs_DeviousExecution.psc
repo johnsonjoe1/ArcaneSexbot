@@ -387,6 +387,8 @@ function ArcbotStartVibration_Execute(Actor akOriginator, string contextJson, st
         ;     aktarget.RemoveFromFaction(config.arcs_ActorBusyFaction)
         ; endif
 
+        akTarget.SetFactionRank(config.arcs_VibratedFaction, power)
+
         string data = ""
         if orgasms == 0
             data = akTarget.GetDisplayName() + " was only teased by the vibrating plug."
@@ -420,9 +422,10 @@ function ArcbotStopVibration_Execute(Actor akOriginator, string contextJson, str
 
         zlib.StopVibrating(akTarget)
 
-        ; if aktarget.IsInFaction(config.arcs_GettingVibratedFaction)
-        ;     aktarget.RemoveFromFaction(config.arcs_GettingVibratedFaction)
-        ; endif
+        if aktarget.IsInFaction(config.arcs_VibratedFaction)
+            akTarget.SetFactionRank(config.arcs_VibratedFaction, 0)
+            aktarget.RemoveFromFaction(config.arcs_VibratedFaction)
+        endif
 
         ; if aktarget.IsInFaction(config.arcs_ActorBusyFaction)
         ;     aktarget.RemoveFromFaction(config.arcs_ActorBusyFaction)

@@ -1,32 +1,33 @@
 {% if render_mode == "full" and not isTimePaused %}
-{% set sex_info = arcs_get_sex_info(npc.UUID) %}
 {% set actor_name = decnpc(npc.UUID).name %}
+{% set arousal_level = get_faction_rank(npc.UUID, "sla_Arousal") %}
+{% set having_sex = is_in_faction(npc.UUID, "arcs_HavingSexFaction") %}
 
-{% if sex_info.having_sex == 1 %}
+{% if having_sex %}
 - {{ actor_name }} is currently having sex. ONLY answer as though {{ actor_name }} is in the middle of intercourse and it's hard to focus on anything else. Broken sentences are fine.
 {% endif %}
-{% if sex_info.having_sex == 0 %}
+{% if having_sex == false %}
     
     - When adventuring or dealing with serious issues, avoid starting sexy talk yourself. Non-sexual conversation should make {{ actor_name }} less aroused.
     - In safe areas (cities, towns, inns, homes, etc.), relaxed times in the wilds, or social gatherings, sexual conversation and nudity may increase {{ actor_name }}'s arousal.
 
     {# arousal enabled #}
-    {% if sex_info.use_arousal == 1 %}
+    {% if get_global_value("arcs_GlobalUseArousal") == 1 %}
 
         - Even if aroused {{ actor_name }} will not make sexually suggestive comments to family members.
 
-        {% if sex_info.arousal < sex_info.arousal_sex %}
+        {% if arousal_level < get_global_value("arcs_GlobalArousalForSex") %}
         - {{ actor_name }} is not aroused enough for sex and likely to rebuff any offers.
         - If somebody tries to force themselves on {{ actor_name }}, they deserve to be slapped.
         {% endif %}
 
         {# npc - slighty turned on #}
-        {% if sex_info.arousal >= sex_info.slightly_aroused and sex_info.arousal < sex_info.very_aroused %}
+        {% if arousal_level >= get_global_value("arcs_GlobalSlightlyAroused") and arousal_level < get_global_value("arcs_GlobalVeryAroused") %}
         - {{ actor_name }} is slightly turned on and might make comments about people's appearance, body, and other attributes.
         {% endif %}
 
         {# npc - very turned on #}
-        {% if sex_info.arousal >= sex_info.very_aroused %}
+        {% if arousal_level >= get_global_value("arcs_GlobalVeryAroused") %}
         - {{ actor_name }} is very turned on and likely to make comments about people's appearance, body, and other attributes.
         - {{ actor_name }} might also make some sexually suggestive remarks.
         {% endif %}
@@ -34,16 +35,18 @@
     {% endif %}
 
     {# player attraction enabled #}
-    {% if sex_info.attraction_enabled == 1 %}
+    {% if get_global_value("arcs_GlobalUseAttractionSystem") == 1 %}
+
+        {% set attraction_to_player = get_faction_rank(npc.UUID, "arcs_AttractionToPlayerFaction") %}
 
         - If {{ player.name }} engages in conversation that demonstrates shared values, interests, or experiences, {{ actor_name }}'s attraction level might increase.
         - If {{ player.name }} engages in conversation or actions that {{ actor_name }} finds objectionable or not aligned with shared values, {{ actor_name }}'s attraction level might decrease.
 
         {# attraction to player - sexual comments and flirtation #}
-        {% if sex_info.attraction >= sex_info.slightly_attracted and sex_info.attraction < sex_info.very_attracted  %}
+        {% if attraction_to_player >= get_global_value("arcs_GlobalSlightlyAttracted") and attraction_to_player < get_global_value("arcs_GlobalVeryAttracted") %}
         - {{ actor_name }} is slighty attracted to {{ player.name }} and likely to make very kind comments and sometimes flirty comments.
         {% endif %}
-        {% if sex_info.attraction >= sex_info.very_attracted %}
+        {% if attraction_to_player >= get_global_value("arcs_GlobalVeryAttracted") %}
         - {{ actor_name }} is very attracted to {{ player.name }} and likely to make very kind or flirty comments. They may also offer better deals.
         {% endif %}
 

@@ -27,6 +27,7 @@ function GameLoaded()
     RegisterForModEvent("HookAnimationStart", "OnAnimationStart")
     RegisterForModEvent("SexLabOrgasmSeparate", "OnOrgasmSeparate")
 
+    SexLabFramework sfx = GetSexLabFramework()
     sfx.TrackFaction(arcs_HavingSexFaction, "HavingSexFactionHook")
 
     ;RegisterForModEvent("ActorHook_End", "DoActorHookEnd") 
@@ -40,13 +41,17 @@ function CreateDefaultTagsList()
     ;TODO - not sure the plan for this yet
 endfunction
 
+SexLabFramework function GetSexLabFramework() global
+    return  Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
+endfunction
+
 bool function ActorInSexScene(Actor akActor) global
 
     if akActor == none
         return false
     endif
 
-    SexLabFramework slFramework = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
+    SexLabFramework slFramework = GetSexLabFramework() ; = Quest.GetQuest("SexLabQuestFramework") as SexLabFramework
     if slFramework.IsActorActive(akActor)
         return true
     endif
@@ -105,6 +110,7 @@ bool function Kiss(Actor akActor1, Actor akActor2)
 	sceneActors[0] = akActor1
 	sceneActors[1] = akActor2
 	sslBaseAnimation[] sanims
+    SexLabFramework sfx = GetSexLabFramework()
 	sanims = sfx.GetAnimationsByTags(ActorCount = 2, Tags = "Kissing", TagSuppress = "", RequireAll = true)
 	If sanims.Length > 0		
 		if sfx.StartSex(Positions = sceneActors, anims = sanims, allowbed = true) == -1
@@ -167,7 +173,7 @@ bool function StartSex(Actor[] actors, string type, string intensity)
     endwhile
 
     string useTags = ""
-    if type != "all"
+    if type != "any"
         useTags = type
     endif
 
@@ -194,6 +200,7 @@ bool function StartSex(Actor[] actors, string type, string intensity)
 
     arcs_Utility.WriteInfo("arcs_SexLab - type: " + type + " useTags : " + useTags + " blockTags: " + blockTags)
 
+    SexLabFramework sfx = GetSexLabFramework()
     sslThreadModel tm = sfx.NewThread()
     if tm
         ;add actors to the thread
@@ -284,6 +291,7 @@ endevent
 
 event OnAnimationEnd(int tid, bool HasPlayer) ;EndSexScene in minai
 
+    SexLabFramework sfx = GetSexLabFramework()
     Actor[] actors = sfx.HookActors(tid)
     RemoveActorsFromFaction(actors)
 
@@ -313,6 +321,7 @@ endevent
 
 event OnAnimationStart(int tid, bool HasPlayer) ;OnAnimationStart in minai
 
+    SexLabFramework sfx = GetSexLabFramework()
     Actor[] actors = sfx.HookActors(tid)
 
     string desc = "Sex started"
@@ -366,7 +375,7 @@ Actor function GetTargetActor(Actor[] actorsList)
     endif
 endfunction
 
-SexLabFramework property sfx auto
+; SexLabFramework property sfx auto
 
 Faction property arcs_HavingSexFaction auto
 

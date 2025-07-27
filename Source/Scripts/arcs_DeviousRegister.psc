@@ -129,6 +129,8 @@ function RegisterDecorators() global
 
     ;active
 
+    arcs_Utility.WriteInfo("RegisterDecorators (devious) - working")
+
     ;turn on when needed
     ;SkyrimNetApi.RegisterDecorator("arcs_get_devious_info", "arcs_DeviousDecorators", "GetDeviousInfo")
     ;SkyrimNetApi.RegisterDecorator("arcs_devious_enabled", "arcs_DeviousDecorators", "GetDeviousEnabled")

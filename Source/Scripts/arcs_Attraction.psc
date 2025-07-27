@@ -5,12 +5,17 @@ string function GetAttractionToPlayerStorageKey() global
 endfunction
 
 int function GetAttractionToPlayer(Actor akActor) global
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     string skey = arcs_Attraction.GetAttractionToPlayerStorageKey()
     int attraction = StorageUtil.GetIntValue(akActor, skey, -1)
+    if !akActor.IsInFaction(config.arcs_AttractionToPlayerFaction)
+        akActor.SetFactionRank(config.arcs_AttractionToPlayerFaction, attraction)
+    endif
     return attraction
 endfunction
 
 function ChangeAttractionToPlayer(Actor akActor, int amount) global
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     string skey = arcs_Attraction.GetAttractionToPlayerStorageKey()
     int attraction = StorageUtil.GetIntValue(akActor, skey, -1)
     attraction += amount
@@ -21,6 +26,7 @@ function ChangeAttractionToPlayer(Actor akActor, int amount) global
         attraction = 0
     endif
     StorageUtil.SetIntValue(akActor, skey, attraction)
+    akActor.SetFactionRank(config.arcs_AttractionToPlayerFaction, attraction)
 endfunction
 
 int function AttractionToPlayerCheck(Actor akActor) global
@@ -87,8 +93,11 @@ int function AttractionToPlayerCheck(Actor akActor) global
 
     endif
 
+    akActor.SetFactionRank(config.arcs_AttractionToPlayerFaction, attraction)
+
     ;arcs_Utility.WriteInfo("AttractionToPlayerCheck - attraction: " + attraction + " who: " + akActor.GetDisplayName())
 
     return attraction
 
 endfunction
+

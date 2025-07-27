@@ -76,11 +76,11 @@ function TestActor(Actor a)
     string actorName = a.GetDisplayName()
 
     int nudity = ncheck.NudityCheck(a)
-    int arousal = sla.GetActorArousal(a)
-    bool exbitionist = sla.IsActorExhibitionist(a)
-    Int genderPreference = sla.GetGenderPreference(a, True)
-    int purity = slStats.GetPurityLevel(a)
-    int sexuality = slStats.GetSexuality(a)
+    ; int arousal = sla.GetActorArousal(a)
+    ; bool exbitionist = sla.IsActorExhibitionist(a)
+    ; Int genderPreference = sla.GetGenderPreference(a, True)
+    ; int purity = slStats.GetPurityLevel(a)
+    ; int sexuality = slStats.GetSexuality(a)
 
     ;arcs_Utility.WriteInfo("actor found - name: " + actorName + " nudity check: " + nudity + " arousal: " + arousal + " purity: " + purity + " sexuality: " + sexuality + " exbitionist: " + exbitionist + " genderPreference: " + genderPreference)
 
@@ -88,8 +88,8 @@ endfunction
 
 arcs_NudityChecker property ncheck auto
 
-slaUtilScr property sla auto
-sslActorStats property slStats auto
+; slaUtilScr property sla auto
+; sslActorStats property slStats auto
 
 Keyword property ArmorCuirass auto
 Keyword property ClothingBody auto

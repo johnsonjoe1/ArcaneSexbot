@@ -7,13 +7,26 @@ function ExtCmdKiss_Execute(Actor akOriginator, string contextJson, string param
     arcs_Utility.WriteInfo("ExtCmdKiss_Execute - actor: " + akOriginator.GetDisplayName() + " contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+
+    ;OSTIM has kissing animations that don't undress
+    if (config.arcs_GlobalHasOstim.GetValue() == 0) || (config.arcs_GlobalUseOstim.GetValue() == 0)
+        return
+    endif
+
     arcs_Utility.StoreTimesUsed("ExtCmdKiss", config.ThePlayer)
     Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none)
 
-    if config.arcs_GlobalShowSexConfirm.GetValue() == 1 && akTarget == config.ThePlayer
-        if !arcs_Utility.ConfirmBox("Kiss " + akOriginator.GetDisplayName() + "?", "Continue the scene", "Skip the scene")
-            return
-        endif
+    Actor[] actors = new Actor[2]
+    actors[0] = akOriginator
+    actors[1] = akTarget
+
+    ;ostim
+    arcs_Ostim ost = arcs_Ostim.GetOstim()
+
+    if ost.StartSex(actors, "Kissing", "", true)
+        ;debug.MessageBox("started ostim")
+    else
+        arcs_Utility.WriteInfo("arcs_Ostim - StartSex failed")
     endif
 
     arcs_Utility.WriteInfo("ExtCmdKiss_Execute")
@@ -77,17 +90,84 @@ function ExtCmdStartSex_Execute(Actor akOriginator, string contextJson, string p
     string type = SkyrimNetApi.GetJsonString(paramsJson, "type", "") 
     string intensity = SkyrimNetApi.GetJsonString(paramsJson, "intensity", "") 
 
-	Actor[] actors = new Actor[2]
-	actors[0] = akOriginator
-	actors[1] = akTarget
+    Actor[] actors = new Actor[2]
+    actors[0] = akOriginator
+    actors[1] = akTarget
 
-    arcs_SexLab slab = Quest.GetQuest("arcs_MainQuest") as arcs_SexLab
-    if slab.StartSex(actors, type, intensity)
-    else 
-        arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+    if config.arcs_GlobalUseOstim.GetValue() == 1 && config.arcs_GlobalHasOstim.GetValue() == 1
+
+        ;ostim
+        arcs_Ostim ost = arcs_Ostim.GetOstim()
+
+        if ost.StartSex(actors, type, intensity)
+            ;debug.MessageBox("started ostim")
+        else
+            arcs_Utility.WriteInfo("arcs_Ostim - StartSex failed")
+        endif
+
+    else
+
+        ;sex lab
+        arcs_SexLab slab = Quest.GetQuest("arcs_MainQuest") as arcs_SexLab
+        if slab.StartSex(actors, type, intensity)
+        else 
+            arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+        endif
+
     endif
 
 endfunction
+
+
+function ArcbotSpeedUpSex_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    ;debug.Notification("ExtCmdStartMasturbation_Execute - actor: " + akOriginator.GetDisplayName())
+
+    arcs_Utility.WriteInfo("ArcbotSpeedUpSex_Execute - actor: " + akOriginator.GetDisplayName() + " contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    arcs_Utility.StoreTimesUsed("ArcbotSpeedUpSex", config.ThePlayer)
+
+    int ThreadID = OActor.GetSceneID(akOriginator)
+
+    if ThreadID == -1
+        return
+    endif
+
+    string sceneId = OThread.GetScene(ThreadID)
+    float maxSpeed = OMetadata.GetMaxSpeed(sceneId)
+    int newOstimSpeed = OThread.GetSpeed(ThreadID) + 1
+    if(newOstimSpeed <= maxSpeed)
+        OThread.SetSpeed(ThreadID, newOstimSpeed)
+    endif
+
+endfunction
+
+function ArcbotSlowDownSex_Execute(Actor akOriginator, string contextJson, string paramsJson) global
+
+    ;debug.Notification("ExtCmdStartMasturbation_Execute - actor: " + akOriginator.GetDisplayName())
+
+    arcs_Utility.WriteInfo("ArcbotSlowDownSex_Execute - actor: " + akOriginator.GetDisplayName() + " contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    arcs_Utility.StoreTimesUsed("ArcbotSlowDownSex", config.ThePlayer)
+
+    int ThreadID = OActor.GetSceneID(akOriginator)
+
+    if ThreadID == -1
+        return
+    endif
+
+    int newOstimSpeed = OThread.GetSpeed(ThreadID) - 1
+    if(newOstimSpeed >= 0)
+        OThread.SetSpeed(ThreadID, newOstimSpeed)
+    endif
+
+endfunction
+
+
+
+
 
 function ExtCmdStartThreePersonSex_Execute(Actor akOriginator, string contextJson, string paramsJson) global
 

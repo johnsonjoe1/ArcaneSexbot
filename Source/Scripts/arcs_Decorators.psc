@@ -145,6 +145,7 @@ string function GetSexInfo(Actor akActor) global
     int gender = -1
     int inSceneInt = -1
     string displayName = ""
+
    
     if akActor != none
         nudity = ncheck.NudityCheck(akActor)
@@ -157,6 +158,15 @@ string function GetSexInfo(Actor akActor) global
         if inScene
             inSceneInt = 1
         endif
+        if arcs_Ostim.UsingOstim()
+            inScene = arcs_Ostim.ActorInSexScene(akActor)
+            ;debug.MessageBox("inScene: " + inScene)
+            if inScene
+                inSceneInt = 1
+            endif
+        endif
+
+        ;TODO - check OSTIM for active sex scene. Thread ID on actor maybe?
         displayName = akActor.GetDisplayName()
     endif
 

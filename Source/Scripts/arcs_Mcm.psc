@@ -4,6 +4,11 @@ bool skyrimNetFound
 
 int toggleClearDhlp
 
+int toggleUseOstim
+int toggleUseOSLA
+int toggleUseSexLab
+int toggleUseSLA
+
 int toggleActionStartSex
 int toggleActionStripTarget
 int toggleActionDressTarget
@@ -90,7 +95,6 @@ event OnConfigOpen()
     Pages[3] = "SexLab Tags"
     Pages[4] = "Manage Actions"
     Pages[5] = "Devious Devices"
-    ;Pages[6] = "Submission & Slavery"
     Pages[6] = "Diagnostics"
 
     ;load
@@ -194,6 +198,27 @@ function DisplayDiagnostics()
     AddHeaderOption("")
 
     AddTextOption("Devious Devices", GlobalDetectionString(config.arcs_GlobalHasDeviousDevices))
+    AddTextOption("", "")
+
+    AddTextOption("Ostim", GlobalDetectionString(config.arcs_GlobalHasOstim))
+    if config.arcs_GlobalHasOstim.GetValue() == 1
+        toggleUseOstim = AddToggleOption("Use Ostim", config.arcs_GlobalUseOstim.GetValue() as int)
+    else
+        AddTextOption("", "")
+    endif
+
+    AddTextOption("SexLab", GlobalDetectionString(config.arcs_GlobalHasSexLab))
+    if config.arcs_GlobalHasSexLab.GetValue() == 1
+        toggleUseSexLab = AddToggleOption("Use SexLab", config.arcs_GlobalUseSexLab.GetValue() as int)
+    else
+        AddTextOption("", "")
+    endif
+
+    AddTextOption("SexLab Arousal", GlobalDetectionString(config.arcs_GlobalHasSexLabAroused))
+    AddTextOption("", "")
+
+    AddTextOption("OSL Aroused", GlobalDetectionString(config.arcs_GlobalHasOslAroused))
+    AddTextOption("", "")
 
 endfunction
 
@@ -478,6 +503,10 @@ event OnOptionSelect(int option)
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalUseArousal))
     elseif option == toggleSubmissionAndSlavery
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalUseSubmissionAndSlavery))
+    elseif option == toggleUseOstim
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalUseOstim))
+    elseif option == toggleUseSexLab
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalUseSexLab))
 
 
     elseif option == toggleDeviousShocks

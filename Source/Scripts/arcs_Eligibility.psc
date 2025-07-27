@@ -20,6 +20,8 @@ bool function ActorIsEligible(Actor akActor, arcs_ConfigSettings config) global
         valid = false ;adults onlly
     endif
 
+    ;debug.MessageBox("ActorIsEligible: " + valid)
+
     ;TODO - add DHLP check
 
     return valid
@@ -42,26 +44,46 @@ bool function TargetIsElibible(Actor akActor, arcs_ConfigSettings config) global
     return valid
 endfunction
 
+bool function InSexSceneCheck(Actor akActor, arcs_ConfigSettings config) global
+    bool result = false
+    if (config.arcs_GlobalUseSexLab.GetValue() == 1)
+        if arcs_SexLab.ActorInSexScene(akActor)
+            result = true
+        endif
+    elseif (config.arcs_GlobalUseOstim.GetValue() == 1)
+        if arcs_Ostim.ActorInSexScene(akActor)
+            result = true
+        endif
+    endif
+    return result
+endfunction
+
 bool function ExtCmdKiss_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
 
     ;debug.Notification("ExtCmdKiss_IsEligible - actor: " + akOriginator.GetDisplayName())
-
-    return false
 
     bool result = true 
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
     if config.arcs_GlobalActionKiss.GetValue() == 0
         arcs_Utility.WriteInfo("ExtCmdKiss_IsEligible - disabled action")
+        ;debug.MessageBox("this happen? - disabled")
+        return false
+    endif
+
+    ;OSTIM has kissing animations that don't undress
+    if (config.arcs_GlobalHasOstim.GetValue() == 0) || (config.arcs_GlobalUseOstim.GetValue() == 0)
+        ;debug.MessageBox("this happen?")
         return false
     endif
     
     if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
+        ;debug.MessageBox("this happen? - ActorIsEligible")
         result = false
     endif
 
-    if arcs_SexLab.ActorInSexScene(akOriginator)
-        result = false ;in a sex scene already
+    if InSexSceneCheck(akOriginator, config)
+        result = false
     endif
 
     Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) 
@@ -79,12 +101,16 @@ bool function ExtCmdKiss_IsEligible(Actor akOriginator, string contextJson, stri
     ;     endif
     ; endif
 
+    ;debug.MessageBox("ExtCmdKiss_IsEligible " + result)
+
     arcs_Utility.WriteInfo("ExtCmdKiss_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + \
         " akTarget: " + akTarget + " result: " + result)
 
     return result
 
 endfunction
+
+
 
 bool function ExtCmdStartMasturbation_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
 
@@ -95,13 +121,17 @@ bool function ExtCmdStartMasturbation_IsEligible(Actor akOriginator, string cont
         arcs_Utility.WriteInfo("ExtCmdStartMasturbation_IsEligible - disabled action")
         return false
     endif
+
+    if (config.arcs_GlobalHasOstim.GetValue() == 0 && config.arcs_GlobalHasSexLab.GetValue() == 0) || (config.arcs_GlobalUseOstim.GetValue() == 0  && config.arcs_GlobalUseSexLab.GetValue() == 0)
+        return false
+    endif
     
     if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
 
-    if arcs_SexLab.ActorInSexScene(akOriginator)
-        result = false ;in a sex scene already
+    if InSexSceneCheck(akOriginator, config)
+        result = false
     endif
 
     int arousal = -1
@@ -136,13 +166,18 @@ bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, 
         arcs_Utility.WriteInfo("ExtCmdStartSex_IsEligible - disabled action")
         return false
     endif
+
+    if (config.arcs_GlobalHasOstim.GetValue() == 0 && config.arcs_GlobalHasSexLab.GetValue() == 0) || (config.arcs_GlobalUseOstim.GetValue() == 0  && config.arcs_GlobalUseSexLab.GetValue() == 0)
+        return false
+    endif
+
     
     if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
 
-    if arcs_SexLab.ActorInSexScene(akOriginator)
-        result = false ;in a sex scene already
+    if InSexSceneCheck(akOriginator, config)
+        result = false
     endif
 
     Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) 
@@ -180,6 +215,77 @@ bool function ExtCmdStartSex_IsEligible(Actor akOriginator, string contextJson, 
 
 endfunction
 
+bool function ArcbotSpeedUpSex_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+
+    arcs_Utility.WriteInfo("ArcbotSpeedUpSex_IsEligible - contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
+
+    bool result = true 
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    ; if config.arcs_GlobalActionStartThreePersonSex.GetValue() == 0
+    ;     arcs_Utility.WriteInfo("ArcbotSpeedUpSex_IsEligible - disabled action")
+    ;     return false
+    ; endif
+
+    if (config.arcs_GlobalHasOstim.GetValue() == 0) || (config.arcs_GlobalUseOstim.GetValue() == 0)
+        return false
+    endif
+
+    return result
+    ;NOTE - the caching on this seems to keep it from ever firing during a sex scene
+
+    
+    int ThreadID = OActor.GetSceneID(akOriginator)
+    if ThreadID == -1
+        result = false
+    endif
+
+    ;;debug.MessageBox("threadid: " + ThreadID)
+
+    ; if !arcs_Ostim.ActorInSexScene(akOriginator)
+    ;     result = false ;not in sex scene
+    ; endif
+
+    return result
+
+endfunction
+
+bool function ArcbotSlowDownSex_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
+
+    ;NOTE - I need to ask about this one. paramsJson is not working in here, but it works in the execute method??
+
+    arcs_Utility.WriteInfo("ArcbotSlowDownSex_IsEligible - contextJson: " + contextJson + " paramsJson: " + paramsJson, 2)
+
+    bool result = true 
+
+    arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
+    ; if config.arcs_GlobalActionStartThreePersonSex.GetValue() == 0
+    ;     arcs_Utility.WriteInfo("ArcbotSlowDownSex_IsEligible - disabled action")
+    ;     return false
+    ; endif
+
+    if (config.arcs_GlobalHasOstim.GetValue() == 0) || (config.arcs_GlobalUseOstim.GetValue() == 0)
+        return false
+    endif
+
+    return result
+    ;NOTE - the caching on this seems to keep it from ever firing during a sex scene
+
+    int ThreadID = OActor.GetSceneID(akOriginator)
+    if ThreadID == -1
+        result = false
+    endif
+
+    ;debug.MessageBox("threadid: " + ThreadID)
+
+    ; if !arcs_Ostim.ActorInSexScene(akOriginator)
+    ;     result = false ;not in sex scene
+    ; endif
+
+    return result
+
+endfunction
+
 bool function ExtCmdStartThreePersonSex_IsEligible(Actor akOriginator, string contextJson, string paramsJson) global
 
     ;NOTE - I need to ask about this one. paramsJson is not working in here, but it works in the execute method??
@@ -193,13 +299,17 @@ bool function ExtCmdStartThreePersonSex_IsEligible(Actor akOriginator, string co
         arcs_Utility.WriteInfo("ExtCmdStartThreePersonSex_IsEligible - disabled action")
         return false
     endif
+
+    if (config.arcs_GlobalHasOstim.GetValue() == 0 && config.arcs_GlobalHasSexLab.GetValue() == 0) || (config.arcs_GlobalUseOstim.GetValue() == 0  && config.arcs_GlobalUseSexLab.GetValue() == 0)
+        return false
+    endif
     
     if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
 
-    if arcs_SexLab.ActorInSexScene(akOriginator)
-        result = false ;in a sex scene already
+    if InSexSceneCheck(akOriginator, config)
+        result = false
     endif
 
     Actor akTarget1 = SkyrimNetApi.GetJsonActor(paramsJson, "target", none)
@@ -263,25 +373,29 @@ bool function ExtCmdStripTarget_IsEligible(Actor akOriginator, string contextJso
     if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
-    
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
-    string targetName = ""
-    if !akTarget
+
+     if InSexSceneCheck(akOriginator, config)
         result = false
-    Else
-        targetName = akTarget.GetDisplayName()
-        if !arcs_Eligibility.TargetIsElibible(akTarget, config) 
-            result = false
-        endif
-
-        arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
-        if ncheck.NudityCheck(akTarget) == ncheck.NUDITYCHECK_ACTOR_NUDE()
-            result = false ;already undressed
-        endif
-
     endif
+    
+    ; Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
+    ; string targetName = ""
+    ; if !akTarget
+    ;     result = false
+    ; Else
+    ;     targetName = akTarget.GetDisplayName()
+    ;     if !arcs_Eligibility.TargetIsElibible(akTarget, config) 
+    ;         result = false
+    ;     endif
 
-    arcs_Utility.WriteInfo("ExtCmdStripTarget_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + " akTarget: " + targetName + " result: " + result, 2)
+    ;     arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
+    ;     if ncheck.NudityCheck(akTarget) == ncheck.NUDITYCHECK_ACTOR_NUDE()
+    ;         result = false ;already undressed
+    ;     endif
+
+    ; endif
+
+    arcs_Utility.WriteInfo("ExtCmdStripTarget_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + " result: " + result, 2)
 
     return result
 
@@ -302,26 +416,30 @@ bool function ExtCmdDressTarget_IsEligible(Actor akOriginator, string contextJso
     if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
-    
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
-    string targetName = ""
-    if !akTarget
+
+    if InSexSceneCheck(akOriginator, config)
         result = false
-    Else
-        targetName = akTarget.GetDisplayName()
-        if !arcs_Eligibility.TargetIsElibible(akTarget, config) 
-            result = false
-        endif
-
-        arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
-        if ncheck.NudityCheck(akTarget) != ncheck.NUDITYCHECK_ACTOR_NUDE()
-            arcs_Utility.WriteInfo("ExtCmdDressTarget_IsEligible - nudity check: " + ncheck.NudityCheck(akTarget))
-            result = false ;already dressed
-        endif
-
     endif
+    
+    ; Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
+    ; string targetName = ""
+    ; if !akTarget
+    ;     result = false
+    ; Else
+    ;     targetName = akTarget.GetDisplayName()
+    ;     if !arcs_Eligibility.TargetIsElibible(akTarget, config) 
+    ;         result = false
+    ;     endif
 
-    arcs_Utility.WriteInfo("ExtCmdDressTarget_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + " akTarget: " + targetName + " result: " + result)
+    ;     arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
+    ;     if ncheck.NudityCheck(akTarget) != ncheck.NUDITYCHECK_ACTOR_NUDE()
+    ;         arcs_Utility.WriteInfo("ExtCmdDressTarget_IsEligible - nudity check: " + ncheck.NudityCheck(akTarget))
+    ;         result = false ;already dressed
+    ;     endif
+
+    ; endif
+
+    arcs_Utility.WriteInfo("ExtCmdDressTarget_IsEligible decorator - akOriginator: " + akOriginator.GetDisplayName() + " result: " + result)
 
     return result
 
@@ -341,8 +459,8 @@ bool function ExtCmdUndress_IsEligible(Actor akOriginator, string contextJson, s
         result = false
     endif
 
-    if arcs_SexLab.ActorInSexScene(akOriginator)
-        result = false ;in a sex scene
+    if InSexSceneCheck(akOriginator, config)
+        result = false
     endif
     
     arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
@@ -370,8 +488,8 @@ bool function ExtCmdDress_IsEligible(Actor akOriginator, string contextJson, str
         result = false
     endif
 
-    if arcs_SexLab.ActorInSexScene(akOriginator)
-        result = false ;in a sex scene
+    if InSexSceneCheck(akOriginator, config)
+        result = false
     endif
     
     arcs_NudityChecker ncheck = Quest.GetQuest("arcs_MainQuest") as arcs_NudityChecker
@@ -429,25 +547,31 @@ bool function ExtCmdDecreaseAttraction_IsEligible(Actor akOriginator, string con
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
 
-    ;TODO - check for disabled actions
-
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
-
-    if akTarget != none
-        if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akTarget != config.ThePlayer
-            result = false
-        endif
-
-        if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
-            result = false
-        endif
-
-        if arcs_Attraction.GetAttractionToPlayer(akOriginator) == 0
-            return false ;min value
-        endif
-    else 
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
+
+    ;TODO - check for disabled actions
+
+    ; Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
+
+    ; if akTarget != none
+    ;     if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akTarget != config.ThePlayer
+    ;         result = false
+    ;     endif
+
+    ;     if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
+    ;         result = false
+    ;     endif
+
+    ;     if arcs_Attraction.GetAttractionToPlayer(akOriginator) == 0
+    ;         return false ;min value
+    ;     endif
+    ; else 
+    ;     result = false
+    ; endif
+
+    ;debug.MessageBox("ExtCmdDecreaseAttraction_IsEligible: " + result) ; + " target: " + akTarget)
 
     return result
 
@@ -461,26 +585,32 @@ bool function ExtCmdIncreaseAttraction_IsEligible(Actor akOriginator, string con
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings
 
-    ;TODO - check for disabled actions
-
-    Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
-
-    if akTarget != none
-
-        if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akTarget != config.ThePlayer
-            result = false
-        endif
-
-        if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
-            result = false
-        endif
-
-        if arcs_Attraction.GetAttractionToPlayer(akOriginator) == 100
-            return false ;maxed out
-        endif
-    Else
+    if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
         result = false
     endif
+
+    ;TODO - check for disabled actions
+
+    ;Actor akTarget = SkyrimNetApi.GetJsonActor(paramsJson, "target", none) ;todo - pull this from the quest?
+
+    ; if akTarget != none
+
+    ;     if config.arcs_GlobalUseAttractionSystem.GetValue() == 1 && akTarget != config.ThePlayer
+    ;         result = false
+    ;     endif
+
+    ;     if !arcs_Eligibility.ActorIsEligible(akOriginator, config) 
+    ;         result = false
+    ;     endif
+
+    ;     if arcs_Attraction.GetAttractionToPlayer(akOriginator) == 100
+    ;         return false ;maxed out
+    ;     endif
+    ; Else
+    ;     result = false
+    ; endif
+
+    ;debug.MessageBox("ExtCmdIncreaseAttraction_IsEligible: " + result)
 
     return result
 

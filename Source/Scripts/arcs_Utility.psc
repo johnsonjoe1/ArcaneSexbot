@@ -112,3 +112,20 @@ int function GetElapsedHours(float startTime, float endTime, bool roundUp) globa
         return Math.Floor(hoursPassed) as int
     endif
 endfunction
+
+string function MakeActorsString(Actor[] actorsList) global
+    string result = ""
+    int i = 0
+    while i < actorsList.length
+        if result != ""
+            if i == actorsList.length - 1
+                result += " and "
+            else
+                result += ", "
+            endif
+        endif
+        result += actorsList[i].GetDisplayName()
+        i += 1
+    endwhile
+    return result
+endfunction

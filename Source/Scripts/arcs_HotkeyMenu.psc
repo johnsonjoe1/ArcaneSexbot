@@ -59,9 +59,20 @@ function ShowHotkeyMenu(Actor thePlayer, Actor inCrosshairs)
             Actor[] actors = new Actor[2]
             actors[0] = thePlayer
             actors[1] = inCrosshairs
-            if slab.StartSex(actors, "", "")
-            else 
-                arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+            if config.arcs_GlobalUseOstim.GetValue() == 1 && config.arcs_GlobalHasOstim.GetValue() == 1
+                ;ostim
+                arcs_Ostim ost = arcs_Ostim.GetOstim()
+                if ost.StartSex(actors, "oral", "")
+                    debug.MessageBox("started ostim")
+                else
+                    arcs_Utility.WriteInfo("arcs_Ostim - StartSex failed")
+                endif
+            else
+                ;sex lab
+                if slab.StartSex(actors, "", "")
+                else 
+                    arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+                endif
             endif
         else 
             Debug.Notification(inCrosshairs.GetDisplayName() + " is not aroused enough for sex...")
@@ -72,10 +83,23 @@ function ShowHotkeyMenu(Actor thePlayer, Actor inCrosshairs)
     elseif listReturn == 1
         Actor[] actors = new Actor[1]
         actors[0] = thePlayer
-        if slab.StartSex(actors, "", "")
-        else 
-            arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+
+        if config.arcs_GlobalUseOstim.GetValue() == 1 && config.arcs_GlobalHasOstim.GetValue() == 1
+            ;ostim
+            arcs_Ostim ost = arcs_Ostim.GetOstim()
+            if ost.StartSex(actors, "", "")
+                debug.MessageBox("started ostim")
+            else
+                arcs_Utility.WriteInfo("arcs_Ostim - StartSex failed")
+            endif
+        else
+            ;sex lab
+            if slab.StartSex(actors, "", "")
+            else 
+                arcs_Utility.WriteInfo("arcs_SexLab - StartSex failed")
+            endif
         endif
+
 
     elseif listReturn == 2 && inCrosshairs
         debug.MessageBox("Stats - arousal: " + arcs_Arousal.GetActorArousalValue(inCrosshairs) + " attraction to " + config.ThePlayer.GetDisplayName() + ": " + arcs_Attraction.GetAttractionToPlayer(inCrosshairs))
