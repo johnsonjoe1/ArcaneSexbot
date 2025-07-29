@@ -16,11 +16,9 @@
 {% set arousal_level = get_faction_rank(actorUUID, "sla_Arousal") %}
 {% if arousal_level < get_global_value("arcs_GlobalSlightlyAroused") %}
 {% set actor_arousal = "actor_not_aroused" %}
-{% endif %}
-{% if arousal_level >= get_global_value("arcs_GlobalSlightlyAroused") and arousal_level < get_global_value("arcs_GlobalVeryAroused") %}
+{% else if arousal_level >= get_global_value("arcs_GlobalSlightlyAroused") and arousal_level < get_global_value("arcs_GlobalVeryAroused") %}
 {% set actor_arousal = "actor_slightly_aroused" %}
-{% endif %}
-{% if arousal_level >= get_global_value("arcs_GlobalVeryAroused") %}
+{% else if arousal_level >= get_global_value("arcs_GlobalVeryAroused") %}
 {% set actor_arousal = "actor_very_aroused" %}
 {% endif %}
 
