@@ -1,12 +1,33 @@
 {% if not isTimePaused %}
 {# Unified Equipment Context Template #}
 {% set actor_name = decnpc(actorUUID).name %}
-{% set actor_nudity = lower(arcs_get_nudity(actorUUID)) %}
+
+{% if worn_has_keyword(actorUUID, "ArmorCuirass") or worn_has_keyword(actorUUID, "ClothingBody") %}
+{% set actor_nudity = "actor_dressed" %}
+{% else %}
+{% if worn_has_keyword(actorUUID, "Eroticarmor") or worn_has_keyword(actorUUID, "sla_armorspendex") or worn_has_keyword(actorUUID, "sla_armorhalfnakedbikini") or worn_has_keyword(actorUUID, "sla_armorhalfnaked") %}
+{% set actor_nudity = "actor_dressed_skimpy" %}
+{% else %}
+{% set actor_nudity = "actor_nude" %}
+{% endif %}
+{% endif %}
+
+{# the sla_Arousal faction is used in both sexlab aroused and ostim aroused #}
+{% set arousal_level = get_faction_rank(actorUUID, "sla_Arousal") %}
+{% if arousal_level < get_global_value("arcs_GlobalSlightlyAroused") %}
+{% set actor_arousal = "actor_not_aroused" %}
+{% endif %}
+{% if arousal_level >= get_global_value("arcs_GlobalSlightlyAroused") and arousal_level < get_global_value("arcs_GlobalVeryAroused") %}
+{% set actor_arousal = "actor_slightly_aroused" %}
+{% endif %}
+{% if arousal_level >= get_global_value("arcs_GlobalVeryAroused") %}
+{% set actor_arousal = "actor_very_aroused" %}
+{% endif %}
+
 {% set gender = lower(decnpc(actorUUID).sex) %}
-{% set actor_arousal = lower(arcs_get_arousal(actorUUID)) %}
 {% set show_everything = (render_mode == "full" or render_mode == "thought" or render_mode == "book") %}
 {% set can_vibrate = (worn_has_keyword(actorUUID, "zad_DeviousPlugVaginal") or worn_has_keyword(actorUUID, "zad_DeviousPlugAnal") or worn_has_keyword(actorUUID, "zad_DeviousPiercingsNipple") or worn_has_keyword(actorUUID, "zad_DeviousPiercingsVaginal")) %}
-{% set being_vibrated = arcs_devious_being_vibrated(actorUUID).being_vibrated %}
+{% set being_vibrated = is_in_faction(actorUUID, "arcs_VibratedFaction") %}
 
 {% if render_mode == "full" or render_mode == "dynamic" or render_mode == "thought" %} {# START FULL MODE #}
 {# Check for nudity using the proper system - appropriate for arousal references #}
