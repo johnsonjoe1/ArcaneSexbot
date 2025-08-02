@@ -117,7 +117,7 @@ Event OStimOrgasm(String EventName, String sceneId, Float index, Form Sender)
     if actorsList.Length == 2
         ;for 2 person sex
         while i < actorsList.Length
-            debug.MessageBox("loop actor: " + actors[i])
+            ;debug.MessageBox("loop actor: " + actors[i])
             if actorsList[i] != akActor.GetDisplayName()
                 secondActorName = actorsList[i]
                 i = 500
@@ -125,7 +125,7 @@ Event OStimOrgasm(String EventName, String sceneId, Float index, Form Sender)
             i += 1
         endwhile
     endif
-    debug.MessageBox("actor: " + akActor.GetDisplayName() + " second: " + secondActorName)
+    ;debug.MessageBox("actor: " + akActor.GetDisplayName() + " second: " + secondActorName)
 
     int sexFlag = akActor.GetActorBase().GetSex()
 
@@ -179,7 +179,7 @@ Event OStimOrgasm(String EventName, String sceneId, Float index, Form Sender)
         endif
     endif
 
-    debug.MessageBox("sexact: " + sexAct)
+    ;debug.MessageBox("sexact: " + sexAct)
 
     string desc = "Had orgasm" + sexAct
     string data = akActor.GetDisplayName() + " had an orgasm" + sexAct
@@ -214,7 +214,7 @@ EndEvent
 
 bool function StartSex(Actor[] actors, string type, string intensity, bool onlyUseType = false)
 
-    debug.MessageBox("sex type: " + type)
+    ;debug.MessageBox("sex type: " + type)
 
     string tags = type
 
@@ -235,7 +235,7 @@ bool function StartSex(Actor[] actors, string type, string intensity, bool onlyU
         ;tags = ConvertTagsOstim(tags)
         ;newScene = OLibrary.GetRandomSceneWithAction(actors, tags)
         newScene = OLibrary.GetRandomSceneSuperloadCSV(actors, "", "", "", tags, "")
-        debug.MessageBox("only use branch: " + newScene + "tag: " + tags)
+        ;debug.MessageBox("only use branch: " + newScene + "tag: " + tags)
     else
         if type == "any"
             newScene = OLibrary.GetRandomScene(actors)
@@ -290,7 +290,7 @@ string function GetSceneByActionsOrTags(actor[] actors, string tags, bool useRan
         endif
         if (newScene == "")
             newScene = OLibrary.GetRandomScene(actors)
-            debug.MessageBox(newScene)
+            ;debug.MessageBox(newScene)
         endif
     else
     arcs_Utility.WriteInfo("No OStim tags provided")
