@@ -35,6 +35,7 @@ GlobalVariable property arcs_GlobalActionKiss auto
 
 GlobalVariable property arcs_GlobalHasDeviousDevices auto
 GlobalVariable property arcs_GlobalActionAllDevious auto
+GlobalVariable property arcs_GlobalActionDeviousEquips auto
 GlobalVariable property arcs_GlobalDeviousConfirm auto
 
 GlobalVariable property arcs_GlobalHasOstim auto

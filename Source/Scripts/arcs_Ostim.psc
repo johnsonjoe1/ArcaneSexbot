@@ -43,9 +43,9 @@ Event OStimEnd(String EventName, String sceneId, Float index, Form Sender)
     ;debug.MessageBox("end...")
     arcs_Utility.WriteInfo("OStimEnd eventName: " + eventName + " sceneId: " + sceneId + " index: " + index + " sender: " + sender, 2)
 
-    ; Actor[] actors = OThread.GetActors(index as int)
+    Actor[] actors = OThread.GetActors(index as int)
 
-    ; debug.MessageBox(actors)
+    debug.MessageBox(actors)
 
     ; string content = ""
     ; if actors.length == 1

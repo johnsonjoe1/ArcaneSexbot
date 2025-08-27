@@ -150,6 +150,9 @@ bool function ArcbotAddArmbinder_IsEligible(Actor akOriginator, string contextJs
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator,contextJson, paramsJson, zlib.zad_DeviousHeavyBondage, true)
     arcs_Utility.WriteInfo("ArcbotAddArmbinder_IsEligible: " + result)
     return result
@@ -162,6 +165,9 @@ bool function ArcbotRemoveArmbinder_IsEligible(Actor akOriginator, string contex
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator,contextJson, paramsJson, zlib.zad_DeviousHeavyBondage, false)
     arcs_Utility.WriteInfo("ArcbotRemoveArmbinder_IsEligible: " + result)
     return result
@@ -176,6 +182,9 @@ bool function ArcbotAddChastityBelt_IsEligible(Actor akOriginator, string contex
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator,contextJson, paramsJson, zlib.zad_DeviousBelt, true)
     arcs_Utility.WriteInfo("ArcbotAddChastityBelt_IsEligible: " + result)
     return result
@@ -188,6 +197,9 @@ bool function ArcbotRemoveChastityBelt_IsEligible(Actor akOriginator, string con
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator,contextJson, paramsJson, zlib.zad_DeviousBelt, false, zlib.zad_DeviousCorset, zlib.zad_DeviousHarness, zlib.zad_DeviousSuit)
     arcs_Utility.WriteInfo("ArcbotRemoveChastityBelt_IsEligible: " + result)
     return result
@@ -202,6 +214,9 @@ bool function ArcbotAddBlindfold_IsEligible(Actor akOriginator, string contextJs
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator,contextJson, paramsJson, zlib.zad_DeviousBlindfold, true)
     arcs_Utility.WriteInfo("ArcbotAddBlindfold_IsEligible: " + result)
     return result
@@ -214,6 +229,9 @@ bool function ArcbotRemoveBlindfold_IsEligible(Actor akOriginator, string contex
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator,contextJson, paramsJson, zlib.zad_DeviousBlindfold, false, zlib.zad_DeviousHood)
     arcs_Utility.WriteInfo("ArcbotRemoveBlindfold_IsEligible: " + result)
     return result
@@ -228,6 +246,9 @@ bool function ArcbotAddSlaveBoots_IsEligible(Actor akOriginator, string contextJ
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator,contextJson, paramsJson, zlib.zad_DeviousBoots, true) ;NOTE - ankles shackles and boots sometimes work together
     arcs_Utility.WriteInfo("ArcbotAddSlaveBoots_IsEligible: " + result)
     return result
@@ -240,6 +261,9 @@ bool function ArcbotRemoveSlaveBoots_IsEligible(Actor akOriginator, string conte
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator,contextJson, paramsJson, zlib.zad_DeviousBoots, false)
     arcs_Utility.WriteInfo("ArcbotRemoveSlaveBoots_IsEligible: " + result)
     return result
@@ -254,6 +278,9 @@ bool function ArcbotAddCollar_IsEligible(Actor akOriginator, string contextJson,
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousCollar, true)
     arcs_Utility.WriteInfo("ArcbotAddCollar_IsEligible: " + result)
     return result
@@ -266,6 +293,9 @@ bool function ArcbotRemoveCollar_IsEligible(Actor akOriginator, string contextJs
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousCollar, false, zlib.zad_DeviousHarness)
     arcs_Utility.WriteInfo("ArcbotRemoveCollar_IsEligible: " + result)
     return result
@@ -280,6 +310,9 @@ bool function ArcbotAddCorset_IsEligible(Actor akOriginator, string contextJson,
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousCorset, true)
     arcs_Utility.WriteInfo("ArcbotAddCorset_IsEligible: " + result)
     return result
@@ -292,6 +325,9 @@ bool function ArcbotRemoveCorset_IsEligible(Actor akOriginator, string contextJs
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousCorset, false)
     arcs_Utility.WriteInfo("ArcbotRemoveCorset_IsEligible: " + result)
     return result
@@ -306,6 +342,9 @@ bool function ArcbotAddGag_IsEligible(Actor akOriginator, string contextJson, st
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousGag, true)
     arcs_Utility.WriteInfo("ArcbotAddGag_IsEligible: " + result)
     return result
@@ -318,6 +357,9 @@ bool function ArcbotRemoveGag_IsEligible(Actor akOriginator, string contextJson,
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousGag, false, zlib.zad_DeviousHood)
     arcs_Utility.WriteInfo("ArcbotRemoveGag_IsEligible: " + result)
     return result
@@ -332,6 +374,9 @@ bool function ArcbotAddSlaveGloves_IsEligible(Actor akOriginator, string context
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousGloves, true)
     arcs_Utility.WriteInfo("ArcbotAddSlaveGloves_IsEligible: " + result)
     return result
@@ -344,6 +389,9 @@ bool function ArcbotRemoveSlaveGloves_IsEligible(Actor akOriginator, string cont
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousGloves, false, zlib.zad_DeviousSuit) ;TODO - look at suits and see if they have this keyword
     arcs_Utility.WriteInfo("ArcbotRemoveSlaveGloves_IsEligible: " + result)
     return result
@@ -358,6 +406,9 @@ bool function ArcbotAddHarness_IsEligible(Actor akOriginator, string contextJson
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousHarness, true) ;needs to do a NC check on the item when it equips?
     arcs_Utility.WriteInfo("ArcbotAddHarness_IsEligible: " + result)
     return result
@@ -370,6 +421,9 @@ bool function ArcbotRemoveHarness_IsEligible(Actor akOriginator, string contextJ
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousHarness, false)
     arcs_Utility.WriteInfo("ArcbotRemoveHarness_IsEligible: " + result)
     return result
@@ -384,6 +438,9 @@ bool function ArcbotAddHood_IsEligible(Actor akOriginator, string contextJson, s
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousHood, true)
     arcs_Utility.WriteInfo("ArcbotAddHood_IsEligible: " + result)
     return result
@@ -396,6 +453,9 @@ bool function ArcbotRemoveHood_IsEligible(Actor akOriginator, string contextJson
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousHood, false)
     arcs_Utility.WriteInfo("ArcbotRemoveHood_IsEligible: " + result)
     return result
@@ -410,6 +470,9 @@ bool function ArcbotAddNipplePiercing_IsEligible(Actor akOriginator, string cont
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousPiercingsNipple, true)
     arcs_Utility.WriteInfo("ArcbotAddNipplePiercing_IsEligible: " + result)
     return result
@@ -422,6 +485,9 @@ bool function ArcbotRemoveNipplePiercing_IsEligible(Actor akOriginator, string c
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousPiercingsNipple, false)
     arcs_Utility.WriteInfo("ArcbotRemoveNipplePiercing_IsEligible: " + result)
     return result
@@ -436,6 +502,9 @@ bool function ArcbotAddVaginalPiercing_IsEligible(Actor akOriginator, string con
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousPiercingsVaginal, true, zlib.zad_DeviousBelt)
     arcs_Utility.WriteInfo("ArcbotAddVaginalPiercing_IsEligible: " + result)
     return result
@@ -448,6 +517,9 @@ bool function ArcbotRemoveVaginalPiercing_IsEligible(Actor akOriginator, string 
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousPiercingsVaginal, false)
     if akOriginator.GetActorBase().GetSex() != 1
         result = false ;females only
@@ -465,6 +537,9 @@ bool function ArcbotAddAnalPlug_IsEligible(Actor akOriginator, string contextJso
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousPlugAnal, true, zlib.zad_DeviousBelt) ;note - these might work with open belts??
     arcs_Utility.WriteInfo("ArcbotAddAnalPlug_IsEligible: " + result)
     return result
@@ -477,6 +552,9 @@ bool function ArcbotRemoveAnalPlug_IsEligible(Actor akOriginator, string context
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousPlugAnal, false)
     arcs_Utility.WriteInfo("ArcbotRemoveAnalPlug_IsEligible: " + result)
     return result
@@ -491,6 +569,9 @@ bool function ArcbotAddVaginalPlug_IsEligible(Actor akOriginator, string context
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousPlugVaginal, true, zlib.zad_DeviousBelt)
     arcs_Utility.WriteInfo("ArcbotAddVaginalPlug_IsEligible: " + result)
     if akOriginator.GetActorBase().GetSex() != 1
@@ -506,6 +587,9 @@ bool function ArcbotRemoveVaginalPlug_IsEligible(Actor akOriginator, string cont
         return false
     endif
     bool result = arcs_DeviousEligibility.DeviousEligibilityChecks(akOriginator, config)
+    if result
+        result = (config.arcs_GlobalActionDeviousEquips.GetValue() == 1)
+    endif
     ;bool result = arcs_DeviousEligibility.IsEligible(config, zlib, akOriginator, contextJson, paramsJson, zlib.zad_DeviousPlugVaginal, false)
     arcs_Utility.WriteInfo("ArcbotRemoveVaginalPlug_IsEligible: " + result)
     return result

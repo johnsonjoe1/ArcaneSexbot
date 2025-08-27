@@ -23,6 +23,7 @@ int toggleActionStartMasturbation
 int toggleActionKiss
 
 int toggleActionAllDevious
+int toggleActionDeviousEquips
 
 ;armbinder|belt|boots|blindfold|collar|corset|gag|gloves|harness|hood|npiercing|vpiercing|aplug|vplug
 int toggleDeviousShocks
@@ -158,6 +159,8 @@ event OnPageReset(string page)
 endevent
 
 function DisplayWelcome()
+
+    AddTextOption("Version", "5.01")
 
 endfunction
 
@@ -334,6 +337,8 @@ function DisplayDevious()
 
         toggleDeviousConfirm = AddToggleOption("Show Confirm For Device Change", config.arcs_GlobalDeviousConfirm.GetValue() as int)
         toggleActionAllDevious = AddToggleOption("Enable Devious Actions", config.arcs_GlobalActionAllDevious.GetValue() as int)
+        toggleActionDeviousEquips = AddToggleOption("Enable Devious Item Equip", config.arcs_GlobalActionDeviousEquips.GetValue() as int)
+        AddTextOption("", "")
 
         AddHeaderOption("Devious Device Actions")
         AddHeaderOption("")
@@ -481,6 +486,8 @@ event OnOptionSelect(int option)
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionIncreaseArousal))
     elseif option == toggleActionAllDevious
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionAllDevious))
+    elseif option == toggleActionDeviousEquips
+        SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalActionDeviousEquips))
     elseif option == toggleDeviousConfirm
         SetToggleOptionValue(option, toggleGlobalOnOff(config.arcs_GlobalDeviousConfirm))
     elseif option == toggleUseSexualityInCheck

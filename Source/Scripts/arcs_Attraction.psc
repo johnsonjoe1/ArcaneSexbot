@@ -31,6 +31,9 @@ endfunction
 
 int function AttractionToPlayerCheck(Actor akActor) global
 
+    ;JsonUtil.Load("")
+    ;JsonUtil.FormListRandom("", "")
+
     int result = 0 
 
     arcs_ConfigSettings config = Quest.GetQuest("arcs_MainQuest") as arcs_ConfigSettings

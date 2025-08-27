@@ -40,7 +40,7 @@
         {% set attraction_to_player = get_faction_rank(npc.UUID, "arcs_AttractionToPlayerFaction") %}
 
         - If {{ player.name }} engages in conversation that demonstrates shared values, interests, or experiences, {{ actor_name }}'s attraction level might increase.
-        - If {{ player.name }} engages in conversation or actions that {{ actor_name }} finds objectionable or not aligned with shared values, {{ actor_name }}'s attraction level might decrease.
+        - If {{ player.name }} engages in conversation or actions that {{ actor_name }} finds objectionable or not aligned with their values, {{ actor_name }}'s attraction level might decrease.
 
         {# attraction to player - sexual comments and flirtation #}
         {% if attraction_to_player >= get_global_value("arcs_GlobalSlightlyAttracted") and attraction_to_player < get_global_value("arcs_GlobalVeryAttracted") %}

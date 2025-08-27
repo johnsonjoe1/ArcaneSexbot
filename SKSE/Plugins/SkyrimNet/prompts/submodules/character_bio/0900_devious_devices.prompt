@@ -2,11 +2,11 @@
 {# Unified Equipment Context Template #}
 {% set actor_name = decnpc(actorUUID).name %}
 
-{% if worn_has_keyword(actorUUID, "ArmorCuirass") or worn_has_keyword(actorUUID, "ClothingBody") %}
-{% set actor_nudity = "actor_dressed" %}
-{% else %}
 {% if worn_has_keyword(actorUUID, "Eroticarmor") or worn_has_keyword(actorUUID, "sla_armorspendex") or worn_has_keyword(actorUUID, "sla_armorhalfnakedbikini") or worn_has_keyword(actorUUID, "sla_armorhalfnaked") %}
 {% set actor_nudity = "actor_dressed_skimpy" %}
+{% else %}
+{% if worn_has_keyword(actorUUID, "ArmorCuirass") or worn_has_keyword(actorUUID, "ClothingBody") %}
+{% set actor_nudity = "actor_dressed" %}
 {% else %}
 {% set actor_nudity = "actor_nude" %}
 {% endif %}
